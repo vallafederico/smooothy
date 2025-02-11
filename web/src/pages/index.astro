@@ -1,0 +1,19 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Section from "@c/Section.astro";
+import VanillaSlider from "@c/VanillaSlider.astro";
+---
+
+<Layout>
+  <Section>
+    <h1>home</h1>
+  </Section>
+
+  <Section class="px-0">
+    <VanillaSlider class="px-[calc(50%-15vw)]" data-slider="1" />
+  </Section>
+
+  <Section class="px-0">
+    <VanillaSlider data-slider="2" />
+  </Section>
+</Layout>

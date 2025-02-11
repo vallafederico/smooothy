@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+
+  overscroll-behavior: none;
+}
+
+@theme {
+  --nav-height: 3rem;
+
+  --spacing-gx: 3rem;
+  --spacing-gy: 1rem;
+}
+
+body {
+  background: #000;
+  color: #fff;
+}

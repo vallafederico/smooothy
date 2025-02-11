@@ -1,0 +1,10 @@
+---
+
+const {class:className, top = false} = Astro.props   
+
+const Comp = top ? "header" : "section"
+---
+
+<Comp class:list={[top && "pt-nav", " py-gy", className]}> 
+    <slot />
+</Comp>
