@@ -20,10 +20,9 @@ export class Core {
       scrollSensitivity: 1, // Add scroll sensitivity config
       snap: true, // Add snap configuration
       snapStrength: 0.1, // Controls how strongly it snaps (0-1)
-      useScroll: false,
-      ...config,
-      // ...
+      useScroll: false, // PARAMS
       totalWidthOffset: () => this.viewport.itemWidth,
+      ...config,
     };
 
     this.wrapper = wrapper;
@@ -48,10 +47,7 @@ export class Core {
     this.wrapper.style.cursor = "grab";
 
     this.#setupViewport();
-    // Only setup virtual scroll if enabled
-    if (this.config.useScroll) {
-      this.#setupVirtualScroll();
-    }
+    this.#setupVirtualScroll();
   }
 
   #setupIntersectionObserver() {
@@ -128,15 +124,17 @@ export class Core {
       firefoxMultiplier: 30,
       useKeyboard: false,
       passive: false,
+      el: this.wrapper,
     });
 
     this.virtualScroll.on((event) => {
       if (!this.isDragging) {
-        // Handle both horizontal and vertical scroll events
-        const delta =
-          Math.abs(event.deltaX) > Math.abs(event.deltaY)
+        // Determine which scroll event to use based on config
+        const delta = this.config.useScroll
+          ? -event.deltaY // Only use vertical scroll if enabled
+          : Math.abs(event.deltaX) > Math.abs(event.deltaY)
             ? -event.deltaX // Use deltaX when scrolling horizontally
-            : -event.deltaY; // Fallback to deltaY for vertical scroll
+            : 0; // Ignore vertical scroll when useScroll is disabled
 
         const deltaX = delta * this.config.scrollSensitivity * 0.001;
 
