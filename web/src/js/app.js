@@ -1,9 +1,20 @@
 import { Slider } from "./slider";
 
 const s1 = document.querySelector("[data-slider='1']");
+let slider1;
 if (s1) {
-  const slider1 = new Slider(s1);
+  slider1 = new Slider(s1);
 }
+
+// setTimeout(() => {
+//   console.log("set snap");
+//   slider1.snap = false;
+
+//   setTimeout(() => {
+//     console.log("set snap");
+//     slider1.snap = true;
+//   }, 5000);
+// }, 5000);
 
 const s2 = document.querySelector("[data-slider='2']");
 if (s2) {

@@ -288,14 +288,14 @@ export class Core {
     this.target = -index;
   }
 
+  set snap(value) {
+    this.config.snap = value;
+  }
+
   getProgress() {
     const totalSlides = this.items.length;
     const currentIndex = Math.abs(this.current) % totalSlides;
     return currentIndex / totalSlides;
-  }
-
-  get currentSlide() {
-    return this.#currentSlide;
   }
 
   destroy() {
@@ -315,6 +315,10 @@ export class Core {
     }
   }
 
+  get currentSlide() {
+    return this.#currentSlide;
+  }
+
   #updateCurrentSlide(newSlide) {
     if (this.#currentSlide !== newSlide) {
       this.#previousSlide = this.#currentSlide;
@@ -323,6 +327,8 @@ export class Core {
       //   console.log("currentSlide", this.#currentSlide);
     }
   }
+
+  /** -- Utils */
 
   #damp(a, b, lambda) {
     const currentTime = performance.now();
