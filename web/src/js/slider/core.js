@@ -149,6 +149,15 @@ export class Core {
         const deltaX = delta * this.config.scrollSensitivity * 0.001;
         let newTarget = this.target + deltaX;
 
+        // Use same bounds logic as drag end
+        if (!this.config.infinite) {
+          if (newTarget > 0) {
+            newTarget = 0;
+          } else if (newTarget < this.maxScroll) {
+            newTarget = this.maxScroll;
+          }
+        }
+
         this.target = this.#calculateBounds(newTarget);
         this.#speed = -deltaX * 2;
       }
