@@ -3,7 +3,7 @@ import Script from '../components/Script.astro'
  import Nav from '../components/Nav.astro'
  import Css from '../components/Css.astro'
 
- const {class:className} = Astro.props
+ const {class:className, nav} = Astro.props
 ---
 
 <!doctype html>
@@ -18,7 +18,9 @@ import Script from '../components/Script.astro'
 
 	</head>
 	<body>
-		<Nav />
+		<Nav >
+			{nav}
+		</Nav>
 		<main class={className}>	
 			<slot />
 		</main>

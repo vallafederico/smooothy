@@ -4,19 +4,28 @@ const links = [
     label: "HOME",
     href: "/",
   },
+
   {
-    label: "WIP",
+    label: "EXAMPLES",
+    href: "/examples",
+  },
+  {
+    label: "(WIP)",
     href: "/wip",
   },
 ];
+
+
 ---
 
 <nav class="fixed px-gx py-gy top-0 w-full flex justify-between items-center">
   <a href="/" class="flex flex-col gap-1">
-
-<h1 class="text-md font-semibold tracking-tighter leading-[.8em] ">Smooothy</h1>
-<p class="text-sm leading-[.8em] text-gray-200 font-light ">version 0.0.1</p>
-</a>
+    <h1 class="text-md font-semibold tracking-tighter leading-[.8em]">
+      Smooothy
+    </h1>
+    <p class="text-sm leading-[.8em] text-gray-200 font-light">version 0.0.1</p>
+  </a>
+  <slot />
   <ul class="flex gap-4">
     {
       links.map((link) => (

@@ -1,7 +1,6 @@
 {
   "name": "smooothy",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -10,5 +9,6 @@
     "start": "cd web && npm run start"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "description": ""
 }

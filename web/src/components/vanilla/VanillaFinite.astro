@@ -1,0 +1,35 @@
+---
+const { index = 1, class: className, ...rest } = Astro.props;
+const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i);
+---
+
+<div
+  {...rest}
+  tabindex="0"
+  class:list={["flex w-screen overflow-x-hidden", className]}
+  data-slider='vanilla-finite'
+>
+  {
+    slides.map((slide, i) => (
+      <div class=" w-[30vw] shrink-0 aspect-[3/4] p-1 flex items-center justify-center">
+        <div class="w-full relative h-full border border-gray-700 p-8">
+          <p class="absolute z-10 top-2 left-2">{i}</p>
+          <div
+            data-parallax
+            class="w-full h-full outline outline-gray-800  "
+          ></div>
+        </div>
+      </div>
+    ))
+  }
+</div>
+
+<script>
+  import { Slider } from "~/js/slider";
+
+
+
+  const s1 = document.querySelector("[data-slider='vanilla-finite']");
+  if (s1) new Slider(s1, { infinite: false });
+
+</script>

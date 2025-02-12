@@ -1,21 +1,24 @@
 ---
-import Layout from "~/layouts/Layout.astro";
-import Section from "@c/Section.astro";
-import VanillaSlider from "@c/VanillaSlider.astro";
+import Layout from "~/layouts/Layout.astro"
+import Section from "@c/Section.astro"
+
+// sliders
+import VanillaInfinite from "@c/vanilla/VanillaInfinite.astro"
+import VanillaFinite from "@c/vanilla/VanillaFinite.astro"
 ---
 
 <Layout>
-  <Section class="px-0 h-screen flex flex-col  justify-center">
+  <Section class="flex h-screen flex-col justify-center px-0">
     <div class="px-gx py-gy">
-      <p class="mono">Infinite</p>
+      <p class="font-mono tracking-wider uppercase">Infinite</p>
     </div>
-    <VanillaSlider class="px-[calc(50%-15vw)]" data-slider="1" />
+    <VanillaInfinite />
   </Section>
 
-  <Section class="px-0 h-screen flex flex-col justify-center">
+  <Section class="flex h-screen flex-col justify-center px-0">
     <div class="px-gx py-gy">
-      <p class="mono">Finite</p>
+      <p class="font-mono tracking-wider uppercase">FINITE</p>
     </div>
-    <VanillaSlider data-slider="2" />
+    <VanillaFinite />
   </Section>
 </Layout>
