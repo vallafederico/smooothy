@@ -13,26 +13,11 @@ body {
   overscroll-behavior: none;
 }
 
-body {
-  font-size: 12px;
-  font-family: "Inter", serif;
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
-}
-
-/* .fira-code {
-  font-family: "Fira Code", serif;
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
-} */
-
 @theme {
   --font-family: "Inter", serif;
   --font-family-mono: "Ubuntu Mono", serif;
 
-  --spacing-gx: 2rem;
+  --spacing-gx: 1rem;
   --spacing-gy: 1rem;
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
@@ -54,26 +39,30 @@ body {
   --text-5xl: 4.8rem;
 }
 
+/* global  */
 body {
+  font-size: 12px;
+  font-family: "Inter", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+
   background: #000;
   color: #fff;
 }
 
 /* fonts */
-
 .mono {
   @apply font-mono text-[.6rem] tracking-[.3em] uppercase;
 }
 
 /* svg */
-
 svg {
   width: 1.2rem;
   height: 1.2rem;
 }
 
 /* links */
-
 a:hover {
   opacity: 0.7;
   transition: opacity 0.3s ease;

@@ -10,12 +10,12 @@ const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
   class:list={[
     "flex w-screen overflow-x-hidden",
     className,
-    "px-[calc(50%-15vw)]",
+    "px-[calc(50%-40vw)] md:px-[calc(50%-15vw)]",
   ]}
 >
   {
     slides.map((slide, i) => (
-      <div class="flex aspect-[3/4] w-[30vw] shrink-0 items-center justify-center p-1">
+      <div class="flex aspect-[3/4] w-[80vw] shrink-0 items-center justify-center p-1 md:w-[30vw]">
         <div class="relative h-full w-full border border-gray-700 p-8">
           <p class="absolute top-2 left-2 z-10">{i}</p>
           <div data-parallax class="h-full w-full outline outline-gray-800" />
