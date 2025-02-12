@@ -11,6 +11,7 @@ const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
     "flex w-screen overflow-x-hidden",
     className,
     "px-[calc(50%-40vw)] md:px-[calc(50%-15vw)]",
+    "focus:outline-none",
   ]}
 >
   {
@@ -29,5 +30,20 @@ const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
   import { Slider } from "~/js/slider"
 
   const s1 = document.querySelector("[data-slider='vanilla-infinite']")
-  if (s1) new Slider(s1)
+
+  if (s1) {
+    const slider = new Slider(s1, {
+      onSlideChange: slide => {
+        // console.log("slide", slide)
+      },
+    })
+
+    /** reset/ -> 4 resize */
+    // setTimeout(() => {
+    //   slider.isVisible = false
+    //   slider.items.forEach(item => {
+    //     item.style.transform = `translateX(${0}px)`
+    //   })
+    // }, 5000)
+  }
 </script>

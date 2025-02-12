@@ -6,7 +6,11 @@ const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
 <div
   {...rest}
   tabindex="0"
-  class:list={["flex w-screen overflow-x-hidden", className]}
+  class:list={[
+    "flex w-screen overflow-x-hidden",
+    className,
+    "focus:outline-none",
+  ]}
   data-slider="vanilla-finite"
 >
   {
