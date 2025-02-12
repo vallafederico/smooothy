@@ -35,6 +35,8 @@ export class Core {
   #onResize = null
 
   /* flags */
+  // rename to something that allows for a pause/resume and evetns active and not
+  // isActive (events work or not but renders) | isPaused (doesn't move)
   #isActive = true
 
   constructor(wrapper, config = {}) {
