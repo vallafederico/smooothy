@@ -1,4 +1,5 @@
 import VirtualScroll from "virtual-scroll";
+import { damp, lerp, symmetricMod } from "./utils";
 
 export class Core {
   #speed = 0;
@@ -21,7 +22,7 @@ export class Core {
       snap: true, // Add snap configuration
       snapStrength: 0.1, // Controls how strongly it snaps (0-1)
       useScroll: false, // PARAMS
-      totalWidthOffset: () => this.viewport.itemWidth,
+      totalWidthOffset: ({ itemWidth, wrapperWidth }) => itemWidth,
       ...config,
     };
 
@@ -74,7 +75,7 @@ export class Core {
       totalWidth: this.items.reduce((sum, item) => sum + item.clientWidth, 0),
     };
 
-    this.#offset = this.config.totalWidthOffset();
+    this.#offset = this.config.totalWidthOffset(this.viewport);
 
     this.maxScroll =
       -(this.viewport.totalWidth - this.#offset) / this.viewport.itemWidth;
@@ -117,6 +118,17 @@ export class Core {
 
   /** Events */
 
+  #calculateBounds(newTarget) {
+    if (!this.config.infinite) {
+      if (newTarget > this.#_bounceLimit) {
+        return this.#_bounceLimit;
+      } else if (newTarget < this.maxScroll - this.#_bounceLimit) {
+        return this.maxScroll - this.#_bounceLimit;
+      }
+    }
+    return newTarget;
+  }
+
   #setupVirtualScroll() {
     this.virtualScroll = new VirtualScroll({
       mouseMultiplier: 0.5,
@@ -129,28 +141,16 @@ export class Core {
 
     this.virtualScroll.on((event) => {
       if (!this.isDragging) {
-        // Determine which scroll event to use based on config
-        const delta = this.config.useScroll
-          ? -event.deltaY // Only use vertical scroll if enabled
-          : Math.abs(event.deltaX) > Math.abs(event.deltaY)
-            ? -event.deltaX // Use deltaX when scrolling horizontally
-            : 0; // Ignore vertical scroll when useScroll is disabled
+        const delta =
+          Math.abs(event.deltaX) > Math.abs(event.deltaY)
+            ? event.deltaX
+            : event.deltaY;
 
         const deltaX = delta * this.config.scrollSensitivity * 0.001;
+        let newTarget = this.target + deltaX;
 
-        let newTarget = this.target - deltaX;
-
-        // Apply bounds if not infinite
-        if (!this.config.infinite) {
-          if (newTarget > this.#_bounceLimit) {
-            newTarget = this.#_bounceLimit;
-          } else if (newTarget < this.maxScroll - this.#_bounceLimit) {
-            newTarget = this.maxScroll - this.#_bounceLimit;
-          }
-        }
-
-        this.target = newTarget;
-        this.#speed += -deltaX * 2; // Add some speed effect for smooth animation
+        this.target = this.#calculateBounds(newTarget);
+        this.#speed = -deltaX * 2;
       }
     });
   }
@@ -168,18 +168,7 @@ export class Core {
     const deltaX = event.clientX - this.dragStart;
     let newTarget = this.dragStartTarget + deltaX * this.config.dragSensitivity;
 
-    // Apply bounds if not infinite
-    if (!this.config.infinite) {
-      if (newTarget > this.#_bounceLimit) {
-        newTarget = this.#_bounceLimit;
-      } else if (newTarget < this.maxScroll - this.#_bounceLimit) {
-        newTarget = this.maxScroll - this.#_bounceLimit;
-      }
-    }
-
-    this.target = newTarget;
-
-    // speed
+    this.target = this.#calculateBounds(newTarget);
     this.#speed += event.movementX * 0.01;
   }
 
@@ -209,30 +198,33 @@ export class Core {
   update() {
     if (!this.isVisible) return;
 
-    if (this.config.snap) {
+    // Update deltaTime
+    const currentTime = performance.now();
+    this.#deltaTime = (currentTime - this.#previousTime) / 1000;
+    this.#previousTime = currentTime;
+
+    // Handle snapping in one place
+    if (this.config.snap && !this.isDragging) {
       const currentSnap = Math.round(this.target);
       const diff = currentSnap - this.target;
-      this.target += diff * this.config.snapStrength * this.#deltaTime;
+      this.target += diff * this.config.snapStrength;
     }
 
-    this.current = this.#damp(this.current, this.target, 5);
+    this.current = damp(this.current, this.target, 5, this.#deltaTime);
 
-    // Update using the new method
     if (this.config.infinite) {
       this.#updateCurrentSlide(
         Math.round(Math.abs(this.current)) % this.items.length
       );
-    } else {
-      this.#updateCurrentSlide(Math.round(Math.abs(this.current)));
-    }
-
-    if (this.config.infinite) {
       this.#updateInfinite();
     } else {
+      this.#updateCurrentSlide(Math.round(Math.abs(this.current)));
       this.#updateFinite();
     }
 
     this.#renderSpeed();
+
+    // console.log(this.target);
   }
 
   #updateFinite() {
@@ -245,14 +237,14 @@ export class Core {
   #updateInfinite() {
     this.items.forEach((item, i) => {
       const unitPos = this.current + i;
-      const x = this.#symmetricMod(unitPos, this.items.length) - i;
+      const x = symmetricMod(unitPos, this.items.length) - i;
 
       const translateX = x * this.viewport.itemWidth;
       item.style.transform = `translateX(${translateX}px)`;
 
       //   Update parallax elements if they exist
       if (this.parallaxItems[i]) {
-        const baseX = this.#symmetricMod(unitPos, this.items.length / 2);
+        const baseX = symmetricMod(unitPos, this.items.length / 2);
 
         this.parallaxItems[i].forEach(({ element, value }) => {
           element.style.transform = `translateX(${baseX * value * 20}%)`;
@@ -262,7 +254,7 @@ export class Core {
   }
 
   #renderSpeed() {
-    this.#lspeed = this.#damp(this.#lspeed, this.#speed, 5);
+    this.#lspeed = damp(this.#lspeed, this.#speed, 5, this.#deltaTime);
     this.#speed *= 0.85;
   }
 
@@ -324,29 +316,6 @@ export class Core {
 
       //   console.log("currentSlide", this.#currentSlide);
     }
-  }
-
-  /** -- Utils */
-
-  #damp(a, b, lambda) {
-    const currentTime = performance.now();
-    this.#deltaTime = (currentTime - this.#previousTime) / 1000;
-    this.#previousTime = currentTime;
-
-    const t = 1 - Math.exp(-lambda * this.#deltaTime);
-    return a + (b - a) * t;
-  }
-
-  #lerp(start, end, factor) {
-    return start + (end - start) * factor;
-  }
-
-  #symmetricMod(value, base) {
-    let m = value % base;
-    if (Math.abs(m) > base / 2) {
-      m = m > 0 ? m - base : m + base;
-    }
-    return m;
   }
 }
 

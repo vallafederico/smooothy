@@ -1,10 +1,11 @@
 import { Core } from "./core";
+import gsap from "../gsap";
 
 export class Slider extends Core {
   constructor(wrapper, config) {
     super(wrapper, config);
 
-    this.render();
+    gsap.ticker.add(this.update.bind(this));
     this.addKeyboardEvents();
   }
 
@@ -40,9 +41,8 @@ export class Slider extends Core {
     window.addEventListener("keydown", this.handleKeydown);
   }
 
-  render(e) {
-    this.update();
-
-    window.requestAnimationFrame(this.render.bind(this));
-  }
+  // render(e) {
+  //   this.update();
+  //   window.requestAnimationFrame(this.render.bind(this));
+  // }
 }

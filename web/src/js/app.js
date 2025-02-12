@@ -1,4 +1,6 @@
 import { Slider } from "./slider";
+import Scroll from "./scroll";
+import gsap from "./gsap";
 
 const s1 = document.querySelector("[data-slider='1']");
 let slider1;
