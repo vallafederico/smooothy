@@ -1,43 +1,43 @@
-import { Core } from "./core";
-import gsap from "../gsap";
+import { Core } from "./core"
+import gsap from "../gsap"
 
 export class Slider extends Core {
   constructor(wrapper, config) {
-    super(wrapper, config);
+    super(wrapper, config)
 
-    gsap.ticker.add(this.update.bind(this));
-    this.addKeyboardEvents();
+    gsap.ticker.add(this.update.bind(this))
+    this.addKeyboardEvents()
   }
 
-  handleKeydown = (e) => {
-    if (!this.isVisible) return;
+  handleKeydown = e => {
+    if (!this.isVisible) return
 
     if (/^[0-9]$/.test(e.key)) {
-      const slideIndex = parseInt(e.key);
+      const slideIndex = parseInt(e.key)
       if (this.config.infinite) {
-        this.goToIndex(slideIndex);
+        this.goToIndex(slideIndex)
       } else {
-        if (slideIndex > this.items.length - 1) return;
-        this.goToIndex(slideIndex);
+        if (slideIndex > this.items.length - 1) return
+        this.goToIndex(slideIndex)
       }
-      return;
+      return
     }
 
     switch (e.key) {
       case "ArrowLeft":
-        this.goToPrev();
-        break;
+        this.goToPrev()
+        break
       case "ArrowRight":
-        this.goToNext();
-        break;
-      case " ": // Spacebar
-        this.goToNext();
-        break;
+        this.goToNext()
+        break
+      case " ":
+        this.goToNext()
+        break
     }
-  };
+  }
 
   addKeyboardEvents() {
-    window.addEventListener("keydown", this.handleKeydown);
+    window.addEventListener("keydown", this.handleKeydown)
   }
 
   // render(e) {

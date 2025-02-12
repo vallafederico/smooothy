@@ -17,7 +17,7 @@ const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
   {
     slides.map((slide, i) => (
       <div class="flex aspect-[3/4] w-[80vw] shrink-0 items-center justify-center p-1 md:w-[30vw]">
-        <div class="relative h-full w-full p-8 outline">
+        <div class="relative h-full w-full p-8 outline outline-gray-600">
           <p class="absolute top-2 left-2 z-10">{i}</p>
           <div data-parallax class="h-full w-full outline outline-gray-800" />
         </div>
@@ -33,8 +33,23 @@ const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
 
   if (s1) {
     const slider = new Slider(s1, {
+      paused: true,
       onSlideChange: slide => {
         // console.log("slide", slide)
+      },
+      onResize: api => {
+        /* items amount */
+        // if (api.items.length < 15) {
+        //   api.pause()
+        // } else {
+        //   api.resume()
+        // }
+        /* media query */
+        // if (window.innerWidth < 768) {
+        //   api.pause()
+        // } else {
+        //   api.resume()
+        // }
       },
     })
 

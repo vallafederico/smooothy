@@ -15,9 +15,11 @@ const DEFAULT_CONFIG = {
   useScroll: false,
   // callbacks
   onSlideChange: null,
+  onResize: null,
 }
 
 export class Core {
+  /* config */
   #speed = 0
   #lspeed = 0
   #_bounceLimit = 0.5 // How far past the edges we can drag
@@ -27,7 +29,13 @@ export class Core {
 
   #currentSlide = 0
   #previousSlide = 0 // Add this to track previous slide
+
+  /* callbacks */
   #onSlideChange = null // Add callback property
+  #onResize = null
+
+  /* flags */
+  #isActive = true
 
   constructor(wrapper, config = {}) {
     this.config = {
@@ -87,6 +95,10 @@ export class Core {
 
     this.maxScroll =
       -(this.viewport.totalWidth - this.#offset) / this.viewport.itemWidth
+
+    queueMicrotask(() => {
+      this.config.onResize?.(this)
+    })
   }
 
   #setupParallaxItems() {
@@ -118,7 +130,7 @@ export class Core {
     })
     window.addEventListener("touchend", () => this.#handleDragEnd())
 
-    window.addEventListener("resize", () => {
+    window.addEventListener("resize", e => {
       if (this.resizeTimeout) clearTimeout(this.resizeTimeout)
       this.resizeTimeout = setTimeout(() => this.#setupViewport(), 10)
     })
@@ -215,7 +227,7 @@ export class Core {
   /** Update */
 
   update() {
-    if (!this.isVisible) return
+    if (!this.isVisible || !this.#isActive) return
 
     // Update deltaTime
     const currentTime = performance.now()
@@ -308,6 +320,7 @@ export class Core {
   }
 
   destroy() {
+    this.pause()
     window.removeEventListener("mousemove", this.#handleDragMove)
     window.removeEventListener("mouseup", this.#handleDragEnd)
     window.removeEventListener("touchmove", this.#handleDragMove)
@@ -335,6 +348,38 @@ export class Core {
 
       this.config.onSlideChange?.(this.#currentSlide)
     }
+  }
+
+  pause() {
+    this.#isActive = false
+    // Reset all transforms
+    this.items.forEach(item => {
+      item.style.transform = ""
+    })
+    // Reset parallax items if they exist
+    this.parallaxItems?.forEach(group => {
+      group?.forEach(({ element }) => {
+        element.style.transform = ""
+      })
+    })
+    // Reset state
+    this.current = 0
+    this.target = 0
+    this.#speed = 0
+    this.#lspeed = 0
+  }
+
+  resume() {
+    this.#isActive = true
+    this.#previousTime = performance.now()
+  }
+
+  set paused(value) {
+    this.#isActive = !value
+  }
+
+  get paused() {
+    return !this.#isActive
   }
 }
 
