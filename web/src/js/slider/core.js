@@ -37,6 +37,7 @@ export class Core {
   /* flags */
   // rename to something that allows for a pause/resume and evetns active and not
   // isActive (events work or not but renders) | isPaused (doesn't move)
+  // reset() | init()/reinit()
   #isActive = true
 
   constructor(wrapper, config = {}) {
