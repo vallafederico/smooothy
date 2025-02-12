@@ -29,6 +29,10 @@ importers:
       virtual-scroll:
         specifier: ^2.2.1
         version: 2.2.1
+    devDependencies:
+      vite-plugin-qrcode:
+        specifier: ^0.2.4
+        version: 0.2.4(vite@6.1.0(jiti@2.4.2)(lightningcss@1.29.1))
 
 packages:
 
@@ -1307,6 +1311,10 @@ packages:
   property-information@6.5.0:
     resolution: {integrity: sha512-PgTgs/BlvHxOu8QuEN7wi5A0OmXaBcHpmCSTehcs6Uuu9IkDIEo13Hy7n898RHfrQ49vKCoGeWZSaAK01nwVig==}
 
+  qrcode-terminal@0.12.0:
+    resolution: {integrity: sha512-EXtzRZmC+YGmGlDFbXKxQiMZNwCLEO6BANKXG4iCtSIM0yqc/pappSx3RIKr4r0uh5JsBckOXeKrB3Iz7mdQpQ==}
+    hasBin: true
+
   queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
 
@@ -1590,6 +1598,12 @@ packages:
 
   virtual-scroll@2.2.1:
     resolution: {integrity: sha512-RvjcLxluh7B/6GPzLgQ9d0NYG4yqEguTc3MU7AvxyPVltuo2Cq5RokTL9RKUaZCMJ64in2hus0d03gTtoHp55g==}
+
+  vite-plugin-qrcode@0.2.4:
+    resolution: {integrity: sha512-XFNNSCTXdxCZFJrVVJlwFD6yk3jhf14xDFImI9y34FpIcRPjGcdmXXZ6V8YO6LUisB+n5AMbYITe2J7rOxwhmA==}
+    engines: {node: ^14.13.1 || ^16.0.0 || >=18}
+    peerDependencies:
+      vite: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0
 
   vite@6.1.0:
     resolution: {integrity: sha512-RjjMipCKVoR4hVfPY6GQTgveinjNuyLw+qruksLDvA5ktI1150VmcMBKmQaEWJhg/j6Uaf6dNCNA0AfdzUb/hQ==}
@@ -3115,6 +3129,8 @@ snapshots:
 
   property-information@6.5.0: {}
 
+  qrcode-terminal@0.12.0: {}
+
   queue-microtask@1.2.3: {}
 
   radix3@1.1.2: {}
@@ -3454,6 +3470,11 @@ snapshots:
   virtual-scroll@2.2.1:
     dependencies:
       tiny-emitter: 2.1.0
+
+  vite-plugin-qrcode@0.2.4(vite@6.1.0(jiti@2.4.2)(lightningcss@1.29.1)):
+    dependencies:
+      qrcode-terminal: 0.12.0
+      vite: 6.1.0(jiti@2.4.2)(lightningcss@1.29.1)
 
   vite@6.1.0(jiti@2.4.2)(lightningcss@1.29.1):
     dependencies:
