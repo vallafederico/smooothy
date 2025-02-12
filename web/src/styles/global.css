@@ -13,11 +13,40 @@ body {
   overscroll-behavior: none;
 }
 
+body {
+  font-size: 12px;
+  font-family: "Inter", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+/* .fira-code {
+  font-family: "Fira Code", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+} */
+
 @theme {
-  --nav-height: 3rem;
+  --nav-height: 5;
 
   --spacing-gx: 3rem;
   --spacing-gy: 1rem;
+
+  --font-family: "Inter", serif;
+  --font-family-mono: "Ubuntu Mono", serif;
+
+  --text-sm: 0.7rem;
+  --text-base: 12px;
+
+  --text-md: 1.2rem;
+  --text-lg: 1.6rem;
+  --text-xl: 2rem;
+  --text-2xl: 2.4rem;
+  --text-3xl: 3.2rem;
+  --text-4xl: 4rem;
+  --text-5xl: 4.8rem;
 }
 
 body {
@@ -25,4 +54,8 @@ body {
   color: #fff;
 }
 
-/* lenis */
+/* fonts */
+
+.mono {
+  @apply font-mono uppercase tracking-[.3em] text-[.6rem];
+}

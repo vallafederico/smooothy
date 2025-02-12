@@ -1,8 +1,8 @@
 ---
- import '../styles/global.css'
+import Script from '../components/Script.astro'
+ import Nav from '../components/Nav.astro'
+ import Css from '../components/Css.astro'
 
- import Script from '../components/Script.astro'
- 
  const {class:className} = Astro.props
 ---
 
@@ -13,9 +13,12 @@
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
+		<Css />
 		<title>Smooothy</title>
+
 	</head>
 	<body>
+		<Nav />
 		<main class={className}>	
 			<slot />
 		</main>
