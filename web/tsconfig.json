@@ -7,7 +7,8 @@
     "paths": {
       "~/*": ["src/*"],
       "@c/*": ["src/components/*"],
-      "@js/*": ["src/js/*"]
+      "@js/*": ["src/js/*"],
+      "@svg/*": ["src/components/svg/*"]
     },
     "jsx": "preserve",
     "jsxImportSource": "solid-js"

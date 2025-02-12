@@ -32,7 +32,7 @@ body {
   --font-family: "Inter", serif;
   --font-family-mono: "Ubuntu Mono", serif;
 
-  --spacing-gx: 3rem;
+  --spacing-gx: 2rem;
   --spacing-gy: 1rem;
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
@@ -62,5 +62,12 @@ body {
 /* fonts */
 
 .mono {
-  @apply font-mono uppercase tracking-[.3em] text-[.6rem];
+  @apply font-mono text-[.6rem] tracking-[.3em] uppercase;
+}
+
+/* svg */
+
+svg {
+  width: 1.2rem;
+  height: 1.2rem;
 }

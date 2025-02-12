@@ -1,4 +1,7 @@
 ---
+import Twitter from "@svg/twitter.astro"
+import Github from "@svg/github.astro"
+
 const links = [
   {
     label: "HOME",
@@ -12,25 +15,44 @@ const links = [
   {
     label: "(WIP)",
     href: "/wip",
+    style: "text-gray-600",
   },
-];
-
-
+  {
+    label: "TWITTER",
+    href: "https://federic.ooo/s/twitter",
+    icon: "Twitter",
+    target: "_blank",
+  },
+  {
+    label: "GITHUB",
+    href: "https://github.com/vallafederico/smooothy",
+    icon: "Github",
+    target: "_blank",
+  },
+]
 ---
 
-<nav class="fixed px-gx py-gy top-0 w-full flex justify-between items-center">
+<nav class="px-gx py-gy fixed top-0 flex w-full items-center justify-between">
   <a href="/" class="flex flex-col gap-1">
-    <h1 class="text-md font-semibold tracking-tighter leading-[.8em]">
+    <h1 class="text-md leading-[.8em] font-semibold tracking-tighter">
       Smooothy
     </h1>
-    <p class="text-sm leading-[.8em] text-gray-200 font-light">version 0.0.1</p>
+    <p class="text-sm leading-[.8em] font-light text-gray-200">version 0.0.1</p>
   </a>
   <slot />
   <ul class="flex gap-4">
     {
-      links.map((link) => (
+      links.map(link => (
         <li>
-          <a href={link.href}>{link.label}</a>
+          <a
+            href={link.href}
+            class:list={[link.style && link.style]}
+            target={link.target}
+          >
+            {!link.icon && link.label}
+            {link.icon && link.icon === "Twitter" && <Twitter width="2rem" />}
+            {link.icon && link.icon === "Github" && <Github width="2rem" />}
+          </a>
         </li>
       ))
     }
