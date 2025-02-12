@@ -1,6 +1,20 @@
 import VirtualScroll from "virtual-scroll";
 import { damp, lerp, symmetricMod } from "./utils";
 
+/** default config */
+const DEFAULT_CONFIG = {
+  // params
+  dragSensitivity: 0.005,
+  lerpFactor: 0.08,
+  infinite: true,
+  scrollSensitivity: 1,
+  snap: true,
+  snapStrength: 0.1,
+  totalWidthOffset: ({ itemWidth, wrapperWidth }) => itemWidth,
+  // functionlity
+  useScroll: false,
+};
+
 export class Core {
   #speed = 0;
   #lspeed = 0;
@@ -15,14 +29,7 @@ export class Core {
 
   constructor(wrapper, config = {}) {
     this.config = {
-      dragSensitivity: 0.005,
-      lerpFactor: 0.08,
-      infinite: true,
-      scrollSensitivity: 1, // Add scroll sensitivity config
-      snap: true, // Add snap configuration
-      snapStrength: 0.1, // Controls how strongly it snaps (0-1)
-      useScroll: false, // PARAMS
-      totalWidthOffset: ({ itemWidth, wrapperWidth }) => itemWidth,
+      ...DEFAULT_CONFIG,
       ...config,
     };
 
@@ -141,8 +148,10 @@ export class Core {
 
     this.virtualScroll.on((event) => {
       if (!this.isDragging) {
-        const delta =
-          Math.abs(event.deltaX) > Math.abs(event.deltaY)
+        // If useScroll is false, only use horizontal scroll
+        const delta = !this.config.useScroll
+          ? event.deltaX // Only horizontal scroll when useScroll is false
+          : Math.abs(event.deltaX) > Math.abs(event.deltaY)
             ? event.deltaX
             : event.deltaY;
 

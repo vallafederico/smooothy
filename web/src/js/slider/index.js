@@ -18,7 +18,6 @@ export class Slider extends Core {
         this.goToIndex(slideIndex);
       } else {
         if (slideIndex > this.items.length - 1) return;
-        console.log("slideIndex", slideIndex);
         this.goToIndex(slideIndex);
       }
       return;
