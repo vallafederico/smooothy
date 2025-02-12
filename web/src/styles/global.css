@@ -71,3 +71,10 @@ svg {
   width: 1.2rem;
   height: 1.2rem;
 }
+
+/* links */
+
+a:hover {
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
