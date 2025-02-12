@@ -78,9 +78,8 @@ export class Core {
 
   #setupViewport() {
     this.viewport = {
-      itemWidth: this.items[0].clientWidth,
+      itemWidth: this.items[0].getBoundingClientRect().width,
       wrapperWidth: this.wrapper.clientWidth,
-      marginWidth: (this.wrapper.clientWidth - this.items[0].clientWidth) / 2,
       totalWidth: this.items.reduce((sum, item) => sum + item.clientWidth, 0),
     }
 
