@@ -79,21 +79,19 @@ Can be used as just the `Core`, but the idea and the way it's made is to be exte
 ```js
 // import slider
 import { Core } from "smooothy"
-// or whatever just using GSAP raf
+// or whatever just using GSAP for request animation frame
 import gsap from "../gsap"
 
-/** Basic Example */
-
 export class Slider extends Core {
-  constructor(container, config) {
-    const wrapper = container.querySelector("[data-slider]")
+  constructor(wrapper, config) {
     super({ wrapper, config })
 
-    this.container = container
-
     // create your UI / do whatever
-    this.previousNext = this.container.querySelector("...")
     // ...
+  }
+
+  doSomething() {
+    // add your custom methods
   }
 }
 ```
