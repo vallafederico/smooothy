@@ -1,6 +1,6 @@
 ---
 const { index = 1, class: className, ...rest } = Astro.props
-const slides = Array.from({ length: 10 }, (_, i) => i)
+const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
 ---
 
 <!-- controls -->
@@ -22,10 +22,7 @@ const slides = Array.from({ length: 10 }, (_, i) => i)
         <span data-1="progressval" class="mono text-gray-400">0</span>
       </p>
       <div class="h-1 outline outline-gray-800">
-        <div
-          data-1="progress"
-          class="h-full w-full origin-left bg-gray-400 transition-transform duration-500"
-        >
+        <div data-1="progress" class="h-full w-full origin-left bg-gray-400">
         </div>
       </div>
     </div>
@@ -74,6 +71,7 @@ const slides = Array.from({ length: 10 }, (_, i) => i)
 
 <script>
   import { Slider } from "~/js/slider"
+  import { lerp } from "~/js/slider/utils"
   const s1 = document.querySelector("[data-slider='vanilla-infinite']")
 
   // controls
@@ -90,12 +88,15 @@ const slides = Array.from({ length: 10 }, (_, i) => i)
     const enableval = document.querySelector('[data-1="enableval"]')
 
     /** Callbacks */
+    let easedProgress = 0
     const onUpdate = slider => {
-      const { speed } = slider
+      const { speed, progress } = slider
       speedbar.style.transform = `translateX(${speed * 500}%)`
 
-      progressbar.style.transform = `scaleX(${slider.progress * 100}%)`
-      progressval.textContent = Math.round(slider.progress * 10)
+      easedProgress = lerp(easedProgress, progress, 0.1)
+
+      progressbar.style.transform = `scaleX(${easedProgress * 100}%)`
+      progressval.textContent = easedProgress.toFixed(2)
       speedval.textContent = speed.toFixed(2)
     }
 
