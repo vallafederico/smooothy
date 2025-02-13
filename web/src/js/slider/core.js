@@ -1,20 +1,21 @@
 import VirtualScroll from "virtual-scroll"
-import { damp, lerp, symmetricMod } from "./utils"
+import { damp, symmetricMod } from "./utils"
 
 /** default config */
 const DEFAULT_CONFIG = {
-  // params
-  dragSensitivity: 0.005,
-  lerpFactor: 0.08,
+  // Params
   infinite: true,
-  scrollSensitivity: 1,
   snap: true,
+  dragSensitivity: 0.005,
+  lerpFactor: 0.3,
+  scrollSensitivity: 1,
   snapStrength: 0.1,
   speedDecay: 0.85,
-  totalWidthOffset: ({ itemWidth, wrapperWidth }) => itemWidth,
-  // functionlity
-  useScroll: false,
-  // callbacks
+  bounceLimit: 1,
+  setOffset: ({ itemWidth, wrapperWidth }) => itemWidth,
+  // Functionality
+  scrollInput: false,
+  // Callbacks
   onSlideChange: null,
   onResize: null,
   onUpdate: null,
@@ -24,7 +25,6 @@ export class Core {
   /* config */
   speed = 0
   #lspeed = 0
-  #_bounceLimit = 0.5 // How far past the edges we can drag
   #offset = 0
   #previousTime = 0
   #deltaTime = 0
@@ -95,7 +95,7 @@ export class Core {
       totalWidth: this.items.reduce((sum, item) => sum + item.clientWidth, 0),
     }
 
-    this.#offset = this.config.totalWidthOffset(this.viewport)
+    this.#offset = this.config.setOffset(this.viewport)
 
     this.maxScroll =
       -(this.viewport.totalWidth - this.#offset) / this.viewport.itemWidth
@@ -173,10 +173,10 @@ export class Core {
 
   #calculateBounds(newTarget) {
     if (!this.config.infinite) {
-      if (newTarget > this.#_bounceLimit) {
-        return this.#_bounceLimit
-      } else if (newTarget < this.maxScroll - this.#_bounceLimit) {
-        return this.maxScroll - this.#_bounceLimit
+      if (newTarget > this.config.bounceLimit) {
+        return this.config.bounceLimit
+      } else if (newTarget < this.maxScroll - this.config.bounceLimit) {
+        return this.maxScroll - this.config.bounceLimit
       }
     }
     return newTarget
@@ -205,7 +205,7 @@ export class Core {
           if (deltaY > deltaX) return
         }
 
-        const delta = !this.config.useScroll
+        const delta = !this.config.scrollInput
           ? event.deltaX
           : Math.abs(event.deltaX) > Math.abs(event.deltaY)
             ? event.deltaX
@@ -284,7 +284,12 @@ export class Core {
       this.target += diff * this.config.snapStrength
     }
 
-    this.current = damp(this.current, this.target, 5, this.#deltaTime)
+    this.current = damp(
+      this.current,
+      this.target,
+      1 / this.config.lerpFactor,
+      this.#deltaTime
+    )
 
     if (this.config.infinite) {
       const rawIndex = Math.round(-this.current)
@@ -331,7 +336,12 @@ export class Core {
   }
 
   #renderSpeed() {
-    this.#lspeed = damp(this.#lspeed, this.speed, 5, this.#deltaTime)
+    this.#lspeed = damp(
+      this.#lspeed,
+      this.speed,
+      1 / this.config.lerpFactor,
+      this.#deltaTime
+    )
     this.speed *= this.config.speedDecay
   }
 
@@ -374,7 +384,7 @@ export class Core {
     this.wrapper.removeEventListener("mousedown", this.#handleDragStart)
     this.wrapper.removeEventListener("touchstart", this.#handleDragStart)
     if (this.resizeTimeout) clearTimeout(this.resizeTimeout)
-    if (this.virtualScroll && this.config.useScroll) {
+    if (this.virtualScroll && this.config.scrollInput) {
       this.virtualScroll.destroy()
     }
     if (this.observer) {

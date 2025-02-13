@@ -6,10 +6,10 @@ export class Slider extends Core {
     super(wrapper, config)
 
     gsap.ticker.add(this.update.bind(this))
-    this.addKeyboardEvents()
+    this.#addKeyboardEvents()
   }
 
-  handleKeydown = e => {
+  #handleKeydown = e => {
     if (!this.isVisible) return
 
     if (/^[0-9]$/.test(e.key)) {
@@ -36,8 +36,8 @@ export class Slider extends Core {
     }
   }
 
-  addKeyboardEvents() {
-    window.addEventListener("keydown", this.handleKeydown)
+  #addKeyboardEvents() {
+    window.addEventListener("keydown", this.#handleKeydown)
   }
 
   // render(e) {
