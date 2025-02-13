@@ -36,13 +36,13 @@ const slides = Array.from({ length: 10 }, (_, i) => i)
         data-1="enable"
         class="mono cursor-pointer rounded-full p-1 px-3 text-left text-gray-300 transition-opacity hover:opacity-55"
       >
-        enable (<span>ON</span>)
+        enable (<span data-1="enableval">ON</span>)
       </button>
       <button
         data-1="snap"
         class="mono cursor-pointer rounded-full p-1 px-3 text-left text-gray-300 transition-opacity hover:opacity-55"
       >
-        snap (<span>ON</span>)
+        snap (<span data-1="snapval">ON</span>)
       </button>
     </div>
   </div>
@@ -86,6 +86,8 @@ const slides = Array.from({ length: 10 }, (_, i) => i)
     const speedval = document.querySelector('[data-1="speedval"]')
     const snapbtn = document.querySelector('[data-1="snap"]')
     const enablebtn = document.querySelector('[data-1="enable"]')
+    const snapval = document.querySelector('[data-1="snapval"]')
+    const enableval = document.querySelector('[data-1="enableval"]')
 
     /** Callbacks */
     const onUpdate = slider => {
@@ -131,10 +133,12 @@ const slides = Array.from({ length: 10 }, (_, i) => i)
     /** Interactions */
     snapbtn.onclick = () => {
       slider.config.snap = !slider.config.snap
+      snapval.textContent = slider.config.snap ? "ON" : "OFF"
     }
 
     enablebtn.onclick = () => {
       slider.paused = !slider.paused
+      enableval.textContent = slider.paused ? "OFF" : "ON"
     }
   }
 </script>
