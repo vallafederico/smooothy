@@ -229,3 +229,17 @@ slider.destroy()
 ```
 
 This documentation covers the main features and usage patterns of the Core slider class. Let me know if you need any clarification or have questions about specific features!
+
+---
+
+# WebGl
+
+Made this because all other slider were mostly syncing bad with WebGl.
+
+[_In depth webgl related docs._](/docs/webgl.md)
+
+---
+
+## Smooothy in use.
+
+[Siena Film Foundation](https://www.siena.film/) by [Niccolò Miranda](https://www.niccolomiranda.com/) [Federico Valla](https://federic.ooo/) [Carolina Hernando](https://www.behance.net/carohernando)
