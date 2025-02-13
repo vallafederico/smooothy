@@ -13,6 +13,20 @@ body {
   overscroll-behavior: none;
 }
 
+html,
+body,
+p,
+h1,
+h2,
+h3,
+h4 {
+  user-select: none; /* supported by Chrome and Opera */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+}
+
 @theme {
   --font-family: "Inter", serif;
   --font-family-mono: "Ubuntu Mono", serif;
