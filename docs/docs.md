@@ -2,7 +2,7 @@
 
 The Core class is a flexible and performant slider/carousel implementation that supports infinite scrolling, snapping, touch interactions, and parallax effects.
 
-## Basic Usage
+## Really Really Really Basic Usage
 
 ```javascript
 // Create a new slider instance
@@ -10,9 +10,6 @@ const slider = new Core(wrapperElement, {
   infinite: true,
   snap: true,
 })
-
-// Start the slider
-slider.init()
 
 // Update the slider (typically in an animation loop)
 function animate() {
@@ -23,6 +20,80 @@ animate()
 
 // Clean up when done
 slider.destroy()
+```
+
+## Smarter Usage
+
+Made to be extended. Some are premade and you can import those directly, but the gist of it is:
+
+```js
+// import slider
+import { Core } from "smooothy"
+// or whatever just using GSAP raf
+import gsap from "../gsap"
+
+/** Basic Example */
+
+export class Slider extends Core {
+  constructor(container, config) {
+    const wrapper = container.querySelector("[data-slider]")
+    super({ wrapper, config })
+
+    this.container = container
+
+    // create your UI / do whatever
+    this.previousNext = this.container.querySelector("...")
+    // ...
+  }
+
+ More [examples on how to extend here]("./extend.md").
+}
+
+/** Keyboard Enabled Slider */
+export class KeyboardSlider extends Core {
+  constructor(wrapper, config) {
+    super(wrapper, config)
+
+    gsap.ticker.add(this.update.bind(this))
+    this.#addKeyboardEvents()
+  }
+
+  #handleKeydown = e => {
+    if (!this.isVisible) return
+
+    if (/^[0-9]$/.test(e.key)) {
+      const slideIndex = parseInt(e.key)
+      if (this.config.infinite) {
+        this.goToIndex(slideIndex)
+      } else {
+        if (slideIndex > this.items.length - 1) return
+        this.goToIndex(slideIndex)
+      }
+      return
+    }
+
+    switch (e.key) {
+      case "ArrowLeft":
+        this.goToPrev()
+        break
+      case "ArrowRight":
+        this.goToNext()
+        break
+      case " ":
+        this.goToNext()
+        break
+    }
+  }
+
+  #addKeyboardEvents() {
+    window.addEventListener("keydown", this.#handleKeydown)
+  }
+
+  // render(e) {
+  //   this.update();
+  //   window.requestAnimationFrame(this.render.bind(this));
+  // }
+}
 ```
 
 ## Configuration Options
@@ -37,12 +108,12 @@ The slider accepts the following configuration options:
 | `scrollSensitivity` | number | `1` | Multiplier for scroll wheel sensitivity |
 | `snapStrength` | number | `0.1` | How strongly the slider snaps to positions |
 | `speedDecay` | number | `0.85` | How quickly the sliding speed decays |
-| bounceLimit | number | 1 | Maximum overscroll amount when infinite is false |
-| scrollInput | boolean | false | Enables mouse wheel/trackpad scrolling |
-| setOffset | function | ({itemWidth, wrapperWidth}) => itemWidth | Custom function to set slide offset |
-| onSlideChange | function | null | Callback when active slide changes |
-| onResize | function | null | Callback when slider is resized |
-| onUpdate | function | null | Callback on each update frame |
+| `bounceLimit` | number | `1` | Maximum overscroll amount when infinite is false |
+| `scrollInput` | boolean | `false` | Enables mouse wheel/trackpad scrolling |
+| `setOffset` | function | `({itemWidth, wrapperWidth}) => itemWidth` | Custom function to set slide end offset |
+| `onSlideChange` | function | `null` | Callback when active slide changes |
+| `onResize` | function | `null` | Callback when slider is resized |
+| `onUpdate` | function | `null` | Callback on each update frame |
 
 ## Methods
 
@@ -69,6 +140,9 @@ slider.paused = true // Pause slider interactions
 slider.currentSlide // Get current slide index
 slider.progress // Get slider progress (0-1)
 slider.getProgress() // Alternative way to get progress
+slider.target // Get target position
+slider.current // Get current position
+slider.viewport // Get viewport dimensions
 ```
 
 ## HTML Structure
@@ -82,6 +156,12 @@ The slider expects a wrapper element containing slide elements:
   <div class="slide">Slide 3</div>
 </div>
 ```
+
+Everything that's inside the container is going to be treated as slide, so only slides should go in.
+
+## Styling
+
+It's made to be style as much as possible from CSS directly. Position things as you wish to start directly in CSS, then add the slider. Use the `setOffset` callback in params as an aid for when it should end in case it's not infinite.
 
 ## Parallax Effects
 
