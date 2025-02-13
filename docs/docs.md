@@ -5,7 +5,7 @@ The Core class is a flexible and performant slider/carousel implementation that 
 ## Installation
 
 ```shell
-pnpm add smooothy
+pnpm i smooothy
 ```
 
 ```js
@@ -13,7 +13,7 @@ import Core from "smooothy"
 ```
 
 <details>
-<summary>TLDR</summary>
+<summary><strong>TLDR</strong></summary>
 
 #### HTML
 
@@ -46,7 +46,7 @@ animate()
 
 ## Features
 
-## Really Really Really Basic Usage
+### Really Really Really Basic Usage
 
 ```javascript
 // Create a new slider instance
@@ -66,7 +66,7 @@ animate()
 slider.destroy()
 ```
 
-## Smarter Usage
+### Smarter Usage
 
 Made to be extended, can be used as core.
 Premade ones will be listed somewhere eventualy and exported from same package.
@@ -95,7 +95,7 @@ export class Slider extends Core {
 
 More [examples on how to extend here]("./extend.md").
 
-## Configuration Options
+### Configuration Options
 
 The slider accepts the following configuration options:
 | Option | Type | Default | Description |
@@ -188,6 +188,9 @@ const slider = new Core(wrapper, {
   },
 })
 ```
+
+This does the bare minimum, well, and provides ways to extend it and make it into what you need.
+Callbacks are a great way to extend the functionality, [here's some useful ones]("./callbacks.md").
 
 ## Touch and Mouse Interaction
 
