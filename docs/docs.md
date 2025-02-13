@@ -93,7 +93,7 @@ export class Slider extends Core {
 }
 ```
 
-More [examples on how to extend here]("./extend.md").
+More [examples on how to extend here]("/extend.md").
 
 ### Configuration Options
 
@@ -190,7 +190,7 @@ const slider = new Core(wrapper, {
 ```
 
 This does the bare minimum, well, and provides ways to extend it and make it into what you need.
-Callbacks are a great way to extend the functionality, [here's some useful ones]("./callbacks.md").
+Callbacks are a great way to extend the functionality, [here's some useful ones]("/callbacks.md").
 
 ## Touch and Mouse Interaction
 
