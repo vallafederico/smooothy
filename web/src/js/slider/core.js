@@ -124,25 +124,44 @@ export class Core {
     window.addEventListener("mousemove", e => this.#handleDragMove(e))
     window.addEventListener("mouseup", () => this.#handleDragEnd())
 
+    const SCROLL_THRESHOLD = 5
+
     this.wrapper.addEventListener("touchstart", e => {
       const touch = e.touches[0]
       this.touchStartY = touch.clientY
+      this.touchStartX = touch.clientX
+      this.scrollDirection = null
       this.#handleDragStart(touch)
     })
 
-    window.addEventListener("touchmove", e => {
-      const touch = e.touches[0]
-      // Only prevent default if scrolling horizontally
-      if (
-        Math.abs(touch.clientY - this.touchStartY) <
-        Math.abs(touch.clientX - this.dragStart)
-      ) {
-        e.preventDefault()
-      }
-      this.#handleDragMove(touch)
-    })
+    window.addEventListener(
+      "touchmove",
+      e => {
+        const touch = e.touches[0]
+        const deltaY = Math.abs(touch.clientY - this.touchStartY)
+        const deltaX = Math.abs(touch.clientX - this.touchStartX)
 
-    window.addEventListener("touchend", () => this.#handleDragEnd())
+        // Determine direction only if we haven't yet and threshold is met
+        if (
+          !this.scrollDirection &&
+          (deltaX > SCROLL_THRESHOLD || deltaY > SCROLL_THRESHOLD)
+        ) {
+          this.scrollDirection = deltaX > deltaY ? "horizontal" : "vertical"
+        }
+
+        // If horizontal, prevent default and handle drag
+        if (this.scrollDirection === "horizontal") {
+          e.preventDefault()
+          this.#handleDragMove(touch)
+        }
+      },
+      { passive: false }
+    )
+
+    window.addEventListener("touchend", () => {
+      this.scrollDirection = null
+      this.#handleDragEnd()
+    })
 
     window.addEventListener("resize", e => {
       if (this.resizeTimeout) clearTimeout(this.resizeTimeout)
@@ -173,13 +192,17 @@ export class Core {
       el: this.wrapper,
     })
 
+    const SCROLL_THRESHOLD = 5
+
     this.virtualScroll.on(event => {
       if (!this.isDragging && !this.#isPaused) {
-        if (
-          event.touchDevice &&
-          Math.abs(event.deltaY) > Math.abs(event.deltaX)
-        ) {
-          return
+        // More strict threshold check for touch devices
+        if (event.touchDevice) {
+          const deltaY = Math.abs(event.deltaY)
+          const deltaX = Math.abs(event.deltaX)
+
+          if (deltaY < SCROLL_THRESHOLD && deltaX < SCROLL_THRESHOLD) return
+          if (deltaY > deltaX) return
         }
 
         const delta = !this.config.useScroll
