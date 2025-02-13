@@ -242,4 +242,4 @@ Made this because all other slider were mostly syncing bad with WebGl.
 
 ## Smooothy in use.
 
-[Siena Film Foundation](https://www.siena.film/) by [Niccolò Miranda](https://www.niccolomiranda.com/) [Federico Valla](https://federic.ooo/) [Carolina Hernando](https://www.behance.net/carohernando)
+[_Siena Film Foundation_](https://www.siena.film/) by [Niccolò Miranda](https://www.niccolomiranda.com/) [Federico Valla](https://federic.ooo/) [Carolina Hernando](https://www.behance.net/carohernando)
