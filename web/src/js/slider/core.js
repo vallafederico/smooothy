@@ -459,30 +459,3 @@ export class Core {
 }
 
 // actual class
-
-// export class ModelSlider extends Slider {
-//   constructor(wrapper, config = {}) {
-//     super(wrapper, config);
-
-//     this.items.forEach((item, i) => {
-//       let startX = 0;
-//       let startTime = 0;
-
-//       item.addEventListener("mousedown", (e) => {
-//         e.preventDefault();
-//         startX = e.clientX;
-//         startTime = Date.now();
-//       });
-
-//       item.addEventListener("mouseup", (e) => {
-//         e.preventDefault();
-//         const deltaX = Math.abs(e.clientX - startX);
-//         const deltaTime = Date.now() - startTime;
-
-//         if (deltaX < 5 && deltaTime < 200) {
-//           item.children[0].click();
-//         }
-//       });
-//     });
-//   }
-// }

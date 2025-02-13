@@ -144,10 +144,14 @@ slider.paused = true // Pause slider interactions
 ```javascript
 slider.currentSlide // Get current slide index
 slider.progress // Get slider progress (0-1)
-slider.getProgress() // Alternative way to get progress
+slider.getProgress() // Alternative way to get progress (does this work?)
 slider.target // Get target position
 slider.current // Get current position
 slider.viewport // Get viewport dimensions
+slider.viewport.itemWidth // Size of a single slide
+slider.viewport.wrapperWidth // Size of the wrapper
+slider.viewport.totalWidth // Size of the scrollable width
+slider.isVisible // Boolean if the slider is in view or not
 ```
 
 ## HTML Structure
@@ -195,11 +199,11 @@ const slider = new Core(wrapper, {
 })
 ```
 
-This does the bare minimum, well, and provides ways to extend it and make it into what you need.
-Callbacks are a great way to extend the functionality, [here's some useful ones](/docs//callbacks.md).
+This does the bare minimum, well, and provides ways to extend it and make it into what you need. Callbacks are a great way to extend the functionality, [here's some useful ones](/docs//callbacks.md).
 
 ## Touch and Mouse Interaction
 
++-
 The slider automatically handles:
 
 - Mouse drag interactions
@@ -243,3 +247,7 @@ Made this because all other slider were mostly syncing bad with WebGl.
 ## Smooothy in use.
 
 [**Siena Film Foundation**](https://www.siena.film/) by _[Niccolò Miranda](https://www.niccolomiranda.com/) [Federico Valla](https://federic.ooo/) [Carolina Hernando](https://www.behance.net/carohernando)_
+
+---
+
+[Changelog](/docs/changelog.md)
