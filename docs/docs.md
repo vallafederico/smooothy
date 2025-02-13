@@ -190,7 +190,7 @@ const slider = new Core(wrapper, {
 ```
 
 This does the bare minimum, well, and provides ways to extend it and make it into what you need.
-Callbacks are a great way to extend the functionality, [here's some useful ones]("docs//callbacks.md").
+Callbacks are a great way to extend the functionality, [here's some useful ones](/docs//callbacks.md).
 
 ## Touch and Mouse Interaction
 
