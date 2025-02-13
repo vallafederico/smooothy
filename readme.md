@@ -243,10 +243,9 @@ import Core, { LinkSlider, ... } from "smooothy"
 | `Core` | Base slider with core functionality |
 | `KeyboardSlider` | Adds keyboard controls (arrows, spacebar, numpad) |
 | `LinkSlider` | Handles link clicks within slides |
-| `ControlSlider` | Full UI controls interface <sup>(*1)</sup>  |
+| `ControlSlider` | Full UI controls interface <sup>1</sup>  |
 
-
-_(*1) Needs matching HTML setup_
+_(1) Needs matching HTML setup_
 
 ---
 
