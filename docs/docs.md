@@ -2,6 +2,50 @@
 
 The Core class is a flexible and performant slider/carousel implementation that supports infinite scrolling, snapping, touch interactions, and parallax effects.
 
+## Installation
+
+```shell
+pnpm add smooothy
+```
+
+```js
+import Core from "smooothy"
+```
+
+<details>
+<summary>TLDR</summary>
+
+#### HTML
+
+```html
+<div class="slider-wrapper">
+  <div class="slide">Slide 1</div>
+  <div class="slide">Slide 2</div>
+  <div class="slide">Slide 3</div>
+</div>
+```
+
+#### Javascript
+
+```javascript
+// Create a new slider instance
+const slider = new Core(document.querySelector("[data-slider]"))
+
+// Update the slider (typically in an animation loop)
+function animate() {
+  slider.update()
+  requestAnimationFrame(animate)
+}
+animate()
+
+// Clean up when done
+// slider.destroy()
+```
+
+</details>
+
+## Features
+
 ## Really Really Really Basic Usage
 
 ```javascript
@@ -24,7 +68,8 @@ slider.destroy()
 
 ## Smarter Usage
 
-Made to be extended. Some are premade and you can import those directly, but the gist of it is:
+Made to be extended, can be used as core.
+Premade ones will be listed somewhere eventualy and exported from same package.
 
 ```js
 // import slider
