@@ -74,8 +74,7 @@ slider.destroy()
 
 ### Smarter Usage
 
-Made to be extended, can be used as core.
-Premade ones will be listed somewhere eventualy and exported from same package.
+Can be used as just the `Core`, but the idea and the way it's made is to be extended. Here's some [extending ideas/premade sliders](/docs/extend.md).
 
 ```js
 // import slider
@@ -99,7 +98,23 @@ export class Slider extends Core {
 }
 ```
 
-More [examples on how to extend here](/docs/extend.md).
+Most of those can be exported directly from the package, but if you want to combine functionality you might want to just look at source.
+
+```js
+import Core, { LinkSlider } from "smooothy"
+```
+
+#### Premade Options
+| Name | Description |
+|------|-------------|
+| `Core` | Base slider with core functionality |
+| `KeyboardSlider` | Adds keyboard controls (arrows, spacebar, numpad) |
+| `LinkSlider` | Handles link clicks within slides |
+| `ControlSlider` | Full UI controls interface (*1) |
+
+
+<small>(*1) Needs matching HTML setup</small>
+
 
 ### Configuration Options
 
