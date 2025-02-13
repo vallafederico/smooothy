@@ -170,7 +170,7 @@ Everything that's inside the container is going to be treated as slide, so only 
 
 ## Styling
 
-It's made to be style as much as possible from CSS directly. Position things as you wish to start directly in CSS, then add the slider. Use the `setOffset` callback in params as an aid for when it should end in case it's not infinite.
+It's made to be styled as much as possible from CSS directly. Position things as you wish to start directly in CSS, then add the slider. Use the `setOffset` callback in params as an aid for when it should end in case it's not infinite.
 
 ## Parallax Effects
 
@@ -232,7 +232,6 @@ Always call `destroy()` when removing the slider to clean up event listeners:
 slider.destroy()
 ```
 
-This documentation covers the main features and usage patterns of the Core slider class. Let me know if you need any clarification or have questions about specific features!
 
 ---
 
