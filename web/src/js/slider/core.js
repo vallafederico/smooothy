@@ -125,13 +125,23 @@ export class Core {
     window.addEventListener("mouseup", () => this.#handleDragEnd())
 
     this.wrapper.addEventListener("touchstart", e => {
-      e.preventDefault()
-      this.#handleDragStart(e.touches[0])
+      const touch = e.touches[0]
+      this.touchStartY = touch.clientY
+      this.#handleDragStart(touch)
     })
+
     window.addEventListener("touchmove", e => {
-      e.preventDefault()
-      this.#handleDragMove(e.touches[0])
+      const touch = e.touches[0]
+      // Only prevent default if scrolling horizontally
+      if (
+        Math.abs(touch.clientY - this.touchStartY) <
+        Math.abs(touch.clientX - this.dragStart)
+      ) {
+        e.preventDefault()
+      }
+      this.#handleDragMove(touch)
     })
+
     window.addEventListener("touchend", () => this.#handleDragEnd())
 
     window.addEventListener("resize", e => {
@@ -159,16 +169,21 @@ export class Core {
       touchMultiplier: 2,
       firefoxMultiplier: 30,
       useKeyboard: false,
-      passive: false,
+      passive: true,
       el: this.wrapper,
     })
 
     this.virtualScroll.on(event => {
       if (!this.isDragging && !this.#isPaused) {
-        // Block if paused
-        // If useScroll is false, only use horizontal scroll
+        if (
+          event.touchDevice &&
+          Math.abs(event.deltaY) > Math.abs(event.deltaX)
+        ) {
+          return
+        }
+
         const delta = !this.config.useScroll
-          ? event.deltaX // Only horizontal scroll when useScroll is false
+          ? event.deltaX
           : Math.abs(event.deltaX) > Math.abs(event.deltaY)
             ? event.deltaX
             : event.deltaY
@@ -176,7 +191,6 @@ export class Core {
         const deltaX = delta * this.config.scrollSensitivity * 0.001
         let newTarget = this.target + deltaX
 
-        // Use same bounds logic as drag end
         if (!this.config.infinite) {
           if (newTarget > 0) {
             newTarget = 0
@@ -186,7 +200,7 @@ export class Core {
         }
 
         this.target = this.#calculateBounds(newTarget)
-        this.speed = -deltaX * 2
+        this.speed = -deltaX * 10
       }
     })
   }
