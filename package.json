@@ -1,14 +1,30 @@
 {
   "name": "smooothy",
   "version": "1.0.0",
+  "type": "module",
+  "sideEffects": false,
+  "author": "vallafederico",
+  "license": "ISC",
+  "description": "Smooth Extensible Slider API",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vallafederico/smoothy.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vallafederico/smoothy/issues"
+  },
+  "keywords": [
+    "slider",
+    "smooth",
+    "smoothy",
+    "smoothy-slider",
+    "smoothy-slider-core",
+    "smoothy-slider-core-module"
+  ],
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "cd web && npm run dev",
     "build": "cd web && npm run build",
     "start": "cd web && npm run start"
-  },
-  "author": "",
-  "license": "ISC",
-  "description": ""
+  }
 }
