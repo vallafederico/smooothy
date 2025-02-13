@@ -206,7 +206,7 @@ The slider automatically handles:
 - Touch swipes with horizontal/vertical detection
 - Momentum-based sliding
 - Bounce effects (when `infinite: false`)
-- Snap-to-grid behavior (when `snap: true`)
+- Snap behavior (when `snap: true`)
 
 ## Responsive Behavior
 
