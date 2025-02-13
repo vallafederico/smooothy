@@ -45,11 +45,10 @@ export class Slider extends Core {
     this.previousNext = this.container.querySelector("...")
     // ...
   }
-
- More [examples on how to extend here]("./extend.md").
 }
-
 ```
+
+More [examples on how to extend here]("./extend.md").
 
 ## Configuration Options
 
