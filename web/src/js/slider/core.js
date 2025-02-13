@@ -439,6 +439,23 @@ export class Core {
   get paused() {
     return this.#isPaused // Return new pause flag
   }
+
+  get progress() {
+    if (this.config.infinite) {
+      // For infinite mode, use current for smooth transitions
+      const position = -this.target
+      const total = this.items.length
+      // Normalize to 0-1 range and handle the loop point
+      const normalizedPos = ((position % total) + total) % total
+      // Use current for smooth transitions
+      return normalizedPos / (total - 1)
+    } else {
+      // For finite mode, calculate progress based on maxScroll
+      const current = Math.abs(this.current)
+      const total = Math.abs(this.maxScroll)
+      return Math.max(0, Math.min(1, current / total))
+    }
+  }
 }
 
 // actual class

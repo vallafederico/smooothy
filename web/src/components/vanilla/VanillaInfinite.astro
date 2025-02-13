@@ -1,6 +1,6 @@
 ---
 const { index = 1, class: className, ...rest } = Astro.props
-const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
+const slides = Array.from({ length: 10 }, (_, i) => i)
 ---
 
 <!-- controls -->
@@ -10,7 +10,7 @@ const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
     <div class="flex w-[30ch] flex-col gap-1">
       <p class="mono pl-2 text-gray-300">
         Speed
-        <span class="mono text-gray-400">0</span>
+        <span data-1="speedval" class="mono text-gray-400">0</span>
       </p>
       <div class="flex h-3 justify-center outline outline-gray-800">
         <div data-1="speed" class="h-full w-[2px] bg-gray-400"></div>
@@ -19,9 +19,15 @@ const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
     <div class="flex w-[30ch] flex-col gap-1">
       <p class="mono pl-2 text-gray-300">
         Progress
-        <span class="mono text-gray-400">0</span>
+        <span data-1="progressval" class="mono text-gray-400">0</span>
       </p>
-      <div class="h-1 outline outline-gray-800"></div>
+      <div class="h-1 outline outline-gray-800">
+        <div
+          data-1="progress"
+          class="h-full w-full origin-left bg-gray-400 transition-transform duration-500"
+        >
+        </div>
+      </div>
     </div>
   </div>
   <div class="flex flex-col justify-end gap-3">
@@ -75,14 +81,20 @@ const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
   if (s1) {
     /** Interface */
     const speedbar = document.querySelector('[data-1="speed"]')
+    const progressbar = document.querySelector('[data-1="progress"]')
+    const progressval = document.querySelector('[data-1="progressval"]')
+    const speedval = document.querySelector('[data-1="speedval"]')
     const snapbtn = document.querySelector('[data-1="snap"]')
     const enablebtn = document.querySelector('[data-1="enable"]')
 
     /** Callbacks */
     const onUpdate = slider => {
-      // console.log(slider)
       const { speed } = slider
       speedbar.style.transform = `translateX(${speed * 500}%)`
+
+      progressbar.style.transform = `scaleX(${slider.progress * 100}%)`
+      progressval.textContent = Math.round(slider.progress * 10)
+      speedval.textContent = speed.toFixed(2)
     }
 
     const onResize = api => {
