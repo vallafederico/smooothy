@@ -10,17 +10,19 @@ const DEFAULT_CONFIG = {
   scrollSensitivity: 1,
   snap: true,
   snapStrength: 0.1,
+  speedDecay: 0.85,
   totalWidthOffset: ({ itemWidth, wrapperWidth }) => itemWidth,
   // functionlity
   useScroll: false,
   // callbacks
   onSlideChange: null,
   onResize: null,
+  onUpdate: null,
 }
 
 export class Core {
   /* config */
-  #speed = 0
+  speed = 0
   #lspeed = 0
   #_bounceLimit = 0.5 // How far past the edges we can drag
   #offset = 0
@@ -35,10 +37,8 @@ export class Core {
   #onResize = null
 
   /* flags */
-  // rename to something that allows for a pause/resume and evetns active and not
-  // isActive (events work or not but renders) | isPaused (doesn't move)
-  // reset() | init()/reinit()
   #isActive = true
+  #isPaused = false // New flag for pause state
 
   constructor(wrapper, config = {}) {
     this.config = {
@@ -69,6 +69,7 @@ export class Core {
 
     this.#setupViewport()
     this.#setupVirtualScroll()
+    this.speed = 0 // Initialize in constructor
   }
 
   #setupIntersectionObserver() {
@@ -163,7 +164,8 @@ export class Core {
     })
 
     this.virtualScroll.on(event => {
-      if (!this.isDragging) {
+      if (!this.isDragging && !this.#isPaused) {
+        // Block if paused
         // If useScroll is false, only use horizontal scroll
         const delta = !this.config.useScroll
           ? event.deltaX // Only horizontal scroll when useScroll is false
@@ -184,12 +186,13 @@ export class Core {
         }
 
         this.target = this.#calculateBounds(newTarget)
-        this.#speed = -deltaX * 2
+        this.speed = -deltaX * 2
       }
     })
   }
 
   #handleDragStart(event) {
+    if (this.#isPaused) return // Block if paused
     this.isDragging = true
     this.dragStart = event.clientX
     this.dragStartTarget = this.target
@@ -197,13 +200,13 @@ export class Core {
   }
 
   #handleDragMove(event) {
-    if (!this.isDragging) return
+    if (!this.isDragging || this.#isPaused) return // Block if paused
 
     const deltaX = event.clientX - this.dragStart
     let newTarget = this.dragStartTarget + deltaX * this.config.dragSensitivity
 
     this.target = this.#calculateBounds(newTarget)
-    this.#speed += event.movementX * 0.01
+    this.speed += event.movementX * 0.01
   }
 
   #handleDragEnd() {
@@ -247,9 +250,10 @@ export class Core {
     this.current = damp(this.current, this.target, 5, this.#deltaTime)
 
     if (this.config.infinite) {
-      this.#updateCurrentSlide(
-        Math.round(Math.abs(this.current)) % this.items.length
-      )
+      const rawIndex = Math.round(-this.current)
+      const length = this.items.length
+      const normalizedIndex = ((rawIndex % length) + length) % length
+      this.#updateCurrentSlide(normalizedIndex)
       this.#updateInfinite()
     } else {
       this.#updateCurrentSlide(Math.round(Math.abs(this.current)))
@@ -257,6 +261,8 @@ export class Core {
     }
 
     this.#renderSpeed()
+
+    this.config.onUpdate?.(this)
 
     // console.log(this.target);
   }
@@ -288,8 +294,8 @@ export class Core {
   }
 
   #renderSpeed() {
-    this.#lspeed = damp(this.#lspeed, this.#speed, 5, this.#deltaTime)
-    this.#speed *= 0.85
+    this.#lspeed = damp(this.#lspeed, this.speed, 5, this.#deltaTime)
+    this.speed *= this.config.speedDecay
   }
 
   goToNext() {
@@ -323,7 +329,7 @@ export class Core {
   }
 
   destroy() {
-    this.pause()
+    this.kill()
     window.removeEventListener("mousemove", this.#handleDragMove)
     window.removeEventListener("mouseup", this.#handleDragEnd)
     window.removeEventListener("touchmove", this.#handleDragMove)
@@ -331,7 +337,6 @@ export class Core {
     this.wrapper.removeEventListener("mousedown", this.#handleDragStart)
     this.wrapper.removeEventListener("touchstart", this.#handleDragStart)
     if (this.resizeTimeout) clearTimeout(this.resizeTimeout)
-    // Only destroy virtual scroll if it was initialized
     if (this.virtualScroll && this.config.useScroll) {
       this.virtualScroll.destroy()
     }
@@ -349,11 +354,13 @@ export class Core {
       this.#previousSlide = this.#currentSlide
       this.#currentSlide = newSlide
 
-      this.config.onSlideChange?.(this.#currentSlide)
+      this.config.onSlideChange?.(this.#currentSlide, this.#previousSlide)
     }
   }
 
-  pause() {
+  /** Interfaces */
+  // resetting interface
+  kill() {
     this.#isActive = false
     // Reset all transforms
     this.items.forEach(item => {
@@ -368,21 +375,22 @@ export class Core {
     // Reset state
     this.current = 0
     this.target = 0
-    this.#speed = 0
+    this.speed = 0
     this.#lspeed = 0
   }
 
-  resume() {
+  init() {
     this.#isActive = true
     this.#previousTime = performance.now()
   }
 
+  // pausing interface
   set paused(value) {
-    this.#isActive = !value
+    this.#isPaused = value // Use new pause flag
   }
 
   get paused() {
-    return !this.#isActive
+    return this.#isPaused // Return new pause flag
   }
 }
 

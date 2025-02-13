@@ -3,12 +3,52 @@ const { index = 1, class: className, ...rest } = Astro.props
 const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
 ---
 
+<!-- controls -->
+<div class="py-lg px-lgx flex gap-8 text-xs">
+  <div class="flex flex-col gap-3">
+    <h2 class="text-[1.2em] font-semibold tracking-tight">Infinite.</h2>
+    <div class="flex w-[30ch] flex-col gap-1">
+      <p class="mono pl-2 text-gray-300">
+        Speed
+        <span class="mono text-gray-400">0</span>
+      </p>
+      <div class="flex h-3 justify-center outline outline-gray-800">
+        <div data-1="speed" class="h-full w-[2px] bg-gray-400"></div>
+      </div>
+    </div>
+    <div class="flex w-[30ch] flex-col gap-1">
+      <p class="mono pl-2 text-gray-300">
+        Progress
+        <span class="mono text-gray-400">0</span>
+      </p>
+      <div class="h-1 outline outline-gray-800"></div>
+    </div>
+  </div>
+  <div class="flex flex-col justify-end gap-3">
+    <div class="flex w-[30ch] flex-col items-start gap-1">
+      <button
+        data-1="enable"
+        class="mono cursor-pointer rounded-full p-1 px-3 text-left text-gray-300 transition-opacity hover:opacity-55"
+      >
+        enable (<span>ON</span>)
+      </button>
+      <button
+        data-1="snap"
+        class="mono cursor-pointer rounded-full p-1 px-3 text-left text-gray-300 transition-opacity hover:opacity-55"
+      >
+        snap (<span>ON</span>)
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- slider -->
 <div
   {...rest}
   tabindex="0"
   data-slider="vanilla-infinite"
   class:list={[
-    "py-xl flex w-screen overflow-x-hidden",
+    "py-sm flex w-screen overflow-x-hidden",
     className,
     "px-[calc(50%-40vw)] md:px-[calc(50%-15vw)]",
     "focus:outline-none",
@@ -28,37 +68,69 @@ const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
 
 <script>
   import { Slider } from "~/js/slider"
-
   const s1 = document.querySelector("[data-slider='vanilla-infinite']")
 
+  // controls
+
   if (s1) {
+    /** Interface */
+    const speedbar = document.querySelector('[data-1="speed"]')
+    const snapbtn = document.querySelector('[data-1="snap"]')
+    const enablebtn = document.querySelector('[data-1="enable"]')
+
+    /** Callbacks */
+    const onUpdate = slider => {
+      // console.log(slider)
+      const { speed } = slider
+      speedbar.style.transform = `translateX(${speed * 500}%)`
+    }
+
+    const onResize = api => {
+      /*  kill based on amount of slides */
+      // if (api.items.length < 15) {
+      //   api.kill()
+      // } else {
+      //   api.init()
+      // }
+      /* kill based on media query */
+      // if (window.innerWidth < 768) {
+      //   api.kill()
+      // } else {
+      //   api.init()
+      // }
+    }
+
+    const onSlideChange = (slide, previous) => {
+      slider.items[previous].children[0].classList.remove("active")
+      slider.items[slide].children[0].classList.add("active")
+    }
+
+    /** Slider */
     const slider = new Slider(s1, {
       paused: true,
-      onSlideChange: slide => {
-        // console.log("slide", slide)
-      },
-      onResize: api => {
-        /* items amount */
-        // if (api.items.length < 15) {
-        //   api.pause()
-        // } else {
-        //   api.resume()
-        // }
-        /* media query */
-        // if (window.innerWidth < 768) {
-        //   api.pause()
-        // } else {
-        //   api.resume()
-        // }
-      },
+      onSlideChange,
+      onResize,
+      onUpdate,
     })
 
-    /** reset/ -> 4 resize */
-    // setTimeout(() => {
-    //   slider.isVisible = false
-    //   slider.items.forEach(item => {
-    //     item.style.transform = `translateX(${0}px)`
-    //   })
-    // }, 5000)
+    // initial state
+    onSlideChange(0, 0)
+
+    /** Interactions */
+    snapbtn.onclick = () => {
+      slider.config.snap = !slider.config.snap
+    }
+
+    enablebtn.onclick = () => {
+      slider.paused = !slider.paused
+    }
   }
 </script>
+
+<style>
+  .active {
+    outline-color: white;
+    transition: outline-color 0.5s ease-in-out;
+    transition-delay: 0.2s;
+  }
+</style>
