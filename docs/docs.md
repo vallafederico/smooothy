@@ -93,7 +93,7 @@ export class Slider extends Core {
 }
 ```
 
-More [examples on how to extend here]("/extend.md").
+More [examples on how to extend here](/extend.md).
 
 ### Configuration Options
 
