@@ -23,7 +23,7 @@
   ],
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "types": "./dist/index.d.ts",
   "devDependencies": {
     "esbuild": "^0.25.0",
