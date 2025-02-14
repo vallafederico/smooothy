@@ -8,6 +8,21 @@
     "import": "./dist/esm.js",
     "require": "./dist/cjs.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vallafederico/smooothy"
+  },
+  "bugs": {
+    "url": "https://github.com/vallafederico/smooothy/issues"
+  },
+  "homepage": "https://github.com/vallafederico/smooothy#readme",
+  "keywords": [
+    "slider",
+    "smooth",
+    "smooth scroll",
+    "infinite",
+    "infinite scroll"
+  ],
   "scripts": {
     "build": "pnpm run build:package && pnpm run build:web",
     "build:package": "node bin/build.js",
@@ -21,7 +36,6 @@
     "package.json",
     "README.md"
   ],
-  "keywords": [],
   "author": "",
   "license": "MIT",
   "types": "./dist/index.d.ts",
