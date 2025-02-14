@@ -1,36 +1,36 @@
 ---
 import Layout from "~/layouts/Layout.astro"
 import Section from "@c/Section.astro"
-import VueSlider from "@c/examples/VueSlider.vue"
+// import VueSlider from "@c/examples/VueSlider.vue"
+import ExampleHead from "~/components/ExampleHead.astro"
+
+import ControlsSlider from "~/components/vanilla/ControlsSlider.astro"
 ---
 
 <Layout>
   <Section top class="px-gx flex flex-col justify-center">
-    <h2 class="font-semibold">Examples</h2>
+    <h1 class="text-xl font-semibold">Examples.</h1>
   </Section>
 
   <!-- frameworks -->
-  <Section top class="px-gx flex flex-col justify-center">
+
+  <Section id={"interface"} class="min-h-[80svh] pt-[10svh]">
+    <ExampleHead
+      title={"Interface"}
+      description={"Full interface + controls."}
+      features={["Infinite", "Snap", "interface", "Parallax"]}
+    />
+    <ControlsSlider />
+  </Section>
+
+  <!-- <Section top class="px-gx flex flex-col justify-center">
     <h2 class="font-semibold">Frameworks</h2>
     <div class="py-lg flex flex-col gap-2">
       <a href={"#vue"}>{"Vue"}</a>
     </div>
   </Section>
 
-  <Section
-    id={"vue"}
-    class="h-[80svh] border-t border-b border-gray-700 pt-[10svh]"
-  >
-    <div class="px-gx">
-      <h2 class="font-semibold">{"Vue"}</h2>
-    </div>
-
-    <div class="py-gy">
-      <VueSlider client:visible />
-    </div>
-  </Section>
-
   <Section class="px-gx py-gy">
     <a href="/">Back to home</a>
-  </Section>
+  </Section> -->
 </Layout>

@@ -8,7 +8,9 @@
       "~/*": ["src/*"],
       "@c/*": ["src/components/*"],
       "@js/*": ["src/js/*"],
-      "@svg/*": ["src/components/svg/*"]
+      "@svg/*": ["src/components/svg/*"],
+      "@package/*": ["package/*"],
+      "@slider/*": ["src/js/slider/*"]
     },
     "jsx": "preserve",
     "jsxImportSource": "solid-js"

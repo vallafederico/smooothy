@@ -15,15 +15,14 @@ const DEFAULT_CONFIG = {
   setOffset: ({ itemWidth, wrapperWidth }) => itemWidth,
   // Functionality
   scrollInput: false,
-  // Callbacks
-  onSlideChange: null,
-  onResize: null,
-  onUpdate: null,
+  // onSlideChange: null,
+  // onResize: null, 
+  // onUpdate: null,
 }
 
-
-
 export class Core {
+  
+
   /* config */
   speed = 0
   #lspeed = 0
@@ -34,10 +33,6 @@ export class Core {
   #currentSlide = 0
   #previousSlide = 0 // Add this to track previous slide
 
-  /* callbacks */
-  #onSlideChange = null // Add callback property
-  #onResize = null
-
   /* flags */
   #isActive = true
   #isPaused = false // New flag for pause state
@@ -47,6 +42,16 @@ export class Core {
       ...DEFAULT_CONFIG,
       ...config,
     }
+
+    // Assign callbacks from config if provided
+    if (config.onSlideChange) this.onSlideChange = config.onSlideChange
+    if (config.onResize) this.onResize = config.onResize
+    if (config.onUpdate) this.onUpdate = config.onUpdate
+
+    // Remove callbacks from config after assigning
+    delete this.config.onSlideChange
+    delete this.config.onResize
+    delete this.config.onUpdate
 
     this.wrapper = wrapper
     this.items = [...wrapper.children]
@@ -103,7 +108,7 @@ export class Core {
       -(this.viewport.totalWidth - this.#offset) / this.viewport.itemWidth
 
     queueMicrotask(() => {
-      this.config.onResize?.(this)
+      this.onResize?.(this)
     })
   }
 
@@ -306,7 +311,7 @@ export class Core {
 
     this.#renderSpeed()
 
-    this.config.onUpdate?.(this)
+    this.onUpdate?.(this)
 
     // console.log(this.target);
   }
@@ -403,7 +408,7 @@ export class Core {
       this.#previousSlide = this.#currentSlide
       this.#currentSlide = newSlide
 
-      this.config.onSlideChange?.(this.#currentSlide, this.#previousSlide)
+      this.onSlideChange?.(this.#currentSlide, this.#previousSlide)
     }
   }
 

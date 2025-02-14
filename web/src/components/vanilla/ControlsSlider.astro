@@ -1,0 +1,140 @@
+---
+const { index = 1, class: className, ...rest } = Astro.props
+const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
+---
+
+<div data-example="controls" class="relative">
+  <!-- interface -->
+  <div
+    data-interface
+    class="pointer-events-none absolute inset-0 z-10 flex h-full w-full justify-center"
+  >
+    <!-- dots -->
+    <div
+      data-dots
+      class="absolute bottom-2 z-10 flex w-full items-center justify-center gap-2"
+    >
+      {
+        slides.map((slide, i) => (
+          <button class="pointer-events-auto flex size-4 cursor-pointer items-center justify-center">
+            <div class="size-2 rounded-full bg-gray-500" />
+          </button>
+        ))
+      }
+    </div>
+
+    <!-- arrows -->
+    <div
+      data-arrows
+      class="px-gx absolute inset-0 z-10 flex w-full items-center justify-between"
+    >
+      <button
+        class="pointer-events-auto h-10 w-10 cursor-pointer rounded-full bg-gray-700"
+      >
+        {"<"}
+      </button>
+      <button
+        class="pointer-events-auto h-10 w-10 cursor-pointer rounded-full bg-gray-700"
+      >
+        {">"}
+      </button>
+    </div>
+  </div>
+
+  <!-- slider -->
+  <div
+    {...rest}
+    tabindex="0"
+    data-slider
+    class:list={[
+      "py-sm flex w-screen overflow-x-hidden",
+      className,
+      "px-[calc(50%-40vw)] md:px-[calc(50%-15vw)]",
+      "focus:outline-none",
+      "py-xl",
+    ]}
+  >
+    {
+      slides.map((slide, i) => (
+        <div class="flex aspect-[3/4] w-[80vw] shrink-0 items-center justify-center p-1 md:w-[30vw]">
+          <div class="relative h-full w-full p-8 outline outline-gray-600">
+            <p class="absolute top-2 left-2 z-10">{i}</p>
+            <div
+              data-parallax="1"
+              class="h-full w-full outline outline-gray-600"
+            />
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</div>
+
+<script>
+  import Core from "~/js/slider"
+  import gsap from "~/js/gsap"
+
+  class ControlsSlider extends Core {
+    constructor(container: HTMLElement, config = {}) {
+      super(container.querySelector("[data-slider]"))
+
+      this.createInterface(container.querySelector("[data-interface]"))
+
+      this.onSlideChange(0, 0)
+      gsap.ticker.add(this.update.bind(this))
+    }
+
+    createInterface(int: HTMLElement) {
+      this.dots = [...int.querySelector("[data-dots]").children]
+      const arrows = [...int.querySelector("[data-arrows]").children]
+
+      arrows.forEach(
+        (arrow, index) =>
+          (arrow.onclick = () =>
+            index === 0 ? this.goToPrev() : this.goToNext())
+      )
+
+      this.dots.forEach(
+        (dot, index) => (dot.onclick = () => this.goToIndex(index))
+      )
+    }
+
+    onSlideChange(current, previous) {
+      // console.log(current, previous)
+
+      this.items[previous].children[0].classList.remove("active")
+      this.items[current].children[0].classList.add("active")
+
+      this.dots[previous].children[0].classList.remove("active-dot")
+      this.dots[current].children[0].classList.add("active-dot")
+    }
+  }
+
+  new ControlsSlider(
+    document.querySelector("[data-example='controls']") as HTMLElement
+  )
+</script>
+
+<style>
+  [data-slider] > * {
+    transition: opacity 0.5s ease-in-out;
+    transition-delay: 0.2s;
+  }
+
+  .active {
+    outline-color: white;
+    transition: outline-color 0.5s ease-in-out;
+    transition-delay: 0.2s;
+  }
+
+  [data-dots] > * > * {
+    transition: background-color 0.5s ease-in-out;
+    transition-delay: 0.15s;
+  }
+
+  .active-dot {
+    background-color: white;
+    transition: background-color 0.5s ease-in-out;
+    transition-delay: 0.15s;
+  }
+</style>

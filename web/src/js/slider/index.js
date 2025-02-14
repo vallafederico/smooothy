@@ -1,4 +1,4 @@
-import Core from "../../../../package/index.ts"
+import Core, { lerp } from "../../../../package/index.ts"
 import gsap from "../gsap"
 
 export class Slider extends Core {
@@ -39,9 +39,7 @@ export class Slider extends Core {
   #addKeyboardEvents() {
     window.addEventListener("keydown", this.#handleKeydown)
   }
-
-  // render(e) {
-  //   this.update();
-  //   window.requestAnimationFrame(this.render.bind(this));
-  // }
 }
+
+export { lerp }
+export default Core

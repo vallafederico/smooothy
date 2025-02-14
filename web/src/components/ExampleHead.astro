@@ -1,0 +1,17 @@
+---
+const { title, description, features } = Astro.props
+---
+
+<div class="px-gx py-gy">
+  <h2 class="font-semibold">{title}</h2>
+  <p class="text-sm text-gray-500">{description}</p>
+  <div class="flex max-w-[60ch] flex-wrap gap-2 py-2">
+    {
+      features.map((feature: string) => (
+        <p class="mono rounded-xl p-1 px-3 text-sm !text-[.5rem] leading-[1.4em] text-gray-400 outline outline-gray-700">
+          {feature}
+        </p>
+      ))
+    }
+  </div>
+</div>
