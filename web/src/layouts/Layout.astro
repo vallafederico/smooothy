@@ -1,39 +1,40 @@
 ---
-import Script from '../components/Script.astro'
- import Nav from '../components/Nav.astro'
- import Css from '../components/Css.astro'
+import Script from "../components/Script.astro"
+import Nav from "../components/Nav.astro"
+import Css from "../components/Css.astro"
 
- const {class:className, nav} = Astro.props
+const { class: className, nav } = Astro.props
 ---
 
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<Css />
-		<title>Smooothy</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <Css />
+    <title>Smooothy</title>
 
-	</head>
-	<body>
-		<Nav >
-			{nav}
-		</Nav>
-		<main class={className}>	
-			<slot />
-		</main>
+    <meta name="viewport" content="width=device-width, user-scalable=no" />
+  </head>
+  <body>
+    <Nav>
+      {nav}
+    </Nav>
+    <main class={className}>
+      <slot />
+    </main>
 
-		<Script />
-	</body>
+    <Script />
+  </body>
 </html>
 
 <style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
+  html,
+  body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+  }
 </style>
