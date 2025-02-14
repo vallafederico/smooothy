@@ -1,0 +1,89 @@
+---
+const { index = 1, class: className, ...rest } = Astro.props
+const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
+---
+
+<div
+  {...rest}
+  tabindex="0"
+  data-example="keyboard-controls"
+  class:list={[
+    "py-sm flex w-screen overflow-x-hidden",
+    className,
+    "px-[calc(50%-40vw)] md:px-[calc(50%-15vw)]",
+    "focus:outline-none",
+  ]}
+>
+  {
+    slides.map((slide, i) => (
+      <div class="flex aspect-[3/4] w-[80vw] shrink-0 items-center justify-center p-1 md:w-[30vw]">
+        <div class="relative h-full w-full p-8 outline outline-gray-600">
+          <p class="absolute top-2 left-2 z-10">{i}</p>
+          <div data-parallax class="h-full w-full outline outline-gray-800" />
+        </div>
+      </div>
+    ))
+  }
+</div>
+
+<script>
+  import Core, { lerp } from "~/js/slider"
+  import gsap from "~/js/gsap"
+
+  class Slider extends Core {
+    constructor(wrapper, config) {
+      super(wrapper, config)
+
+      gsap.ticker.add(this.update.bind(this))
+      this.#addKeyboardEvents()
+    }
+
+    #handleKeydown = e => {
+      if (!this.isVisible) return
+
+      if (/^[0-9]$/.test(e.key)) {
+        const slideIndex = parseInt(e.key)
+
+        if (this.config.infinite) {
+          this.goToIndex(slideIndex)
+        } else {
+          e.preventDefault()
+          if (slideIndex > this.items.length - 1) return
+          this.goToIndex(slideIndex)
+        }
+        return
+      }
+
+      if (e.key === " ") {
+        e.preventDefault()
+        e.stopPropagation()
+      }
+
+      switch (e.key) {
+        case "ArrowLeft":
+          this.goToPrev()
+          break
+        case "ArrowRight":
+          this.goToNext()
+          break
+        case " ":
+          this.goToNext()
+          break
+      }
+    }
+
+    #addKeyboardEvents() {
+      window.addEventListener("keydown", this.#handleKeydown)
+    }
+  }
+
+  new Slider(document.querySelector('[data-example="keyboard-controls"]'), {})
+</script>
+
+<style>
+  .active {
+    outline-color: white;
+    transition: outline-color 0.5s ease-in-out;
+    transition-delay: 0.2s;
+  }
+</style>

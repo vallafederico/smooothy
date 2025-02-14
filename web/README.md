@@ -15,3 +15,8 @@ tiny :D
 ## Accessibility
 
 - [ ] tabbable slides
+
+## Examples
+
+- [ ] add configurable property in live example
+- [ ] PARALLAX mix parallax effect with speed

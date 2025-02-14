@@ -7,6 +7,7 @@ import ExampleHead from "~/components/ExampleHead.astro"
 import ControlsSlider from "~/components/vanilla/ControlsSlider.astro"
 import Parallax1Slider from "~/components/vanilla/Parallax1Slider.astro"
 import FullInterface from "~/components/vanilla/FullInterface.astro"
+import KeyboardControls from "~/components/vanilla/KeyboardControls.astro"
 ---
 
 <Layout>
@@ -43,6 +44,15 @@ import FullInterface from "~/components/vanilla/FullInterface.astro"
       features={["Infinite", "Snap", "controls", "current"]}
     />
     <ControlsSlider />
+  </Section>
+
+  <Section id={"keyboard-controls"} class="min-h-[80svh] pt-[10svh]">
+    <ExampleHead
+      title={"Keyboard controls."}
+      description={"Arrow keys, spacebar, and number keys."}
+      features={["Infinite", "Snap", "controls"]}
+    />
+    <KeyboardControls />
   </Section>
 
   <Section id={"parallax1"} class="min-h-[80svh] pt-[10svh]">
