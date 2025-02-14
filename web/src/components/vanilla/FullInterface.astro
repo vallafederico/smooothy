@@ -65,7 +65,7 @@ const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
         />
       </div>
     </div>
-    <div class="flex w-[30ch] flex-col gap-1">
+    <!-- <div class="flex w-[30ch] flex-col gap-1">
       <p class="mono pl-2 text-gray-300">
         Snap Strength
         <span data-int="snapstrengthval" class="mono text-gray-400">0.1</span>
@@ -80,7 +80,7 @@ const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
           class="relative h-full w-full appearance-none bg-transparent before:absolute before:top-1/2 before:left-0 before:h-[2px] before:w-full before:bg-gray-800 [&::-webkit-slider-thumb]:relative [&::-webkit-slider-thumb]:size-3 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:bg-gray-400 [&::-webkit-slider-thumb]:hover:bg-gray-300"
         />
       </div>
-    </div>
+    </div> -->
     <div class="flex w-[30ch] flex-col gap-1">
       <p class="mono pl-2 text-gray-300">
         Drag Sensitivity
@@ -259,11 +259,11 @@ const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
     slider.config.speedDecay = val
   }
 
-  const onSnapStrengthInput = range => {
-    const val = range.value * 0.1
-    snapstrengthval.textContent = val.toFixed(2)
-    slider.config.snapStrength = val
-  }
+  // const onSnapStrengthInput = range => {
+  //   const val = range.value * 0.1
+  //   snapstrengthval.textContent = val.toFixed(2)
+  //   slider.config.snapStrength = val
+  // }
 
   const onDragSensInput = range => {
     const val = 0.0005 + (range.value * 0.0085) / 100 // Maps 0-100 to 0.0005-0.009
@@ -273,7 +273,7 @@ const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
 
   lerprange.oninput = () => onRangeInput(lerprange)
   speeddecayrange.oninput = () => onSpeedDecayInput(speeddecayrange)
-  snapstrengthrange.oninput = () => onSnapStrengthInput(snapstrengthrange)
+  // snapstrengthrange.oninput = () => onSnapStrengthInput(snapstrengthrange)
   dragsensrange.oninput = () => onDragSensInput(dragsensrange)
 </script>
 

@@ -16,7 +16,7 @@ const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
     >
       {
         slides.map((slide, i) => (
-          <button class="pointer-events-auto flex size-4 cursor-pointer items-center justify-center">
+          <button class="pointer-events-auto flex size-4 cursor-pointer items-center justify-center transition-opacity hover:opacity-50 md:size-5">
             <div class="size-2 rounded-full bg-gray-500" />
           </button>
         ))
