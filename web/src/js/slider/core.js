@@ -440,6 +440,15 @@ export class Core {
     return this.#isPaused // Return new pause flag
   }
 
+  // snapping interface
+  set snap(value) {
+    this.config.snap = value
+  }
+
+  get snap() {
+    return this.config.snap
+  }
+
   get progress() {
     if (this.config.infinite) {
       // For infinite mode, use current for smooth transitions

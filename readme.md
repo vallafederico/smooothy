@@ -135,21 +135,31 @@ slider.init() // Initialize the slider
 slider.kill() // Temporarily disable the slider
 slider.destroy() // Clean up event listeners and remove slider
 slider.paused = true // Pause slider interactions
+slider.paused = false // Unpause slider interactions
+slider.snap = true // Snaps slide in place
+slider.snap = false // Allows free scroll
 ```
 
-### State Queries
+### State Queries / Setters
 
 ```javascript
 slider.currentSlide // Get current slide index
 slider.progress // Get slider progress (0-1)
-slider.getProgress() // Alternative way to get progress (does this work?)
-slider.target // Get target position
-slider.current // Get current position
+slider.target // Get target position / Set slider target
+slider.current // Get current position / Set slider current
 slider.viewport // Get viewport dimensions
 slider.viewport.itemWidth // Size of a single slide
 slider.viewport.wrapperWidth // Size of the wrapper
 slider.viewport.totalWidth // Size of the scrollable width
 slider.isVisible // Boolean if the slider is in view or not
+```
+
+`Target` and `Current` can be used as setters as well. Setting `target` will make the slider lerp to that position, setting current will make it move instantly.
+Setting both is what you should do if you want to move it instantly to a specific position.
+
+```javascript
+slider.target = 5 // Lerp to slide 5
+slider.current = slider.target = 5 // Instantly move to slide 5
 ```
 
 ## HTML Structure
@@ -166,9 +176,28 @@ The slider expects a wrapper element containing slide elements:
 
 Everything that's inside the container is going to be treated as slide, so only slides should go in.
 
-## Styling
+## CSS and Styling
 
-It's made to be styled as much as possible from CSS directly. Position things as you wish to start directly in CSS, then add the slider. Use the `setOffset` callback in params as an aid for when it should end in case it's not infinite.
+It's made to be styled/configured as much as possible from CSS directly. Position things as you wish to start directly in CSS, then add the slider. Use the `setOffset` callback in params as an aid for when it should end in case it's not infinite.
+
+Assuming the slider is marked with `[data-slider]`, you'll probably want at least the following css to be applied.
+
+```css
+[data-slider] {
+  display: flex;
+}
+
+[data-slider] > * {
+  flex-shrink: 0
+  width: <number [unit]> 
+}
+``` 
+
+> ⚡️ CSS Gotcha
+> To keep it as lignhtweight as possible it does not support gaps.
+> If you want gaps use full width slides as the first child,
+> apply padding to those (1/2 of the gap), and have the actual slide
+> inside so you'll get the spacing you want.
 
 
 ## Effects / Utils
