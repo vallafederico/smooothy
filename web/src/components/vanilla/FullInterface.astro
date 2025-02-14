@@ -1,0 +1,174 @@
+---
+const { index = 1, class: className, ...rest } = Astro.props
+const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
+---
+
+<!-- controls -->
+<div class="py-lg px-lgx md:pt-lg flex flex-col gap-8 text-xs md:flex-row">
+  <div class="pt-xl flex flex-col gap-3 md:pt-0">
+    <div class="flex w-[30ch] flex-col gap-1">
+      <p class="mono pl-2 text-gray-300">
+        Speed
+        <span data-1="speedval" class="mono text-gray-400">0</span>
+      </p>
+      <div class="flex h-3 justify-center outline outline-gray-800">
+        <div data-1="speed" class="h-full w-[2px] bg-gray-400"></div>
+      </div>
+    </div>
+    <div class="flex w-[30ch] flex-col gap-1">
+      <p class="mono pl-2 text-gray-300">
+        Progress
+        <span data-1="progressval" class="mono text-gray-400">0</span>
+      </p>
+      <div class="h-1 outline outline-gray-800">
+        <div data-1="progress" class="h-full w-full origin-left bg-gray-400">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="flex flex-col justify-end gap-3">
+    <div class="flex w-[30ch] flex-col items-start gap-1">
+      <button
+        data-1="enable"
+        class="mono cursor-pointer rounded-full p-1 px-3 text-left text-gray-300 transition-opacity hover:opacity-55"
+      >
+        enable (<span data-1="enableval">ON</span>)
+      </button>
+      <button
+        data-1="snap"
+        class="mono cursor-pointer rounded-full p-1 px-3 text-left text-gray-300 transition-opacity hover:opacity-55"
+      >
+        snap (<span data-1="snapval">ON</span>)
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- slider -->
+<div
+  {...rest}
+  tabindex="0"
+  data-example="full-interface"
+  class:list={[
+    "py-sm flex w-screen overflow-x-hidden",
+    className,
+    "px-[calc(50%-40vw)] md:px-[calc(50%-15vw)]",
+    "focus:outline-none",
+  ]}
+>
+  {
+    slides.map((slide, i) => (
+      <div class="flex aspect-[3/4] w-[80vw] shrink-0 items-center justify-center p-1 md:w-[30vw]">
+        <div class="relative h-full w-full p-8 outline outline-gray-600">
+          <p class="absolute top-2 left-2 z-10">{i}</p>
+          <div data-parallax class="h-full w-full outline outline-gray-800" />
+        </div>
+      </div>
+    ))
+  }
+</div>
+
+<script>
+  import Core, { lerp } from "~/js/slider"
+  import gsap from "~/js/gsap"
+
+  class Slider extends Core {
+    constructor(wrapper, config) {
+      super(wrapper, config)
+
+      gsap.ticker.add(this.update.bind(this))
+      this.#addKeyboardEvents()
+    }
+
+    #handleKeydown = e => {
+      if (!this.isVisible) return
+
+      if (/^[0-9]$/.test(e.key)) {
+        const slideIndex = parseInt(e.key)
+        if (this.config.infinite) {
+          this.goToIndex(slideIndex)
+        } else {
+          if (slideIndex > this.items.length - 1) return
+          this.goToIndex(slideIndex)
+        }
+        return
+      }
+
+      switch (e.key) {
+        case "ArrowLeft":
+          this.goToPrev()
+          break
+        case "ArrowRight":
+          this.goToNext()
+          break
+        case " ":
+          this.goToNext()
+          break
+      }
+    }
+
+    #addKeyboardEvents() {
+      window.addEventListener("keydown", this.#handleKeydown)
+    }
+  }
+
+  /** Interface */
+  const speedbar = document.querySelector('[data-1="speed"]')
+  const progressbar = document.querySelector('[data-1="progress"]')
+  const progressval = document.querySelector('[data-1="progressval"]')
+  const speedval = document.querySelector('[data-1="speedval"]')
+  const snapbtn = document.querySelector('[data-1="snap"]')
+  const enablebtn = document.querySelector('[data-1="enable"]')
+  const snapval = document.querySelector('[data-1="snapval"]')
+  const enableval = document.querySelector('[data-1="enableval"]')
+
+  /** Callbacks */
+  let easedProgress = 0
+  const onUpdate = slider => {
+    const { speed, progress } = slider
+    speedbar.style.transform = `translateX(${speed * 500}%)`
+
+    easedProgress = lerp(easedProgress, progress, 0.1)
+
+    progressbar.style.transform = `scaleX(${easedProgress * 100}%)`
+    progressval.textContent = easedProgress.toFixed(2)
+    speedval.textContent = speed.toFixed(2)
+  }
+
+  const onSlideChange = (slide, previous) => {
+    slider.items[previous].children[0].classList.remove("active")
+    slider.items[slide].children[0].classList.add("active")
+  }
+
+  /** Slider */
+  const slider = new Slider(
+    document.querySelector('[data-example="full-interface"]'),
+    {
+      paused: true,
+      onSlideChange,
+      onUpdate,
+    }
+  )
+
+  // initial state
+  onSlideChange(0, 0)
+
+  /** Interactions */
+  snapbtn.onclick = () => {
+    slider.config.snap = !slider.config.snap
+    snapval.textContent = slider.config.snap ? "ON" : "OFF"
+  }
+
+  enablebtn.onclick = () => {
+    slider.paused = !slider.paused
+    enableval.textContent = slider.paused ? "OFF" : "ON"
+  }
+</script>
+
+<style>
+  .active {
+    outline-color: white;
+    transition: outline-color 0.5s ease-in-out;
+    transition-delay: 0.2s;
+  }
+</style>
