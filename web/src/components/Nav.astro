@@ -33,9 +33,9 @@ const links = [
 ---
 
 <nav
-  class="px-gx py-gy fixed top-0 z-10 flex w-full justify-between md:items-center"
+  class="px-gx py-gy pointer-events-none fixed top-0 z-10 flex w-full justify-between md:items-center"
 >
-  <a href="/" class="flex flex-col gap-1">
+  <a href="/" class="pointer-events-auto flex flex-col gap-1">
     <h1 class="text-md leading-[.8em] font-semibold tracking-tighter">
       Smooothy
     </h1>
@@ -48,7 +48,7 @@ const links = [
         <li>
           <a
             href={link.href}
-            class:list={[link.style && link.style]}
+            class:list={[link.style && link.style, "pointer-events-auto"]}
             target={link.target}
           >
             {!link.icon && link.label}
