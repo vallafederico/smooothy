@@ -250,10 +250,10 @@ const slides = Array.from({ length: 30 + Math.random() * 10 }, (_, i) => i)
     const p_current = current % items.length
     const p_target = target % items.length
     currentbar.style.transform = `scaleX(${(Math.abs(p_current) / items.length) * 100}%)`
-    currentval.textContent = p_current.toFixed(2)
+    currentval.textContent = p_current.toFixed(4)
 
     targetbar.style.transform = `scaleX(${(Math.abs(p_target) / items.length) * 100}%)`
-    targetval.textContent = p_target.toFixed(2)
+    targetval.textContent = p_target.toFixed(4)
   }
 
   const onSlideChange = (slide, previous) => {

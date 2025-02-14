@@ -20,3 +20,7 @@ tiny :D
 
 - [ ] add configurable property in live example
 - [ ] PARALLAX mix parallax effect with speed
+
+## Sad
+
+- [ ] make if fucking typescript

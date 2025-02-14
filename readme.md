@@ -4,8 +4,6 @@
 
 ![alt text](/docs/img/github-brand-short.svg)
 
-
-
 # Docs (Core)
 
 The Core class is a flexible and performant slider/carousel implementation that supports infinite scrolling, snapping, touch interactions, and parallax effects.
@@ -115,7 +113,6 @@ export class Slider extends Core {
 
 Most of those can be exported directly from the package, but if you want to combine functionality you might want to just look at source.
 
-
 ### Configuration Options
 
 The slider accepts the following configuration options:
@@ -206,16 +203,15 @@ Assuming the slider is marked with `[data-slider]`, you'll probably want at leas
 
 [data-slider] > * {
   flex-shrink: 0
-  width: <number [unit]> 
+  width: <number [unit]>
 }
-``` 
+```
 
-> ⚡️ CSS Gotcha
+> ⚡️ CSS Gotcha —
 > To keep it as lignhtweight as possible it does not support gaps.
 > If you want gaps use full width slides as the first child,
 > apply padding to those (1/2 of the gap), and have the actual slide
 > inside so you'll get the spacing you want. Voilà.
-
 
 ## Effects / Utils
 
@@ -284,12 +280,12 @@ slider.destroy()
 import Core, { LinkSlider, ... } from "smooothy"
 ```
 
-| Name | Description |
-|------|-------------|
-| `Core` | Base slider with core functionality |
+| Name             | Description                                       |
+| ---------------- | ------------------------------------------------- |
+| `Core`           | Base slider with core functionality               |
 | `KeyboardSlider` | Adds keyboard controls (arrows, spacebar, numpad) |
-| `LinkSlider` | Handles link clicks within slides |
-| `ControlSlider` | Full UI controls interface <sup>1</sup>  |
+| `LinkSlider`     | Handles link clicks within slides                 |
+| `ControlSlider`  | Full UI controls interface <sup>1</sup>           |
 
 _(1) Needs matching HTML setup_
 
