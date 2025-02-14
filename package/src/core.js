@@ -1,9 +1,12 @@
 import VirtualScroll from "virtual-scroll"
 import { damp, symmetricMod } from "./utils"
 
+// (*) [PERF] make parallax values dependant on getParallax config
+// (*) [PERF] only run raf when needed (watch for non standard events)
+
 /** default config */
 const DEFAULT_CONFIG = {
-  // Params
+  /** Params */
   infinite: true,
   snap: true,
   dragSensitivity: 0.005,
@@ -13,16 +16,18 @@ const DEFAULT_CONFIG = {
   speedDecay: 0.85,
   bounceLimit: 1,
   setOffset: ({ itemWidth, wrapperWidth }) => itemWidth,
-  // Functionality
+
+  /** Functionality */
   scrollInput: false,
+  // getParallax: false, // (* NEEDS DOCS)
+
+  /** Callbacks */
   // onSlideChange: null,
-  // onResize: null, 
+  // onResize: null,
   // onUpdate: null,
 }
 
 export class Core {
-  
-
   /* config */
   speed = 0
   #lspeed = 0
@@ -317,14 +322,16 @@ export class Core {
   }
 
   #updateFinite() {
-    this.items.forEach((item, i) => {
+    this.parallaxValues = this.items.map((item, i) => {
       const translateX = this.current * this.viewport.itemWidth
       item.style.transform = `translateX(${translateX}px)`
+
+      return translateX
     })
   }
 
   #updateInfinite() {
-    this.items.forEach((item, i) => {
+    this.parallaxValues = this.items.map((item, i) => {
       const unitPos = this.current + i
       const x = symmetricMod(unitPos, this.items.length) - i
 
@@ -332,13 +339,15 @@ export class Core {
       item.style.transform = `translateX(${translateX}px)`
 
       //   Update parallax elements if they exist
-      if (this.parallaxItems[i]) {
-        const baseX = symmetricMod(unitPos, this.items.length / 2)
+      const baseX = symmetricMod(unitPos, this.items.length / 2)
 
+      if (this.parallaxItems[i]) {
         this.parallaxItems[i].forEach(({ element, value }) => {
           element.style.transform = `translateX(${baseX * value * 20}%)`
         })
       }
+
+      return baseX
     })
   }
 
@@ -494,4 +503,3 @@ export default Core
 //     });
 //   }
 // }
-

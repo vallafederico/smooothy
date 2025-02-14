@@ -57,12 +57,9 @@ const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
     {
       slides.map((slide, i) => (
         <div class="flex aspect-[3/4] w-[80vw] shrink-0 items-center justify-center p-1 md:w-[30vw]">
-          <div class="relative h-full w-full p-8 outline outline-gray-600">
+          <div class="relative h-full w-full p-8 outline outline-gray-800">
+            <div data-p class="h-full w-full outline outline-gray-600" />
             <p class="absolute top-2 left-2 z-10">{i}</p>
-            <div
-              data-parallax="1"
-              class="h-full w-full outline outline-gray-600"
-            />
           </div>
         </div>
       ))
@@ -79,6 +76,8 @@ const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
       super(container.querySelector("[data-slider]"))
 
       this.createInterface(container.querySelector("[data-interface]"))
+
+      this.parallaxy = [...container.querySelectorAll("[data-p]")]
 
       this.onSlideChange(0, 0)
       gsap.ticker.add(this.update.bind(this))
@@ -102,12 +101,14 @@ const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
     onSlideChange(current, previous) {
       // console.log(current, previous)
 
-      this.items[previous].children[0].classList.remove("active")
-      this.items[current].children[0].classList.add("active")
+      this.items[previous].children[0].children[0].classList.remove("active")
+      this.items[current].children[0].children[0].classList.add("active")
 
       this.dots[previous].children[0].classList.remove("active-dot")
       this.dots[current].children[0].classList.add("active-dot")
     }
+
+    // onUpdate({ parallaxValues }) {}
   }
 
   new ControlsSlider(
@@ -118,13 +119,13 @@ const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
 <style>
   [data-slider] > * {
     transition: opacity 0.5s ease-in-out;
-    transition-delay: 0.2s;
+    transition-delay: 0.15s;
   }
 
   .active {
     outline-color: white;
     transition: outline-color 0.5s ease-in-out;
-    transition-delay: 0.2s;
+    transition-delay: 0.15s;
   }
 
   [data-dots] > * > * {

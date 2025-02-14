@@ -1,0 +1,83 @@
+---
+const { index = 1, class: className, ...rest } = Astro.props
+const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
+---
+
+<div data-example="parallax1" class="relative">
+  <!-- slider -->
+  <div
+    {...rest}
+    tabindex="0"
+    data-slider
+    class:list={[
+      "py-sm flex w-screen overflow-x-hidden",
+      className,
+      "px-[calc(50%-40vw)] md:px-[calc(50%-15vw)]",
+      "focus:outline-none",
+      "py-xl",
+    ]}
+  >
+    {
+      slides.map((slide, i) => (
+        <div class="flex aspect-[3/4] w-[80vw] shrink-0 items-center justify-center p-1 md:w-[30vw]">
+          <div class="relative h-full w-full p-8 outline outline-gray-800">
+            <div
+              data-p
+              class="flex h-full w-full items-center justify-center outline outline-gray-600"
+            >
+              <div class="overflow-hidden">
+                <p class="">{i}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</div>
+
+<script>
+  import Core from "~/js/slider"
+  import gsap from "~/js/gsap"
+
+  class ControlsSlider extends Core {
+    constructor(container: HTMLElement, config = {}) {
+      super(container.querySelector("[data-slider]"))
+
+      this.parallaxy = [...container.querySelectorAll("[data-p]")]
+
+      this.onSlideChange(0, 0)
+      gsap.ticker.add(this.update.bind(this))
+    }
+
+    onSlideChange(current, previous) {
+      // console.log(current, previous)
+      this.items[previous].children[0].classList.remove("active")
+      this.items[current].children[0].classList.add("active")
+    }
+
+    onUpdate({ parallaxValues }) {
+      this.parallaxy.forEach((p, i) => {
+        p.style.transform = `translateY(${Math.sin(parallaxValues[i] * 1.5) * 10}%)`
+      })
+    }
+  }
+
+  new ControlsSlider(
+    document.querySelector("[data-example='parallax1']") as HTMLElement
+  )
+</script>
+
+<style>
+  [data-p] > div > p {
+    transform: translateY(120%);
+    transition: transform 0.5s ease-out;
+    transition-delay: 0.1s;
+  }
+
+  .active > [data-p] > div > p {
+    transform: translateY(0%);
+    transition: transform 0.5s ease-out;
+    transition-delay: 0.3s;
+  }
+</style>

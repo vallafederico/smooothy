@@ -5,6 +5,7 @@ import Section from "@c/Section.astro"
 import ExampleHead from "~/components/ExampleHead.astro"
 
 import ControlsSlider from "~/components/vanilla/ControlsSlider.astro"
+import Parallax1Slider from "~/components/vanilla/Parallax1Slider.astro"
 ---
 
 <Layout>
@@ -18,19 +19,17 @@ import ControlsSlider from "~/components/vanilla/ControlsSlider.astro"
     <ExampleHead
       title={"Interface"}
       description={"Full interface + controls."}
-      features={["Infinite", "Snap", "interface", "Parallax"]}
+      features={["Infinite", "Snap", "interface"]}
     />
     <ControlsSlider />
   </Section>
 
-  <!-- <Section top class="px-gx flex flex-col justify-center">
-    <h2 class="font-semibold">Frameworks</h2>
-    <div class="py-lg flex flex-col gap-2">
-      <a href={"#vue"}>{"Vue"}</a>
-    </div>
+  <Section id={"parallax1"} class="min-h-[80svh] pt-[10svh]">
+    <ExampleHead
+      title={"Parallax "}
+      description={"Weird parallax effect.."}
+      features={["Infinite", "Snap", "Parallax"]}
+    />
+    <Parallax1Slider />
   </Section>
-
-  <Section class="px-gx py-gy">
-    <a href="/">Back to home</a>
-  </Section> -->
 </Layout>
