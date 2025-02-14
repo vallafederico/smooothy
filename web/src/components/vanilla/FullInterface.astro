@@ -1,6 +1,6 @@
 ---
 const { index = 1, class: className, ...rest } = Astro.props
-const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
+const slides = Array.from({ length: 30 + Math.random() * 10 }, (_, i) => i)
 ---
 
 <!-- controls -->
@@ -9,6 +9,23 @@ const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
 >
   <div class="pt-xl flex flex-col gap-3 md:pt-0">
     <h3 class="text-sm font-bold tracking-tight text-gray-300">Read.</h3>
+    <div class="flex w-[30ch] flex-col gap-1">
+      <p class="mono pl-2 text-gray-300">
+        Slide
+        <span data-1="slideval" class="mono text-gray-400">0</span>
+      </p>
+    </div>
+
+    <div class="flex w-[30ch] flex-col gap-1">
+      <p class="mono pl-2 text-gray-300">
+        Progress
+        <span data-1="progressval" class="mono text-gray-400">0</span>
+      </p>
+      <div class="h-1 outline outline-gray-800">
+        <div data-1="progress" class="h-full w-full origin-left bg-gray-400">
+        </div>
+      </div>
+    </div>
     <div class="flex w-[30ch] flex-col gap-1">
       <p class="mono pl-2 text-gray-300">
         Speed
@@ -20,11 +37,21 @@ const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
     </div>
     <div class="flex w-[30ch] flex-col gap-1">
       <p class="mono pl-2 text-gray-300">
-        Progress
-        <span data-1="progressval" class="mono text-gray-400">0</span>
+        Current
+        <span data-1="currentval" class="mono text-gray-400">0</span>
       </p>
       <div class="h-1 outline outline-gray-800">
-        <div data-1="progress" class="h-full w-full origin-left bg-gray-400">
+        <div data-1="current" class="h-full w-full origin-left bg-gray-400">
+        </div>
+      </div>
+    </div>
+    <div class="flex w-[30ch] flex-col gap-1">
+      <p class="mono pl-2 text-gray-300">
+        Target
+        <span data-1="targetval" class="mono text-gray-400">0</span>
+      </p>
+      <div class="h-1 outline outline-gray-800">
+        <div data-1="target" class="h-full w-full origin-left bg-gray-400">
         </div>
       </div>
     </div>
@@ -114,6 +141,12 @@ const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
     >
       snap (<span data-1="snapval">ON</span>)
     </button>
+    <button
+      data-1="infinite"
+      class="mono cursor-pointer border-l border-gray-600 p-1 px-3 text-left text-gray-300 transition-opacity hover:opacity-55"
+    >
+      infinite (<span data-1="infiniteval">ON</span>)
+    </button>
   </div>
 </div>
 
@@ -194,11 +227,18 @@ const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
   const enablebtn = document.querySelector('[data-1="enable"]')
   const snapval = document.querySelector('[data-1="snapval"]')
   const enableval = document.querySelector('[data-1="enableval"]')
+  const currentbar = document.querySelector('[data-1="current"]')
+  const currentval = document.querySelector('[data-1="currentval"]')
+  const targetbar = document.querySelector('[data-1="target"]')
+  const targetval = document.querySelector('[data-1="targetval"]')
+  const slideval = document.querySelector('[data-1="slideval"]')
+  const infinitebtn = document.querySelector('[data-1="infinite"]')
+  const infiniteval = document.querySelector('[data-1="infiniteval"]')
 
   /** Callbacks */
   let easedProgress = 0
   const onUpdate = slider => {
-    const { speed, progress } = slider
+    const { speed, progress, current, target, items } = slider
     speedbar.style.transform = `translateX(${speed * 500}%)`
 
     easedProgress = lerp(easedProgress, progress, 0.1)
@@ -206,11 +246,20 @@ const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
     progressbar.style.transform = `scaleX(${easedProgress * 100}%)`
     progressval.textContent = easedProgress.toFixed(2)
     speedval.textContent = speed.toFixed(2)
+
+    const p_current = current % items.length
+    const p_target = target % items.length
+    currentbar.style.transform = `scaleX(${(Math.abs(p_current) / items.length) * 100}%)`
+    currentval.textContent = p_current.toFixed(2)
+
+    targetbar.style.transform = `scaleX(${(Math.abs(p_target) / items.length) * 100}%)`
+    targetval.textContent = p_target.toFixed(2)
   }
 
   const onSlideChange = (slide, previous) => {
     slider.items[previous].children[0].classList.remove("active")
     slider.items[slide].children[0].classList.add("active")
+    slideval.textContent = slide
   }
 
   /** Slider */
@@ -235,6 +284,21 @@ const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
   enablebtn.onclick = () => {
     slider.paused = !slider.paused
     enableval.textContent = slider.paused ? "OFF" : "ON"
+  }
+
+  infinitebtn.onclick = () => {
+    slider.config.infinite = !slider.config.infinite
+    infiniteval.textContent = slider.config.infinite ? "ON" : "OFF"
+
+    slider.goToIndex(0)
+
+    if (!slider.config.infinite) {
+      slider.items.forEach((_, i) => {
+        slider.parallaxItems[i].forEach(({ element, value }) => {
+          element.style.transform = ``
+        })
+      })
+    }
   }
 
   // configure
@@ -273,8 +337,8 @@ const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
 
   lerprange.oninput = () => onRangeInput(lerprange)
   speeddecayrange.oninput = () => onSpeedDecayInput(speeddecayrange)
-  // snapstrengthrange.oninput = () => onSnapStrengthInput(snapstrengthrange)
   dragsensrange.oninput = () => onDragSensInput(dragsensrange)
+  // snapstrengthrange.oninput = () => onSnapStrengthInput(snapstrengthrange)
 </script>
 
 <style>
