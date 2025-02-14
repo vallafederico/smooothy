@@ -22,6 +22,7 @@ const DEFAULT_CONFIG = {
 }
 
 
+
 export class Core {
   /* config */
   speed = 0
@@ -459,8 +460,9 @@ export class Core {
   }
 }
 
-// actual class
+export default Core
 
+// actual class
 // export class ModelSlider extends Slider {
 //   constructor(wrapper, config = {}) {
 //     super(wrapper, config);
@@ -487,3 +489,4 @@ export class Core {
 //     });
 //   }
 // }
+
