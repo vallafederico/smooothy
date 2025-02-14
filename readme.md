@@ -197,7 +197,7 @@ Assuming the slider is marked with `[data-slider]`, you'll probably want at leas
 > To keep it as lignhtweight as possible it does not support gaps.
 > If you want gaps use full width slides as the first child,
 > apply padding to those (1/2 of the gap), and have the actual slide
-> inside so you'll get the spacing you want.
+> inside so you'll get the spacing you want. Voilà.
 
 
 ## Effects / Utils
