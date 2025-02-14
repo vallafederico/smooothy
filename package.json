@@ -1,6 +1,6 @@
 {
   "name": "smooothy",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "",
   "main": "index.js",
   "type": "module",
@@ -29,7 +29,8 @@
     "build:web": "cd web && pnpm build",
     "dev": "pnpm run -w --parallel /^dev:.*/",
     "dev:web": "cd web && pnpm dev",
-    "dev:package": "node bin/dev.js"
+    "dev:package": "node bin/dev.js",
+    "pub": "pnpm run build:package && npm publish"
   },
   "files": [
     "dist/",
