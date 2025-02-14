@@ -1,19 +1,17 @@
 ---
 import Layout from "~/layouts/Layout.astro"
 import Section from "@c/Section.astro"
-// import VueSlider from "@c/examples/VueSlider.vue"
 import ExampleHead from "~/components/ExampleHead.astro"
 
+// vanilla
 import ControlsSlider from "~/components/vanilla/ControlsSlider.astro"
 import Parallax1Slider from "~/components/vanilla/Parallax1Slider.astro"
 ---
 
 <Layout>
-  <Section top class="px-gx flex flex-col justify-center">
-    <h1 class="text-xl font-semibold">Examples.</h1>
+  <Section top class="flex flex-col justify-center">
+    <h1 class="px-gx md:px-ex-gx text-xl font-semibold">Examples.</h1>
   </Section>
-
-  <!-- frameworks -->
 
   <Section id={"interface"} class="min-h-[80svh] pt-[10svh]">
     <ExampleHead

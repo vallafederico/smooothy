@@ -52,6 +52,8 @@ h4 {
   --text-3xl: 3.2rem;
   --text-4xl: 4rem;
   --text-5xl: 4.8rem;
+
+  --spacing-ex-gx: 10rem;
 }
 
 /* global  */
