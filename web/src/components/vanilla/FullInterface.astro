@@ -4,8 +4,11 @@ const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
 ---
 
 <!-- controls -->
-<div class="py-lg px-lgx md:pt-lg flex flex-col gap-8 text-xs md:flex-row">
+<div
+  class="py-lg px-lgx md:pt-lg flex flex-col gap-8 text-xs md:flex-row md:items-end"
+>
   <div class="pt-xl flex flex-col gap-3 md:pt-0">
+    <h3 class="text-sm font-bold tracking-tight text-gray-300">Read.</h3>
     <div class="flex w-[30ch] flex-col gap-1">
       <p class="mono pl-2 text-gray-300">
         Speed
@@ -26,21 +29,91 @@ const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
       </div>
     </div>
   </div>
+
+  <!-- configure -->
   <div class="flex flex-col justify-end gap-3">
-    <div class="flex w-[30ch] flex-col items-start gap-1">
-      <button
-        data-1="enable"
-        class="mono cursor-pointer rounded-full p-1 px-3 text-left text-gray-300 transition-opacity hover:opacity-55"
-      >
-        enable (<span data-1="enableval">ON</span>)
-      </button>
-      <button
-        data-1="snap"
-        class="mono cursor-pointer rounded-full p-1 px-3 text-left text-gray-300 transition-opacity hover:opacity-55"
-      >
-        snap (<span data-1="snapval">ON</span>)
-      </button>
+    <h3 class="text-sm font-bold tracking-tight text-gray-300">Configure.</h3>
+    <div class="flex w-[30ch] flex-col gap-1">
+      <p class="mono pl-2 text-gray-300">
+        Lerp Factor
+        <span data-int="lerpval" class="mono text-gray-400">0.3</span>
+      </p>
+      <div class="relative h-3">
+        <input
+          type="range"
+          data-int="lerp"
+          min="0"
+          max="100"
+          value="30"
+          class="relative h-full w-full appearance-none bg-transparent before:absolute before:top-1/2 before:left-0 before:h-[2px] before:w-full before:bg-gray-800 [&::-webkit-slider-thumb]:relative [&::-webkit-slider-thumb]:size-3 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:bg-gray-400 [&::-webkit-slider-thumb]:hover:bg-gray-300"
+        />
+      </div>
     </div>
+    <div class="flex w-[30ch] flex-col gap-1">
+      <p class="mono pl-2 text-gray-300">
+        Speed Decay
+        <span data-int="speeddecayval" class="mono text-gray-400">0.85</span>
+      </p>
+      <div class="h-3">
+        <input
+          type="range"
+          data-int="speeddecay"
+          min="0"
+          max="100"
+          value="85"
+          class="relative h-full w-full appearance-none bg-transparent before:absolute before:top-1/2 before:left-0 before:h-[2px] before:w-full before:bg-gray-800 [&::-webkit-slider-thumb]:relative [&::-webkit-slider-thumb]:size-3 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:bg-gray-400 [&::-webkit-slider-thumb]:hover:bg-gray-300"
+        />
+      </div>
+    </div>
+    <div class="flex w-[30ch] flex-col gap-1">
+      <p class="mono pl-2 text-gray-300">
+        Snap Strength
+        <span data-int="snapstrengthval" class="mono text-gray-400">0.1</span>
+      </p>
+      <div class="h-3">
+        <input
+          type="range"
+          data-int="snapstrength"
+          min="0"
+          max="100"
+          value="10"
+          class="relative h-full w-full appearance-none bg-transparent before:absolute before:top-1/2 before:left-0 before:h-[2px] before:w-full before:bg-gray-800 [&::-webkit-slider-thumb]:relative [&::-webkit-slider-thumb]:size-3 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:bg-gray-400 [&::-webkit-slider-thumb]:hover:bg-gray-300"
+        />
+      </div>
+    </div>
+    <div class="flex w-[30ch] flex-col gap-1">
+      <p class="mono pl-2 text-gray-300">
+        Drag Sensitivity
+        <span data-int="dragsensval" class="mono text-gray-400">0.005</span>
+      </p>
+      <div class="h-3">
+        <input
+          type="range"
+          data-int="dragsens"
+          min="0"
+          max="100"
+          value="60"
+          class="relative h-full w-full appearance-none bg-transparent before:absolute before:top-1/2 before:left-0 before:h-[2px] before:w-full before:bg-gray-800 [&::-webkit-slider-thumb]:relative [&::-webkit-slider-thumb]:size-3 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:bg-gray-400 [&::-webkit-slider-thumb]:hover:bg-gray-300"
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- toggle -->
+  <div class="flex flex-col justify-end gap-3">
+    <h3 class="text-sm font-bold tracking-tight text-gray-300">Toggle.</h3>
+    <button
+      data-1="enable"
+      class="mono cursor-pointer border-l border-gray-600 p-1 px-3 text-left text-gray-300 transition-opacity hover:opacity-55"
+    >
+      enable (<span data-1="enableval">ON</span>)
+    </button>
+    <button
+      data-1="snap"
+      class="mono cursor-pointer border-l border-gray-600 p-1 px-3 text-left text-gray-300 transition-opacity hover:opacity-55"
+    >
+      snap (<span data-1="snapval">ON</span>)
+    </button>
   </div>
 </div>
 
@@ -163,9 +236,83 @@ const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
     slider.paused = !slider.paused
     enableval.textContent = slider.paused ? "OFF" : "ON"
   }
+
+  // configure
+  const lerpval = document.querySelector('[data-int="lerpval"]')
+  const speeddecayval = document.querySelector('[data-int="speeddecayval"]')
+  const lerprange = document.querySelector('[data-int="lerp"]')
+  const speeddecayrange = document.querySelector('[data-int="speeddecay"]')
+  const snapstrengthval = document.querySelector('[data-int="snapstrengthval"]')
+  const snapstrengthrange = document.querySelector('[data-int="snapstrength"]')
+  const dragsensval = document.querySelector('[data-int="dragsensval"]')
+  const dragsensrange = document.querySelector('[data-int="dragsens"]')
+
+  const onRangeInput = range => {
+    const val = range.value * 0.01
+    lerpval.textContent = val.toFixed(2)
+    slider.config.lerpFactor = val
+  }
+
+  const onSpeedDecayInput = range => {
+    const val = 0.5 + range.value * 0.01 * 0.49 // Maps 0-100 to 0.5-0.99
+    speeddecayval.textContent = val.toFixed(2)
+    slider.config.speedDecay = val
+  }
+
+  const onSnapStrengthInput = range => {
+    const val = range.value * 0.1
+    snapstrengthval.textContent = val.toFixed(2)
+    slider.config.snapStrength = val
+  }
+
+  const onDragSensInput = range => {
+    const val = 0.0005 + (range.value * 0.0085) / 100 // Maps 0-100 to 0.0005-0.009
+    dragsensval.textContent = val.toFixed(4)
+    slider.config.dragSensitivity = val
+  }
+
+  lerprange.oninput = () => onRangeInput(lerprange)
+  speeddecayrange.oninput = () => onSpeedDecayInput(speeddecayrange)
+  snapstrengthrange.oninput = () => onSnapStrengthInput(snapstrengthrange)
+  dragsensrange.oninput = () => onDragSensInput(dragsensrange)
 </script>
 
 <style>
+  input[type="range"] {
+    position: relative;
+  }
+
+  input[type="range"]::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    height: 2px;
+    width: 100%;
+    background: rgb(31 41 55);
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    background: rgb(156 163 175);
+    border: none;
+    cursor: pointer;
+  }
+
+  input[type="range"]::-moz-range-thumb:hover {
+    background: rgb(209 213 219);
+  }
+
+  input[type="range"]::-moz-range-track {
+    appearance: none;
+    background: transparent;
+    border: none;
+  }
+
   .active {
     outline-color: white;
     transition: outline-color 0.5s ease-in-out;
