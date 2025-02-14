@@ -1,6 +1,6 @@
 # Smooth Extensible Slider
 
-Tiny real smooth fast cool all events and evenn more responsive _bring your own tooling slider._ Framework agnostic but it's a you problem.
+**Tiny real smooth fast cool all events and evenn more responsive _bring your own tooling slider._ Framework agnostic but it's a you problem.**
 
 ![alt text](/docs/img/github-brand-short.svg)
 
