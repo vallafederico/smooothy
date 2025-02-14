@@ -1,5 +1,4 @@
-// import { Core } from "./core"
-import Core from "smooothy"
+import { Core } from "./core"
 import gsap from "../gsap"
 
 export class Slider extends Core {
