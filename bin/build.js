@@ -9,7 +9,7 @@ const option = {
   color: true,
   logLevel: "info",
   sourcemap: true,
-  entryPoints: ["./index.ts"],
+  entryPoints: ["./package/index.ts"],
   minify: true,
 }
 

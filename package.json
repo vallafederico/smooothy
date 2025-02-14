@@ -1,30 +1,35 @@
 {
   "name": "smooothy",
-  "version": "1.0.0",
-  "type": "module",
-  "sideEffects": false,
-  "author": "vallafederico",
-  "license": "ISC",
-  "description": "Smooth Extensible Slider API",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/vallafederico/smoothy.git"
-  },
-  "bugs": {
-    "url": "https://github.com/vallafederico/smoothy/issues"
-  },
-  "keywords": [
-    "slider",
-    "smooth",
-    "smoothy",
-    "smoothy-slider",
-    "smoothy-slider-core",
-    "smoothy-slider-core-module"
-  ],
+  "version": "0.0.1",
+  "description": "",
   "main": "index.js",
+  "type": "module",
+  "exports": {
+    "import": "./dist/esm.js",
+    "require": "./dist/cjs.js"
+  },
   "scripts": {
-    "dev": "cd web && npm run dev",
-    "build": "cd web && npm run build",
-    "start": "cd web && npm run start"
+    "build": "pnpm run build:package && pnpm run build:web",
+    "build:package": "node bin/build.js",
+    "build:web": "cd web && pnpm build",
+    "dev": "pnpm run -w --parallel /^dev:.*/",
+    "dev:web": "cd web && pnpm dev",
+    "dev:package": "node bin/dev.js"
+  },
+  "files": [
+    "dist/",
+    "package.json",
+    "README.md"
+  ],
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "types": "./dist/index.d.ts",
+  "devDependencies": {
+    "esbuild": "^0.25.0",
+    "esbuild-plugin-d.ts": "^1.3.1"
+  },
+  "dependencies": {
+    "virtual-scroll": "^2.2.1"
   }
 }

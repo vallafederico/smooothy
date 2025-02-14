@@ -21,6 +21,7 @@ const DEFAULT_CONFIG = {
   onUpdate: null,
 }
 
+
 export class Core {
   /* config */
   speed = 0
