@@ -31,6 +31,21 @@ import Core from "smooothy"
 </div>
 ```
 
+#### CSS
+
+```css
+[data-slider] {
+  display: flex;
+}
+
+[data-slider] > * {
+  flex-shrink: 0;
+  width: <number [unit]>;
+  padding-right: 1rem; /* If you want gaps */
+  padding-left: 1rem; /* If you want gaps */
+}
+```
+
 #### Javascript
 
 ```javascript
