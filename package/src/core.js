@@ -33,14 +33,14 @@ export class Core {
   #lspeed = 0
   #offset = 0
   #previousTime = 0
-  #deltaTime = 0
-
-  #currentSlide = 0
-  #previousSlide = 0 // Add this to track previous slide
+  deltaTime = 0 // (* NEEDS DOCS)
 
   /* flags */
   #isActive = true
-  #isPaused = false // New flag for pause state
+  #isPaused = false
+
+  #currentSlide = 0
+  #previousSlide = 0
 
   constructor(wrapper, config = {}) {
     this.config = {
@@ -48,12 +48,10 @@ export class Core {
       ...config,
     }
 
-    // Assign callbacks from config if provided
     if (config.onSlideChange) this.onSlideChange = config.onSlideChange
     if (config.onResize) this.onResize = config.onResize
     if (config.onUpdate) this.onUpdate = config.onUpdate
 
-    // Remove callbacks from config after assigning
     delete this.config.onSlideChange
     delete this.config.onResize
     delete this.config.onUpdate
@@ -81,7 +79,6 @@ export class Core {
 
     this.#setupViewport()
     this.#setupVirtualScroll()
-    this.speed = 0 // Initialize in constructor
   }
 
   #setupIntersectionObserver() {
@@ -153,7 +150,6 @@ export class Core {
         const deltaY = Math.abs(touch.clientY - this.touchStartY)
         const deltaX = Math.abs(touch.clientX - this.touchStartX)
 
-        // Determine direction only if we haven't yet and threshold is met
         if (
           !this.scrollDirection &&
           (deltaX > SCROLL_THRESHOLD || deltaY > SCROLL_THRESHOLD)
@@ -161,7 +157,6 @@ export class Core {
           this.scrollDirection = deltaX > deltaY ? "horizontal" : "vertical"
         }
 
-        // If horizontal, prevent default and handle drag
         if (this.scrollDirection === "horizontal") {
           e.preventDefault()
           this.#handleDragMove(touch)
@@ -208,7 +203,6 @@ export class Core {
 
     this.virtualScroll.on(event => {
       if (!this.isDragging && !this.#isPaused) {
-        // More strict threshold check for touch devices
         if (event.touchDevice) {
           const deltaY = Math.abs(event.deltaY)
           const deltaX = Math.abs(event.deltaX)
@@ -241,7 +235,7 @@ export class Core {
   }
 
   #handleDragStart(event) {
-    if (this.#isPaused) return // Block if paused
+    if (this.#isPaused) return
     this.isDragging = true
     this.dragStart = event.clientX
     this.dragStartTarget = this.target
@@ -249,7 +243,7 @@ export class Core {
   }
 
   #handleDragMove(event) {
-    if (!this.isDragging || this.#isPaused) return // Block if paused
+    if (!this.isDragging || this.#isPaused) return
 
     const deltaX = event.clientX - this.dragStart
     let newTarget = this.dragStartTarget + deltaX * this.config.dragSensitivity
@@ -262,34 +256,28 @@ export class Core {
     this.isDragging = false
     this.wrapper.style.cursor = "grab"
 
-    // Snap back to bounds if not infinite
     if (!this.config.infinite) {
       if (this.target > 0) {
         this.target = 0
       } else if (this.target < this.maxScroll) {
         this.target = this.maxScroll
       } else if (this.config.snap) {
-        // Only snap if snap is enabled
         const snapped = Math.round(this.target)
         this.target = Math.min(0, Math.max(this.maxScroll, snapped))
       }
     } else if (this.config.snap) {
-      // Snap in infinite mode if enabled
       this.target = Math.round(this.target)
     }
   }
 
   /** Update */
-
   update() {
     if (!this.isVisible || !this.#isActive) return
 
-    // Update deltaTime
     const currentTime = performance.now()
-    this.#deltaTime = (currentTime - this.#previousTime) / 1000
+    this.deltaTime = (currentTime - this.#previousTime) / 1000
     this.#previousTime = currentTime
 
-    // Handle snapping in one place
     if (this.config.snap && !this.isDragging) {
       const currentSnap = Math.round(this.target)
       const diff = currentSnap - this.target
@@ -300,7 +288,7 @@ export class Core {
       this.current,
       this.target,
       1 / this.config.lerpFactor,
-      this.#deltaTime
+      this.deltaTime
     )
 
     if (this.config.infinite) {
@@ -315,10 +303,7 @@ export class Core {
     }
 
     this.#renderSpeed()
-
     this.onUpdate?.(this)
-
-    // console.log(this.target);
   }
 
   #updateFinite() {
@@ -338,7 +323,6 @@ export class Core {
       const translateX = x * this.viewport.itemWidth
       item.style.transform = `translateX(${translateX}px)`
 
-      //   Update parallax elements if they exist
       const baseX = symmetricMod(unitPos, this.items.length / 2)
 
       if (this.parallaxItems[i]) {
@@ -356,7 +340,7 @@ export class Core {
       this.#lspeed,
       this.speed,
       1 / this.config.lerpFactor,
-      this.#deltaTime
+      this.deltaTime
     )
     this.speed *= this.config.speedDecay
   }
@@ -422,20 +406,19 @@ export class Core {
   }
 
   /** Interfaces */
-  // resetting interface
   kill() {
     this.#isActive = false
-    // Reset all transforms
+
     this.items.forEach(item => {
       item.style.transform = ""
     })
-    // Reset parallax items if they exist
+
     this.parallaxItems?.forEach(group => {
       group?.forEach(({ element }) => {
         element.style.transform = ""
       })
     })
-    // Reset state
+
     this.current = 0
     this.target = 0
     this.speed = 0
@@ -447,26 +430,22 @@ export class Core {
     this.#previousTime = performance.now()
   }
 
-  // pausing interface
   set paused(value) {
-    this.#isPaused = value // Use new pause flag
+    this.#isPaused = value
   }
 
   get paused() {
-    return this.#isPaused // Return new pause flag
+    return this.#isPaused
   }
 
   get progress() {
     if (this.config.infinite) {
-      // For infinite mode, use current for smooth transitions
       const position = -this.target
       const total = this.items.length
-      // Normalize to 0-1 range and handle the loop point
       const normalizedPos = ((position % total) + total) % total
-      // Use current for smooth transitions
+
       return normalizedPos / (total - 1)
     } else {
-      // For finite mode, calculate progress based on maxScroll
       const current = Math.abs(this.current)
       const total = Math.abs(this.maxScroll)
       return Math.max(0, Math.min(1, current / total))
@@ -475,31 +454,3 @@ export class Core {
 }
 
 export default Core
-
-// actual class
-// export class ModelSlider extends Slider {
-//   constructor(wrapper, config = {}) {
-//     super(wrapper, config);
-
-//     this.items.forEach((item, i) => {
-//       let startX = 0;
-//       let startTime = 0;
-
-//       item.addEventListener("mousedown", (e) => {
-//         e.preventDefault();
-//         startX = e.clientX;
-//         startTime = Date.now();
-//       });
-
-//       item.addEventListener("mouseup", (e) => {
-//         e.preventDefault();
-//         const deltaX = Math.abs(e.clientX - startX);
-//         const deltaTime = Date.now() - startTime;
-
-//         if (deltaX < 5 && deltaTime < 200) {
-//           item.children[0].click();
-//         }
-//       });
-//     });
-//   }
-// }

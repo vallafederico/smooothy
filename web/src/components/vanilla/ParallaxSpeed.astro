@@ -1,0 +1,65 @@
+---
+const { index = 1, class: className, ...rest } = Astro.props
+const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
+---
+
+<div data-example="parallax-speed" class="relative">
+  <!-- slider -->
+  <div
+    {...rest}
+    tabindex="0"
+    data-slider
+    class:list={[
+      "py-sm flex w-screen overflow-x-hidden",
+      className,
+      "px-[calc(50%-40vw)] md:px-[calc(50%-15vw)]",
+      "focus:outline-none",
+      "pb-xl",
+    ]}
+  >
+    {
+      slides.map((slide, i) => (
+        <div class="flex aspect-[3/4] w-[80vw] shrink-0 items-center justify-center p-1 md:w-[30vw]">
+          <div class="relative h-full w-full p-1 outline outline-gray-900">
+            <div data-p class="h-full w-full outline outline-gray-600" />
+            {/* <p class="absolute top-2 left-2 z-10">{i}</p> */}
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</div>
+
+<script>
+  import Core, { damp } from "~/js/slider"
+  import gsap from "~/js/gsap"
+
+  class ParallaxSpeedSlider extends Core {
+    lspeed = 0
+
+    constructor(container: HTMLElement, config = {}) {
+      super(container.querySelector("[data-slider]"), {
+        speedDecay: 0.9,
+      })
+
+      this.par = [...container.querySelectorAll("[data-p]")]
+
+      gsap.ticker.add(this.update.bind(this))
+    }
+
+    onUpdate({ parallaxValues, speed, deltaTime }) {
+      this.lspeed = damp(this.lspeed, speed, 5, deltaTime)
+
+      this.par.forEach(
+        (p, i) =>
+          (p.style.transform = `translateX(${parallaxValues[i] * Math.abs(this.lspeed) * 20}%)`)
+      )
+    }
+  }
+
+  new ParallaxSpeedSlider(
+    document.querySelector("[data-example='parallax-speed']") as HTMLElement
+  )
+</script>
+
+<style></style>

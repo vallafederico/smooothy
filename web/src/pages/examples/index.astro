@@ -8,6 +8,7 @@ import ControlsSlider from "~/components/vanilla/ControlsSlider.astro"
 import Parallax1Slider from "~/components/vanilla/Parallax1Slider.astro"
 import FullInterface from "~/components/vanilla/FullInterface.astro"
 import KeyboardControls from "~/components/vanilla/KeyboardControls.astro"
+import ParallaxSpeedSlider from "~/components/vanilla/ParallaxSpeed.astro"
 ---
 
 <Layout>
@@ -62,5 +63,14 @@ import KeyboardControls from "~/components/vanilla/KeyboardControls.astro"
       features={["Infinite", "Snap", "Parallax", "current"]}
     />
     <Parallax1Slider />
+  </Section>
+
+  <Section id={"parallax-speed"} class="min-h-[80svh] pt-[10svh]">
+    <ExampleHead
+      title={"Parallax + speed."}
+      description={"Parallax and speed used in conjunction to create a bouncy effect."}
+      features={["Infinite", "Snap", "Parallax", "Speed"]}
+    />
+    <ParallaxSpeedSlider />
   </Section>
 </Layout>

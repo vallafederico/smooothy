@@ -1,4 +1,4 @@
-import Core, { lerp } from "../../../../package/index.ts"
+import Core, { lerp, damp } from "../../../../package/index.ts"
 import gsap from "../gsap"
 
 export class Slider extends Core {
@@ -41,5 +41,5 @@ export class Slider extends Core {
   }
 }
 
-export { lerp }
+export { lerp, damp }
 export default Core
