@@ -80,7 +80,7 @@ export class Core {
 
     // Initialize
     this.#setupViewport()
-    this.#setupParallaxItems()
+    // this.#setupParallaxItems()
     this.#setupIntersectionObserver()
     this.#addEventListeners()
     this.wrapper.style.cursor = "grab"
@@ -120,20 +120,6 @@ export class Core {
     queueMicrotask(() => {
       this.onResize?.(this)
     })
-  }
-
-  #setupParallaxItems() {
-    this.parallaxItems = this.items
-      .map(item => {
-        const elements = [...item.querySelectorAll("[data-parallax]")].map(
-          el => ({
-            element: el,
-            value: +el.dataset.parallax || 1,
-          })
-        )
-        return elements.length ? elements : null
-      })
-      .filter(Boolean)
   }
 
   #addEventListeners() {
@@ -327,15 +313,7 @@ export class Core {
       const translateX = x * this.viewport.itemWidth
       item.style.transform = `translateX(${translateX}px)`
 
-      const baseX = symmetricMod(unitPos, this.items.length / 2)
-
-      if (this.parallaxItems[i]) {
-        this.parallaxItems[i].forEach(({ element, value }) => {
-          element.style.transform = `translateX(${baseX * value * 20}%)`
-        })
-      }
-
-      return baseX
+      return symmetricMod(unitPos, this.items.length / 2)
     })
   }
 
@@ -415,12 +393,6 @@ export class Core {
 
     this.items.forEach(item => {
       item.style.transform = ""
-    })
-
-    this.parallaxItems?.forEach(group => {
-      group?.forEach(({ element }) => {
-        element.style.transform = ""
-      })
     })
 
     this.current = 0

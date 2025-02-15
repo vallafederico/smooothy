@@ -272,13 +272,23 @@ Assuming the slider is marked with `[data-slider]`, you'll probably want at leas
 
 ### Parallax
 
-You can add parallax elements within slides using the `data-parallax` attribute:
+The slider provides `parallaxValues` in the `onUpdate` callback that can be used to create parallax effects:
 
-```html
-<div class="slide">
-  <div data-parallax="0.5">Moves at half speed</div>
-  <div data-parallax="2">Moves at double speed</div>
-</div>
+```javascript
+class ParallaxSlider extends Core {
+  constructor(wrapper, config) {
+    super(wrapper, config)
+    this.parallaxElements = [...wrapper.querySelectorAll('.parallax')]
+  }
+
+  onUpdate({ parallaxValues }) {
+    // parallaxValues provides normalized position values for each slide
+    this.parallaxElements.forEach((element, i) => {
+      const offset = parallaxValues[i] * 20 // Multiply for stronger effect
+      element.style.transform = `translateX(${offset}%)`
+    })
+  }
+}
 ```
 
 ## Event Callbacks

@@ -291,14 +291,6 @@ const slides = Array.from({ length: 30 + Math.random() * 10 }, (_, i) => i)
     infiniteval.textContent = slider.config.infinite ? "ON" : "OFF"
 
     slider.goToIndex(0)
-
-    if (!slider.config.infinite) {
-      slider.items.forEach((_, i) => {
-        slider.parallaxItems[i].forEach(({ element, value }) => {
-          element.style.transform = ``
-        })
-      })
-    }
   }
 
   // configure
