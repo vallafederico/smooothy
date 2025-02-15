@@ -15,6 +15,14 @@ const DEFAULT_CONFIG = {
   snapStrength: 0.1,
   speedDecay: 0.85,
   bounceLimit: 1,
+  virtualScroll: {
+    // (* NEEDS DOCS)
+    mouseMultiplier: 0.5,
+    touchMultiplier: 2,
+    firefoxMultiplier: 30,
+    useKeyboard: false,
+    passive: true,
+  },
   setOffset: ({ itemWidth, wrapperWidth }) => itemWidth,
 
   /** Functionality */
@@ -191,11 +199,7 @@ export class Core {
 
   #setupVirtualScroll() {
     this.virtualScroll = new VirtualScroll({
-      mouseMultiplier: 0.5,
-      touchMultiplier: 2,
-      firefoxMultiplier: 30,
-      useKeyboard: false,
-      passive: true,
+      ...this.config.virtualScroll,
       el: this.wrapper,
     })
 

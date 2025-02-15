@@ -15,7 +15,11 @@ pnpm i smooothy
 ```
 
 ```js
+// core only
 import Core from "smooothy"
+
+// with utilities
+import Core, { damp } from "smooothy"
 ```
 
 <details>
@@ -93,7 +97,7 @@ Can be used as just the `Core`, but the idea and the way it's made is to be exte
 
 ```js
 // import slider
-import { Core } from "smooothy"
+import Core from "smooothy"
 // or whatever just using GSAP for request animation frame
 import gsap from "../gsap"
 
@@ -128,9 +132,32 @@ The slider accepts the following configuration options:
 | `bounceLimit` | number | `1` | Maximum overscroll amount when infinite is false |
 | `scrollInput` | boolean | `false` | Enables mouse wheel/trackpad scrolling |
 | `setOffset` | function | `({itemWidth, wrapperWidth}) => itemWidth` | Custom function to set slide end offset |
+| `virtualScroll` | object | See below | Configuration for virtual scroll behavior |
 | `onSlideChange` | function | `null` | Callback when active slide changes |
 | `onResize` | function | `null` | Callback when slider is resized |
 | `onUpdate` | function | `null` | Callback on each update frame |
+
+#### Virtual Scroll Configuration
+
+To handle scroll and trackpad events uses `virtualScroll` under the hood.
+The `virtualScroll` config option accepts an object with the following properties:
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `mouseMultiplier` | number | `0.5` | Multiplier for mouse wheel sensitivity |
+| `touchMultiplier` | number | `2` | Multiplier for touch scroll sensitivity |
+| `firefoxMultiplier` | number | `30` | Firefox-specific scroll multiplier |
+| `useKeyboard` | boolean | `false` | Enable keyboard scroll input |
+| `passive` | boolean | `true` | Use passive event listeners |
+
+```javascript
+const slider = new Core(wrapper, {
+  virtualScroll: {
+    mouseMultiplier: 0.75,
+    touchMultiplier: 1.5,
+  }
+})
+```
 
 ## Methods
 
@@ -161,6 +188,7 @@ slider.currentSlide // Get current slide index
 slider.progress // Get slider progress (0-1)
 slider.target // Get target position / Set slider target
 slider.current // Get current position / Set slider current
+slider.deltaTime // Get time elapsed since last update (in seconds)
 slider.viewport // Get viewport dimensions
 slider.viewport.itemWidth // Size of a single slide
 slider.viewport.wrapperWidth // Size of the wrapper
@@ -176,6 +204,33 @@ slider.target = 5 // Lerp to slide 5
 slider.current = slider.target = 5 // Instantly move to slide 5
 ```
 
+The `deltaTime` property is particularly useful when implementing custom animations in the `onUpdate` callback:
+
+```javascript
+// Example: Creating a speed-based parallax effect
+class ParallaxSlider extends Core {
+  lerpedSpeed = 0  // Smoothed speed value
+
+  onUpdate({ speed, deltaTime, parallaxValues }) {
+    // Smooth out the speed using deltaTime
+    this.lerpedSpeed = damp(
+      this.lerpedSpeed,
+      speed,
+      5,  // Damping factor
+      deltaTime
+    )
+
+    // Apply parallax based on smoothed speed
+    myElement.forEach((element, i) => {
+      const offset = parallaxValues[i] * Math.abs(this.lerpedSpeed) * 20
+      element.style.transform = `translateX(${offset}%)`
+    })
+  }
+}
+```
+
+
+
 ## HTML Structure
 
 The slider expects a wrapper element containing slide elements:
@@ -188,7 +243,7 @@ The slider expects a wrapper element containing slide elements:
 </div>
 ```
 
-Everything that's inside the container is going to be treated as slide, so only slides should go in.
+Everything that's inside the container is going to be treated as slide, **so only slides should go in.**
 
 ## CSS and Styling
 
@@ -207,7 +262,7 @@ Assuming the slider is marked with `[data-slider]`, you'll probably want at leas
 }
 ```
 
-> ⚡️ CSS Gotcha —
+> ⚡️ CSS Gotcha — 
 > To keep it as lignhtweight as possible it does not support gaps.
 > If you want gaps use full width slides as the first child,
 > apply padding to those (1/2 of the gap), and have the actual slide
@@ -242,7 +297,7 @@ const slider = new Core(wrapper, {
 })
 ```
 
-This does the bare minimum, well, and provides ways to extend it and make it into what you need. Callbacks are a great way to extend the functionality, [here's some useful ones](/docs//callbacks.md).
+This does the bare minimum, well, and provides ways to extend it and make it into what you need. Callbacks a way to extend the functionality, [here's some useful examples](/docs//callbacks.md).
 
 ## Touch and Mouse Interaction
 
