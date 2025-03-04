@@ -61,38 +61,60 @@ export class KeyboardSlider extends Core {
 Pretty common issue is mixing sliding and click behaviour with slides that are actual links.
 
 ```js
-import Core from "smooothy"
+  import Core from "smooothy"
+  import gsap from "~/js/gsap"
 
-export class LinkSlider extends Slider {
-  constructor(wrapper, config) {
-    super(wrapper, config)
+  export class LinkSlider extends Core {
+    constructor(container: HTMLElement, config = {}) {
+      super(container.querySelector("[data-slider]"))
+      gsap.ticker.add(this.update.bind(this))
 
-    this.#handleLinks()
-  }
+      this.#handleLinks()
+    }
+    #handleLinks() {
+      ;[...this.wrapper.querySelectorAll("a")].forEach((item, i) => {
+        let startX = 0
+        let startY = 0
+        let startTime = 0
+        let isDragging = false
 
-  #handleLinks() {
-    ;[...this.wrapper.querySelectorAll("a")].forEach((item, i) => {
-      let startX = 0
-      let startTime = 0
+        item.style.pointerEvents = "none"
 
-      item.addEventListener("mousedown", e => {
-        e.preventDefault()
-        startX = e.clientX
-        startTime = Date.now()
-      })
-
-      item.addEventListener("mouseup", e => {
-        e.preventDefault()
-        const deltaX = Math.abs(e.clientX - startX)
-        const deltaTime = Date.now() - startTime
-
-        if (deltaX < 5 && deltaTime < 200) {
-          item.children[0].click()
+        const handleMouseDown = e => {
+          startX = e.clientX
+          startY = e.clientY
+          startTime = Date.now()
+          isDragging = false
         }
+
+        const handleMouseMove = e => {
+          if (!startTime) return
+
+          const deltaX = Math.abs(e.clientX - startX)
+          const deltaY = Math.abs(e.clientY - startY)
+
+          if (deltaX > 5 || deltaY > 5) {
+            isDragging = true
+          }
+        }
+
+        const handleMouseUp = e => {
+          const deltaTime = Date.now() - startTime
+
+          if (!isDragging && deltaTime < 200) {
+            item.click()
+          }
+
+          startTime = 0
+          isDragging = false
+        }
+
+        document.addEventListener("mousedown", handleMouseDown)
+        document.addEventListener("mousemove", handleMouseMove)
+        document.addEventListener("mouseup", handleMouseUp)
       })
-    })
+    }
   }
-}
 ```
 
 ### Full Control Interface

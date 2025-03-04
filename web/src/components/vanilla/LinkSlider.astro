@@ -1,0 +1,98 @@
+---
+const { index = 1, class: className, ...rest } = Astro.props
+const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
+---
+
+<div data-example="links" class="relative">
+  <!-- slider -->
+  <div
+    {...rest}
+    tabindex="0"
+    data-slider
+    class:list={[
+      "py-sm flex w-screen overflow-x-hidden",
+      className,
+      "px-[calc(50%-40vw)] md:px-[calc(50%-15vw)]",
+      "focus:outline-none",
+      "pb-xl",
+    ]}
+  >
+    {
+      slides.map((slide, i) => (
+        <div class="flex aspect-[3/4] w-[80vw] shrink-0 items-center justify-center p-1 md:w-[30vw]">
+          <a
+            href="/"
+            class="relative h-full w-full p-8 outline outline-gray-800"
+          >
+            <div data-p class="h-full w-full outline outline-gray-600" />
+
+            <p class="absolute top-2 left-2 z-10">{i}</p>
+          </a>
+        </div>
+      ))
+    }
+  </div>
+</div>
+
+<script>
+  import Core from "smooothy"
+  import gsap from "~/js/gsap"
+
+  export class LinkSlider extends Core {
+    constructor(container: HTMLElement, config = {}) {
+      super(container.querySelector("[data-slider]"))
+      gsap.ticker.add(this.update.bind(this))
+
+      this.#handleLinks()
+    }
+    #handleLinks() {
+      ;[...this.wrapper.querySelectorAll("a")].forEach((item, i) => {
+        let startX = 0
+        let startY = 0
+        let startTime = 0
+        let isDragging = false
+
+        item.style.pointerEvents = "none"
+
+        const handleMouseDown = e => {
+          startX = e.clientX
+          startY = e.clientY
+          startTime = Date.now()
+          isDragging = false
+        }
+
+        const handleMouseMove = e => {
+          if (!startTime) return
+
+          const deltaX = Math.abs(e.clientX - startX)
+          const deltaY = Math.abs(e.clientY - startY)
+
+          if (deltaX > 5 || deltaY > 5) {
+            isDragging = true
+          }
+        }
+
+        const handleMouseUp = e => {
+          const deltaTime = Date.now() - startTime
+
+          if (!isDragging && deltaTime < 200) {
+            item.click()
+          }
+
+          startTime = 0
+          isDragging = false
+        }
+
+        document.addEventListener("mousedown", handleMouseDown)
+        document.addEventListener("mousemove", handleMouseMove)
+        document.addEventListener("mouseup", handleMouseUp)
+      })
+    }
+  }
+
+  new LinkSlider(
+    document.querySelector("[data-example='links']") as HTMLElement
+  )
+</script>
+
+<style></style>

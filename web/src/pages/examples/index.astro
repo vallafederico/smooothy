@@ -9,6 +9,7 @@ import Parallax1Slider from "~/components/vanilla/Parallax1Slider.astro"
 import FullInterface from "~/components/vanilla/FullInterface.astro"
 import KeyboardControls from "~/components/vanilla/KeyboardControls.astro"
 import ParallaxSpeedSlider from "~/components/vanilla/ParallaxSpeed.astro"
+import LinkSlider from "~/components/vanilla/LinkSlider.astro"
 ---
 
 <Layout>
@@ -77,5 +78,14 @@ import ParallaxSpeedSlider from "~/components/vanilla/ParallaxSpeed.astro"
       features={["Infinite", "Snap", "Parallax", "Speed"]}
     />
     <ParallaxSpeedSlider />
+  </Section>
+
+  <Section id={"link-slider"} class="min-h-[80svh] pt-[10svh]">
+    <ExampleHead
+      title={"Link slider."}
+      description={"A slider that navigates to a link when clicked."}
+      features={["Infinite", "Snap", "Link"]}
+    />
+    <LinkSlider />
   </Section>
 </Layout>
