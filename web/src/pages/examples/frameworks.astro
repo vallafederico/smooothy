@@ -4,6 +4,7 @@ import Section from "@c/Section.astro"
 import ExampleHead from "~/components/ExampleHead.astro"
 
 import ReactSlider from "~/components/frameworks/ReactSlider"
+import VueSlider from "~/components/frameworks/VueSlider.vue"
 
 // vanilla
 ---
@@ -26,5 +27,14 @@ import ReactSlider from "~/components/frameworks/ReactSlider"
       features={["react"]}
     />
     <ReactSlider client:load />
+  </Section>
+
+  <Section id={"controls"} class="min-h-[80svh] pt-[10svh]">
+    <ExampleHead
+      title={"Vue"}
+      description={"Vue implementation."}
+      features={["vue"]}
+    />
+    <VueSlider client:load />
   </Section>
 </Layout>

@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@astrojs/react": "^4.2.1",
+    "@astrojs/vue": "^5.0.7",
     "@tailwindcss/vite": "^4.0.9",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
@@ -19,7 +20,8 @@
     "react-dom": "^19.0.0",
     "smooothy": "0.0.15",
     "tailwindcss": "^4.0.9",
-    "virtual-scroll": "^2.2.1"
+    "virtual-scroll": "^2.2.1",
+    "vue": "^3.5.13"
   },
   "devDependencies": {
     "astro": "^5.4.2",
