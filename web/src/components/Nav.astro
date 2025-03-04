@@ -1,6 +1,7 @@
 ---
 import Twitter from "@svg/twitter.astro"
 import Github from "@svg/github.astro"
+import { version } from "../../../package.json"
 
 const links = [
   {
@@ -39,7 +40,9 @@ const links = [
     <h1 class="text-md leading-[.8em] font-semibold tracking-tighter">
       Smooothy
     </h1>
-    <p class="text-sm leading-[.8em] font-light text-gray-200">version 0.0.1</p>
+    <p class="text-sm leading-[.8em] font-light text-gray-200">
+      version {version}
+    </p>
   </a>
   <slot />
   <ul class="flex flex-col items-end gap-2 md:flex-row md:gap-4">
