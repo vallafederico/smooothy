@@ -61,6 +61,7 @@ function animate() {
   slider.update()
   requestAnimationFrame(animate)
 }
+
 animate()
 
 // Clean up when done
@@ -142,20 +143,20 @@ The slider accepts the following configuration options:
 To handle scroll and trackpad events uses `virtualScroll` under the hood.
 The `virtualScroll` config option accepts an object with the following properties:
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `mouseMultiplier` | number | `0.5` | Multiplier for mouse wheel sensitivity |
-| `touchMultiplier` | number | `2` | Multiplier for touch scroll sensitivity |
-| `firefoxMultiplier` | number | `30` | Firefox-specific scroll multiplier |
-| `useKeyboard` | boolean | `false` | Enable keyboard scroll input |
-| `passive` | boolean | `true` | Use passive event listeners |
+| Option              | Type    | Default | Description                             |
+| ------------------- | ------- | ------- | --------------------------------------- |
+| `mouseMultiplier`   | number  | `0.5`   | Multiplier for mouse wheel sensitivity  |
+| `touchMultiplier`   | number  | `2`     | Multiplier for touch scroll sensitivity |
+| `firefoxMultiplier` | number  | `30`    | Firefox-specific scroll multiplier      |
+| `useKeyboard`       | boolean | `false` | Enable keyboard scroll input            |
+| `passive`           | boolean | `true`  | Use passive event listeners             |
 
 ```javascript
 const slider = new Core(wrapper, {
   virtualScroll: {
     mouseMultiplier: 0.75,
     touchMultiplier: 1.5,
-  }
+  },
 })
 ```
 
@@ -209,14 +210,14 @@ The `deltaTime` property is particularly useful when implementing custom animati
 ```javascript
 // Example: Creating a speed-based parallax effect
 class ParallaxSlider extends Core {
-  lerpedSpeed = 0  // Smoothed speed value
+  lerpedSpeed = 0 // Smoothed speed value
 
   onUpdate({ speed, deltaTime, parallaxValues }) {
     // Smooth out the speed using deltaTime
     this.lerpedSpeed = damp(
       this.lerpedSpeed,
       speed,
-      5,  // Damping factor
+      5, // Damping factor
       deltaTime
     )
 
@@ -228,8 +229,6 @@ class ParallaxSlider extends Core {
   }
 }
 ```
-
-
 
 ## HTML Structure
 
@@ -262,7 +261,7 @@ Assuming the slider is marked with `[data-slider]`, you'll probably want at leas
 }
 ```
 
-> ⚡️ CSS Gotcha — 
+> ⚡️ CSS Gotcha —
 > To keep it as lignhtweight as possible it does not support gaps.
 > If you want gaps use full width slides as the first child,
 > apply padding to those (1/2 of the gap), and have the actual slide
@@ -278,7 +277,7 @@ The slider provides `parallaxValues` in the `onUpdate` callback that can be used
 class ParallaxSlider extends Core {
   constructor(wrapper, config) {
     super(wrapper, config)
-    this.parallaxElements = [...wrapper.querySelectorAll('.parallax')]
+    this.parallaxElements = [...wrapper.querySelectorAll(".parallax")]
   }
 
   onUpdate({ parallaxValues }) {
