@@ -109,9 +109,9 @@ Pretty common issue is mixing sliding and click behaviour with slides that are a
           isDragging = false
         }
 
-        document.addEventListener("mousedown", handleMouseDown)
-        document.addEventListener("mousemove", handleMouseMove)
-        document.addEventListener("mouseup", handleMouseUp)
+        item.parentElement.addEventListener("mousedown", handleMouseDown)
+        item.parentElement.addEventListener("mousemove", handleMouseMove)
+        item.parentElement.addEventListener("mouseup", handleMouseUp)
       })
     }
   }

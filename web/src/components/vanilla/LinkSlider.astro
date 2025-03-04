@@ -83,9 +83,9 @@ const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
           isDragging = false
         }
 
-        document.addEventListener("mousedown", handleMouseDown)
-        document.addEventListener("mousemove", handleMouseMove)
-        document.addEventListener("mouseup", handleMouseUp)
+        item.parentElement.addEventListener("mousedown", handleMouseDown)
+        item.parentElement.addEventListener("mousemove", handleMouseMove)
+        item.parentElement.addEventListener("mouseup", handleMouseUp)
       })
     }
   }
