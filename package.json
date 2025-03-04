@@ -52,7 +52,6 @@
     "esbuild": "^0.25.0"
   },
   "dependencies": {
-    "smooothy": "^0.0.12",
     "virtual-scroll": "^2.2.1"
   }
 }

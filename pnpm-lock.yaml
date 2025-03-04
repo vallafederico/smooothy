@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      smooothy:
-        specifier: ^0.0.12
-        version: 0.0.12
       virtual-scroll:
         specifier: ^2.2.1
         version: 2.2.1
