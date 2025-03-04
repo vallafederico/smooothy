@@ -1,14 +1,15 @@
 {
   "name": "smooothy",
-  "version": "0.0.12",
+  "author": "vallafederico",
+  "version": "0.0.15",
   "description": "",
   "type": "module",
   "main": "index.js",
   "types": "./dist/index.d.ts",
   "exports": {
+    "types": "./dist/index.d.ts",
     "import": "./dist/esm.js",
-    "require": "./dist/cjs.js",
-    "types": "./dist/index.d.ts"
+    "require": "./dist/cjs.js"
   },
   "repository": {
     "type": "git",
@@ -43,7 +44,6 @@
     "package.json",
     "README.md"
   ],
-  "author": "",
   "license": "MIT",
   "devDependencies": {
     "@types/virtual-scroll": "^2.0.3",

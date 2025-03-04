@@ -1,6 +1,5 @@
 {
   "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist", "web"],
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
@@ -13,6 +12,6 @@
     },
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
-    "declaration": true
+    "outDir": "./dist"
   }
 }

@@ -20,7 +20,6 @@ async function run() {
     Promise.all([
       build({
         ...option,
-
         format: "esm",
         naming: "[dir]/esm.js",
       }),
