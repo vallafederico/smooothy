@@ -1,3 +1,4 @@
 packages:
   - 'package/*'
+  - 'web'
   - 'web/*'
