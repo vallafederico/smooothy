@@ -49,10 +49,7 @@
     "esbuild": "^0.25.0",
     "@types/virtual-scroll": "^2.0.3",
     "bun": "^1.2.4",
-    "bun-plugin-dts": "^0.3.0",
-    "prettier": "^3.5.1",
-    "prettier-plugin-astro": "^0.14.1",
-    "prettier-plugin-tailwindcss": "^0.6.11"
+    "bun-plugin-dts": "^0.3.0"
   },
   "dependencies": {
     "virtual-scroll": "^2.2.1"
