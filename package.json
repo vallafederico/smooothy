@@ -46,12 +46,13 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "esbuild": "^0.25.0",
     "@types/virtual-scroll": "^2.0.3",
     "bun": "^1.2.4",
-    "bun-plugin-dts": "^0.3.0"
+    "bun-plugin-dts": "^0.3.0",
+    "esbuild": "^0.25.0"
   },
   "dependencies": {
+    "smooothy": "^0.0.12",
     "virtual-scroll": "^2.2.1"
   }
 }
