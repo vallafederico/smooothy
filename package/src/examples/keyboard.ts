@@ -1,19 +1,23 @@
 import { Core } from "../core"
-import gsap from "../gsap"
+
+interface SliderConfig {
+  infinite?: boolean
+  // ... add other config properties as needed
+}
 
 export class Slider extends Core {
-  constructor(wrapper, config) {
+  constructor(wrapper: HTMLElement, config: SliderConfig) {
     super(wrapper, config)
 
-    gsap.ticker.add(this.update.bind(this))
+    // gsap.ticker.add(this.update.bind(this))
     this.#addKeyboardEvents()
   }
 
-  #handleKeydown = e => {
+  #handleKeydown = (e: KeyboardEvent): void => {
     if (!this.isVisible) return
 
     if (/^[0-9]$/.test(e.key)) {
-      const slideIndex = parseInt(e.key)
+      const slideIndex: number = parseInt(e.key)
       if (this.config.infinite) {
         this.goToIndex(slideIndex)
       } else {
@@ -36,12 +40,7 @@ export class Slider extends Core {
     }
   }
 
-  #addKeyboardEvents() {
+  #addKeyboardEvents(): void {
     window.addEventListener("keydown", this.#handleKeydown)
   }
-
-  // render(e) {
-  //   this.update();
-  //   window.requestAnimationFrame(this.render.bind(this));
-  // }
 }
