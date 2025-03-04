@@ -1,0 +1,30 @@
+---
+import Layout from "~/layouts/Layout.astro"
+import Section from "@c/Section.astro"
+import ExampleHead from "~/components/ExampleHead.astro"
+
+import ReactSlider from "~/components/frameworks/ReactSlider"
+
+// vanilla
+---
+
+<Layout>
+  <Section top class="flex flex-col justify-center">
+    <div class="px-gx md:px-ex-gx">
+      <h1 class="text-xl font-semibold">Frameworks.</h1>
+      <p class="max-w-[40ch] text-sm text-gray-500">
+        A collection of examples of the slider in action and implementation
+        ideas.
+      </p>
+    </div>
+  </Section>
+
+  <Section id={"controls"} class="min-h-[80svh] pt-[10svh]">
+    <ExampleHead
+      title={"React"}
+      description={"React implementation."}
+      features={["react"]}
+    />
+    <ReactSlider client:load />
+  </Section>
+</Layout>
