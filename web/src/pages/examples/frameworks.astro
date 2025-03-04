@@ -5,8 +5,6 @@ import ExampleHead from "~/components/ExampleHead.astro"
 
 import ReactSlider from "~/components/frameworks/ReactSlider"
 import VueSlider from "~/components/frameworks/VueSlider.vue"
-
-// vanilla
 ---
 
 <Layout>
@@ -17,14 +15,19 @@ import VueSlider from "~/components/frameworks/VueSlider.vue"
         A collection of examples of the slider in action and implementation
         ideas.
       </p>
+      <ul class="py-3">
+        <li>
+          <a href="/examples">Back to examples</a>
+        </li>
+      </ul>
     </div>
   </Section>
 
-  <Section id={"controls"} class="min-h-[80svh] pt-[10svh]">
+  <Section id={"controls"} class="min-h-[80svh] pt-[1rem]">
     <ExampleHead
       title={"React"}
-      description={"React implementation."}
-      features={["react"]}
+      description={"React implementation of the slider. also creates a useSmooothy hook for comvenience."}
+      features={["react", "infinite", "snap", "framework"]}
     />
     <ReactSlider client:load />
   </Section>
@@ -32,8 +35,8 @@ import VueSlider from "~/components/frameworks/VueSlider.vue"
   <Section id={"controls"} class="min-h-[80svh] pt-[10svh]">
     <ExampleHead
       title={"Vue"}
-      description={"Vue implementation."}
-      features={["vue"]}
+      description={"Vue implementation. Create a composable to handle the slider instance."}
+      features={["vue", "infinite", "snap", "framework"]}
     />
     <VueSlider client:load />
   </Section>

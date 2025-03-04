@@ -3,24 +3,36 @@ import { ref, onMounted, onUnmounted } from "vue"
 import Core, { CoreConfig } from "smooothy"
 import gsap from "gsap"
 
-const sliderElement = ref<HTMLElement | null>(null)
-const slider = ref<Core | null>(null)
+/** composable */
+function useSmooothy(config: Partial<CoreConfig> = {}) {
+  const sliderElement = ref<HTMLElement | null>(null)
+  const slider = ref<Core | null>(null)
 
+  onMounted(() => {
+    if (sliderElement.value) {
+      const instance = new Core(sliderElement.value, config)
+      gsap.ticker.add(instance.update.bind(instance))
+      slider.value = instance
+    }
+  })
+
+  onUnmounted(() => {
+    if (slider.value) {
+      gsap.ticker.remove(slider.value.update.bind(slider.value))
+      slider.value.destroy()
+    }
+  })
+
+  return {
+    sliderElement,
+    slider,
+  }
+}
+
+/** implementation */
 const slides = Array.from({ length: 10 }, (_, i) => i)
-
-onMounted(() => {
-  if (sliderElement.value) {
-    const instance = new Core(sliderElement.value, {})
-    gsap.ticker.add(instance.update.bind(instance))
-    slider.value = instance
-  }
-})
-
-onUnmounted(() => {
-  if (slider.value) {
-    gsap.ticker.remove(slider.value.update.bind(slider.value))
-    slider.value.destroy()
-  }
+const { sliderElement, slider } = useSmooothy({
+  infinite: true,
 })
 </script>
 
