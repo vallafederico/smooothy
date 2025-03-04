@@ -1,12 +1,14 @@
 {
   "name": "smooothy",
-  "version": "0.0.6",
+  "version": "0.0.12",
   "description": "",
-  "main": "index.js",
   "type": "module",
+  "main": "index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     "import": "./dist/esm.js",
-    "require": "./dist/cjs.js"
+    "require": "./dist/cjs.js",
+    "types": "./dist/index.d.ts"
   },
   "repository": {
     "type": "git",
@@ -19,9 +21,13 @@
   "keywords": [
     "slider",
     "smooth",
-    "smooth scroll",
+    "carousel",
     "infinite",
-    "infinite scroll"
+    "infinite scroll",
+    "parallax",
+    "parallax scroll",
+    "parallax slider",
+    "parallax carousel"
   ],
   "scripts": {
     "build": "pnpm run -w --parallel /^build:.*/",
@@ -39,17 +45,16 @@
   ],
   "author": "",
   "license": "MIT",
-  "types": "./dist/index.d.ts",
   "devDependencies": {
-    "esbuild": "^0.25.0"
-  },
-  "dependencies": {
+    "esbuild": "^0.25.0",
     "@types/virtual-scroll": "^2.0.3",
     "bun": "^1.2.4",
     "bun-plugin-dts": "^0.3.0",
     "prettier": "^3.5.1",
     "prettier-plugin-astro": "^0.14.1",
-    "prettier-plugin-tailwindcss": "^0.6.11",
+    "prettier-plugin-tailwindcss": "^0.6.11"
+  },
+  "dependencies": {
     "virtual-scroll": "^2.2.1"
   }
 }

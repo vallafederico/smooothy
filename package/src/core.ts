@@ -100,10 +100,12 @@ export class Core {
       ...config,
     }
 
+    // Store the callback but don't delete it
     if (config.onSlideChange) this.onSlideChange = config.onSlideChange
     if (config.onResize) this.onResize = config.onResize
     if (config.onUpdate) this.onUpdate = config.onUpdate
 
+    // Remove from config but keep the method
     delete this.config.onSlideChange
     delete this.config.onResize
     delete this.config.onUpdate

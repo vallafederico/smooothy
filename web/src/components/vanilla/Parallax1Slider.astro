@@ -36,11 +36,11 @@ const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
 </div>
 
 <script>
-  import Core from "~/js/slider"
+  import Core from "smooothy"
   import gsap from "~/js/gsap"
 
   class ControlsSlider extends Core {
-    constructor(container: HTMLElement, config = {}) {
+    constructor(container: HTMLElement) {
       super(container.querySelector("[data-slider]"))
 
       this.parallaxy = [...container.querySelectorAll("[data-p]")]
@@ -49,13 +49,13 @@ const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
       gsap.ticker.add(this.update.bind(this))
     }
 
-    onSlideChange(current, previous) {
+    onSlideChange = (current, previous) => {
       // console.log(current, previous)
       this.items[previous].children[0].classList.remove("active")
       this.items[current].children[0].classList.add("active")
     }
 
-    onUpdate({ parallaxValues }) {
+    onUpdate = ({ parallaxValues }) => {
       this.parallaxy.forEach((p, i) => {
         p.style.transform = `translateY(${Math.sin(parallaxValues[i] * 1.5) * 10}%)`
       })

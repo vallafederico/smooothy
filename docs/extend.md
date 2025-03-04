@@ -56,7 +56,7 @@ export class KeyboardSlider extends Core {
 }
 ```
 
-### Capture Link Clicks — TO BE TESTED
+### Capture Link Clicks
 
 Pretty common issue is mixing sliding and click behaviour with slides that are actual links.
 

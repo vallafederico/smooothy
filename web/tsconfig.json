@@ -1,7 +1,6 @@
 {
-  "extends": "astro/tsconfigs/strict",
   "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist"],
+  "exclude": ["dist", "web"],
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
@@ -13,6 +12,7 @@
       "@slider/*": ["src/js/slider/*"]
     },
     "jsx": "preserve",
-    "jsxImportSource": "solid-js"
+    "jsxImportSource": "solid-js",
+    "declaration": true
   }
 }
