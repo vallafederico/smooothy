@@ -9,7 +9,7 @@ While it works as just the Core, the idea is to provide all the core functionali
 Adds keyboard (arrows, spacebar) controls for next and previous slide, and numpad controls to get to a specific slide.
 
 ```js
-import { Core } from "smooothy"
+import Core from "smooothy"
 import gsap from "../gsap"
 
 export class KeyboardSlider extends Core {
@@ -61,7 +61,7 @@ export class KeyboardSlider extends Core {
 Pretty common issue is mixing sliding and click behaviour with slides that are actual links.
 
 ```js
-import { Core } from "smooothy"
+import Core from "smooothy"
 
 export class LinkSlider extends Slider {
   constructor(wrapper, config) {
@@ -102,7 +102,7 @@ export class LinkSlider extends Slider {
 ```
 
 ```js
-import { Core } from "smooothy"
+import Core from "smooothy"
 import gsap from "../gsap"
 
 export class ControlSlider extends Core {

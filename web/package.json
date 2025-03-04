@@ -20,6 +20,7 @@
     "prettier": "^3.5.1",
     "prettier-plugin-astro": "^0.14.1",
     "prettier-plugin-tailwindcss": "^0.6.11",
+    "smooothy": "^0.0.5",
     "solid-js": "^1.9.4",
     "tailwindcss": "^4.0.6",
     "virtual-scroll": "^2.2.1",

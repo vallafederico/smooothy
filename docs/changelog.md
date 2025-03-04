@@ -1,7 +1,13 @@
 # Changelog
 
-## v.0.0.1
+## 0.0.1
 
-_02/0225_
+_00/02/2025_
 
-Initial Commit and publish.
+Init
+
+## 0.0.5
+
+_04/03/2025_
+
+Types

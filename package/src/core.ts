@@ -1,11 +1,39 @@
 import VirtualScroll from "virtual-scroll"
 import { damp, symmetricMod } from "./utils"
 
-// (*) [PERF] make parallax values dependant on getParallax config
-// (*) [PERF] only run raf when needed (watch for non standard events)
+interface VirtualScrollConfig {
+  mouseMultiplier: number
+  touchMultiplier: number
+  firefoxMultiplier: number
+  useKeyboard: boolean
+  passive: boolean
+}
+
+interface Viewport {
+  itemWidth: number
+  wrapperWidth: number
+  totalWidth: number
+}
+
+interface CoreConfig {
+  infinite: boolean
+  snap: boolean
+  dragSensitivity: number
+  lerpFactor: number
+  scrollSensitivity: number
+  snapStrength: number
+  speedDecay: number
+  bounceLimit: number
+  virtualScroll: VirtualScrollConfig
+  setOffset: (viewport: Viewport) => number
+  scrollInput: boolean
+  onSlideChange?: (current: number, previous: number) => void
+  onResize?: (core: Core) => void
+  onUpdate?: (core: Core) => void
+}
 
 /** default config */
-const DEFAULT_CONFIG = {
+const DEFAULT_CONFIG: CoreConfig = {
   /** Params */
   infinite: true,
   snap: true,
@@ -16,7 +44,6 @@ const DEFAULT_CONFIG = {
   speedDecay: 0.85,
   bounceLimit: 1,
   virtualScroll: {
-    // (* NEEDS DOCS)
     mouseMultiplier: 0.5,
     touchMultiplier: 2,
     firefoxMultiplier: 30,
@@ -27,30 +54,47 @@ const DEFAULT_CONFIG = {
 
   /** Functionality */
   scrollInput: false,
-  // getParallax: false, // (* NEEDS DOCS)
-
-  /** Callbacks */
-  // onSlideChange: null,
-  // onResize: null,
-  // onUpdate: null,
 }
 
 export class Core {
   /* config */
-  speed = 0
-  #lspeed = 0
-  #offset = 0
-  #previousTime = 0
-  deltaTime = 0 // (* NEEDS DOCS)
+  speed: number = 0
+  #lspeed: number = 0
+  #offset: number = 0
+  #previousTime: number = 0
+  deltaTime: number = 0
 
   /* flags */
-  #isActive = true
-  #isPaused = false
+  #isActive: boolean = true
+  #isPaused: boolean = false
 
-  #currentSlide = 0
-  #previousSlide = 0
+  #currentSlide: number = 0
+  #previousSlide: number = 0
 
-  constructor(wrapper, config = {}) {
+  config: CoreConfig
+  wrapper: HTMLElement
+  items: HTMLElement[]
+  viewport!: Viewport
+  isDragging: boolean = false
+  dragStart: number = 0
+  dragStartTarget: number = 0
+  isVisible: boolean = false
+  current: number = 0
+  target: number = 0
+  maxScroll: number = 0
+  resizeTimeout?: ReturnType<typeof setTimeout>
+  virtualScroll?: any
+  observer?: IntersectionObserver
+  touchStartY?: number
+  touchStartX?: number
+  scrollDirection?: "horizontal" | "vertical"
+  parallaxValues?: number[]
+
+  onSlideChange?: (current: number, previous: number) => void
+  onResize?: (core: Core) => void
+  onUpdate?: (core: Core) => void
+
+  constructor(wrapper: HTMLElement, config: Partial<CoreConfig> = {}) {
     this.config = {
       ...DEFAULT_CONFIG,
       ...config,
@@ -65,7 +109,7 @@ export class Core {
     delete this.config.onUpdate
 
     this.wrapper = wrapper
-    this.items = [...wrapper.children]
+    this.items = [...wrapper.children] as HTMLElement[]
 
     // State
     this.current = 0
@@ -80,7 +124,6 @@ export class Core {
 
     // Initialize
     this.#setupViewport()
-    // this.#setupParallaxItems()
     this.#setupIntersectionObserver()
     this.#addEventListeners()
     this.wrapper.style.cursor = "grab"
@@ -89,8 +132,8 @@ export class Core {
     this.#setupVirtualScroll()
   }
 
-  #setupIntersectionObserver() {
-    const options = {
+  #setupIntersectionObserver(): void {
+    const options: IntersectionObserverInit = {
       root: null,
       rootMargin: "50px",
       threshold: 0,
@@ -105,7 +148,7 @@ export class Core {
     this.observer.observe(this.wrapper)
   }
 
-  #setupViewport() {
+  #setupViewport(): void {
     this.viewport = {
       itemWidth: this.items[0].getBoundingClientRect().width,
       wrapperWidth: this.wrapper.clientWidth,
@@ -122,49 +165,53 @@ export class Core {
     })
   }
 
-  #addEventListeners() {
-    this.wrapper.addEventListener("mousedown", e => this.#handleDragStart(e))
-    window.addEventListener("mousemove", e => this.#handleDragMove(e))
-    window.addEventListener("mouseup", () => this.#handleDragEnd())
+  #addEventListeners(): void {
+    const handleMouseDown = (e: MouseEvent) => this.#handleDragStart(e)
+    const handleMouseMove = (e: MouseEvent) => this.#handleDragMove(e)
+    const handleMouseUp = () => this.#handleDragEnd()
+
+    this.wrapper.addEventListener("mousedown", handleMouseDown)
+    window.addEventListener("mousemove", handleMouseMove)
+    window.addEventListener("mouseup", handleMouseUp)
 
     const SCROLL_THRESHOLD = 5
 
-    this.wrapper.addEventListener("touchstart", e => {
+    const handleTouchStart = (e: TouchEvent) => {
       const touch = e.touches[0]
       this.touchStartY = touch.clientY
       this.touchStartX = touch.clientX
-      this.scrollDirection = null
+      this.scrollDirection = undefined
       this.#handleDragStart(touch)
-    })
+    }
 
-    window.addEventListener(
-      "touchmove",
-      e => {
-        const touch = e.touches[0]
-        const deltaY = Math.abs(touch.clientY - this.touchStartY)
-        const deltaX = Math.abs(touch.clientX - this.touchStartX)
+    const handleTouchMove = (e: TouchEvent) => {
+      const touch = e.touches[0]
+      const deltaY = Math.abs(touch.clientY - this.touchStartY!)
+      const deltaX = Math.abs(touch.clientX - this.touchStartX!)
 
-        if (
-          !this.scrollDirection &&
-          (deltaX > SCROLL_THRESHOLD || deltaY > SCROLL_THRESHOLD)
-        ) {
-          this.scrollDirection = deltaX > deltaY ? "horizontal" : "vertical"
-        }
+      if (
+        !this.scrollDirection &&
+        (deltaX > SCROLL_THRESHOLD || deltaY > SCROLL_THRESHOLD)
+      ) {
+        this.scrollDirection = deltaX > deltaY ? "horizontal" : "vertical"
+      }
 
-        if (this.scrollDirection === "horizontal") {
-          e.preventDefault()
-          this.#handleDragMove(touch)
-        }
-      },
-      { passive: false }
-    )
+      if (this.scrollDirection === "horizontal") {
+        e.preventDefault()
+        this.#handleDragMove(touch)
+      }
+    }
 
-    window.addEventListener("touchend", () => {
-      this.scrollDirection = null
+    const handleTouchEnd = () => {
+      this.scrollDirection = undefined
       this.#handleDragEnd()
-    })
+    }
 
-    window.addEventListener("resize", e => {
+    this.wrapper.addEventListener("touchstart", handleTouchStart)
+    window.addEventListener("touchmove", handleTouchMove, { passive: false })
+    window.addEventListener("touchend", handleTouchEnd)
+
+    window.addEventListener("resize", () => {
       if (this.resizeTimeout) clearTimeout(this.resizeTimeout)
       this.resizeTimeout = setTimeout(() => this.#setupViewport(), 10)
     })
@@ -172,7 +219,7 @@ export class Core {
 
   /** Events */
 
-  #calculateBounds(newTarget) {
+  #calculateBounds(newTarget: number): number {
     if (!this.config.infinite) {
       if (newTarget > this.config.bounceLimit) {
         return this.config.bounceLimit
@@ -183,7 +230,7 @@ export class Core {
     return newTarget
   }
 
-  #setupVirtualScroll() {
+  #setupVirtualScroll(): void {
     this.virtualScroll = new VirtualScroll({
       ...this.config.virtualScroll,
       el: this.wrapper,
@@ -191,7 +238,7 @@ export class Core {
 
     const SCROLL_THRESHOLD = 5
 
-    this.virtualScroll.on(event => {
+    this.virtualScroll.on((event: any) => {
       if (!this.isDragging && !this.#isPaused) {
         if (event.touchDevice) {
           const deltaY = Math.abs(event.deltaY)
@@ -224,7 +271,7 @@ export class Core {
     })
   }
 
-  #handleDragStart(event) {
+  #handleDragStart(event: MouseEvent | Touch): void {
     if (this.#isPaused) return
     this.isDragging = true
     this.dragStart = event.clientX
@@ -232,17 +279,19 @@ export class Core {
     this.wrapper.style.cursor = "grabbing"
   }
 
-  #handleDragMove(event) {
+  #handleDragMove(event: MouseEvent | Touch): void {
     if (!this.isDragging || this.#isPaused) return
 
     const deltaX = event.clientX - this.dragStart
     let newTarget = this.dragStartTarget + deltaX * this.config.dragSensitivity
 
     this.target = this.#calculateBounds(newTarget)
-    this.speed += event.movementX * 0.01
+    if ("movementX" in event) {
+      this.speed += event.movementX * 0.01
+    }
   }
 
-  #handleDragEnd() {
+  #handleDragEnd(): void {
     this.isDragging = false
     this.wrapper.style.cursor = "grab"
 
@@ -261,7 +310,7 @@ export class Core {
   }
 
   /** Update */
-  update() {
+  update(): void {
     if (!this.isVisible || !this.#isActive) return
 
     const currentTime = performance.now()
@@ -296,7 +345,7 @@ export class Core {
     this.onUpdate?.(this)
   }
 
-  #updateFinite() {
+  #updateFinite(): void {
     this.parallaxValues = this.items.map((item, i) => {
       const translateX = this.current * this.viewport.itemWidth
       item.style.transform = `translateX(${translateX}px)`
@@ -305,7 +354,7 @@ export class Core {
     })
   }
 
-  #updateInfinite() {
+  #updateInfinite(): void {
     this.parallaxValues = this.items.map((item, i) => {
       const unitPos = this.current + i
       const x = symmetricMod(unitPos, this.items.length) - i
@@ -317,7 +366,7 @@ export class Core {
     })
   }
 
-  #renderSpeed() {
+  #renderSpeed(): void {
     this.#lspeed = damp(
       this.#lspeed,
       this.speed,
@@ -327,7 +376,7 @@ export class Core {
     this.speed *= this.config.speedDecay
   }
 
-  goToNext() {
+  goToNext(): void {
     if (!this.config.infinite) {
       this.target = Math.max(this.maxScroll, Math.round(this.target - 1))
     } else {
@@ -335,7 +384,7 @@ export class Core {
     }
   }
 
-  goToPrev() {
+  goToPrev(): void {
     if (!this.config.infinite) {
       this.target = Math.min(0, Math.round(this.target + 1))
     } else {
@@ -343,28 +392,38 @@ export class Core {
     }
   }
 
-  goToIndex(index) {
+  goToIndex(index: number): void {
     this.target = -index
   }
 
-  set snap(value) {
+  set snap(value: boolean) {
     this.config.snap = value
   }
 
-  getProgress() {
+  getProgress(): number {
     const totalSlides = this.items.length
     const currentIndex = Math.abs(this.current) % totalSlides
     return currentIndex / totalSlides
   }
 
-  destroy() {
+  destroy(): void {
     this.kill()
-    window.removeEventListener("mousemove", this.#handleDragMove)
-    window.removeEventListener("mouseup", this.#handleDragEnd)
-    window.removeEventListener("touchmove", this.#handleDragMove)
-    window.removeEventListener("touchend", this.#handleDragEnd)
-    this.wrapper.removeEventListener("mousedown", this.#handleDragStart)
-    this.wrapper.removeEventListener("touchstart", this.#handleDragStart)
+    window.removeEventListener("mousemove", (e: MouseEvent) =>
+      this.#handleDragMove(e)
+    )
+    window.removeEventListener("mouseup", () => this.#handleDragEnd())
+    window.removeEventListener("touchmove", (e: TouchEvent) => {
+      const touch = e.touches[0]
+      this.#handleDragMove(touch)
+    })
+    window.removeEventListener("touchend", () => this.#handleDragEnd())
+    this.wrapper.removeEventListener("mousedown", (e: MouseEvent) =>
+      this.#handleDragStart(e)
+    )
+    this.wrapper.removeEventListener("touchstart", (e: TouchEvent) => {
+      const touch = e.touches[0]
+      this.#handleDragStart(touch)
+    })
     if (this.resizeTimeout) clearTimeout(this.resizeTimeout)
     if (this.virtualScroll && this.config.scrollInput) {
       this.virtualScroll.destroy()
@@ -374,11 +433,11 @@ export class Core {
     }
   }
 
-  get currentSlide() {
+  get currentSlide(): number {
     return this.#currentSlide
   }
 
-  #updateCurrentSlide(newSlide) {
+  #updateCurrentSlide(newSlide: number): void {
     if (this.#currentSlide !== newSlide) {
       this.#previousSlide = this.#currentSlide
       this.#currentSlide = newSlide
@@ -388,7 +447,7 @@ export class Core {
   }
 
   /** Interfaces */
-  kill() {
+  kill(): void {
     this.#isActive = false
 
     this.items.forEach(item => {
@@ -401,20 +460,20 @@ export class Core {
     this.#lspeed = 0
   }
 
-  init() {
+  init(): void {
     this.#isActive = true
     this.#previousTime = performance.now()
   }
 
-  set paused(value) {
+  set paused(value: boolean) {
     this.#isPaused = value
   }
 
-  get paused() {
+  get paused(): boolean {
     return this.#isPaused
   }
 
-  get progress() {
+  get progress(): number {
     if (this.config.infinite) {
       const position = -this.target
       const total = this.items.length
