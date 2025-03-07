@@ -1,6 +1,8 @@
 {
   "include": [".astro/types.d.ts", "**/*"],
   "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
     "baseUrl": ".",
     "paths": {
       "~/*": ["src/*"],
