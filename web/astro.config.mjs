@@ -8,6 +8,8 @@ import react from "@astrojs/react";
 
 import vue from "@astrojs/vue";
 
+import solidJs from "@astrojs/solid-js";
+
 // https://astro.build/config
 export default defineConfig({
   vite: {
@@ -18,5 +20,5 @@ export default defineConfig({
     svg: true,
   },
 
-  integrations: [react(), vue()],
+  integrations: [react(), vue(), solidJs()],
 })

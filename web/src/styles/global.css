@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./fonts.css";
 
 * {
   box-sizing: border-box;
@@ -36,8 +37,9 @@ h4 {
 }
 
 @theme {
-  --font-family: "Inter", serif;
-  --font-family-mono: "Ubuntu Mono", serif;
+  --font-family: "Geist", serif;
+  --font-mono: "Geist Mono", monospace;
+  --font-weird: "SK Pupok Solid", serif;
 
   --spacing-gx: 1rem;
   --spacing-lgx: 3.2rem;
@@ -67,7 +69,7 @@ h4 {
 /* global  */
 body {
   font-size: 12px;
-  font-family: "Inter", serif;
+  font-family: "Geist", serif;
   font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
