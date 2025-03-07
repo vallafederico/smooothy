@@ -1,7 +1,23 @@
 ---
+import { IN_USE } from "~/content"
 import Section from "@c/Section.astro"
 ---
 
 <Section class="px-gx">
   <h2>InUse</h2>
+  <p>Using Smooothy?</p>
+  <a href={IN_USE.url}>Slap your website here thanks {"<3"} </a>
+
+  <ul>
+    {
+      IN_USE.items.map(({ title, year, description, url }) => (
+        <li>
+          <h3>{title}</h3>
+          <p>{year}</p>
+          <p>{description}</p>
+          <a href={url}>{url}</a>
+        </li>
+      ))
+    }
+  </ul>
 </Section>

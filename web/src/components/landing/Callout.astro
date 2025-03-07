@@ -1,0 +1,44 @@
+---
+import Section from "@c/Section.astro"
+
+const items = [
+  {
+    title: "Rationale",
+    description:
+      "Configurable customisable Extendable smooth bring your own tooling/whatever slider (or carousel?) API.",
+  },
+  {
+    title: "Why",
+    description:
+      "Configurable customisable Extendable smooth bring your own tooling/whatever slider (or carousel?) API.",
+  },
+  {
+    title: "Idea",
+    description:
+      "Configurable customisable Extendable smooth bring your own tooling/whatever slider (or carousel?) API.",
+  },
+  {
+    title: "How to",
+    description:
+      "Configurable customisable Extendable smooth bring your own tooling/whatever slider (or carousel?) API.",
+  },
+]
+---
+
+<Section class="px-gx">
+  <h2>
+    Configurable customisable Extendable smooth bring your own tooling/whatever
+    slider (or carousel?) API.
+  </h2>
+
+  <ul>
+    {
+      items.map(item => (
+        <li>
+          <h3>{item.title}</h3>
+          <p>{item.description}</p>
+        </li>
+      ))
+    }
+  </ul>
+</Section>

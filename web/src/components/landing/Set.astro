@@ -1,7 +1,65 @@
 ---
 import Section from "@c/Section.astro"
+import LargeTitle from "@c/landing/LargeTitle.astro"
+
+const COLUMNS = [
+  {
+    title: "Setup",
+    items: [
+      {
+        img: () => null,
+        title: "CSS Based Setup",
+        description: "Use CSS to configure your slider.",
+      },
+      {
+        img: () => null,
+        title: "Infinite",
+        description: "Use CSS to configure your slider.",
+      },
+      {
+        img: () => null,
+        title: "Infinite",
+        description: "Use CSS to configure your slider.",
+      },
+    ],
+  },
+  {
+    title: "Options",
+    items: [
+      {
+        img: () => null,
+        title: "Infinite",
+        description: "Use CSS to configure your slider.",
+      },
+    ],
+  },
+  {
+    title: "Customize",
+    items: [
+      {
+        img: () => null,
+        title: "Infinite",
+        description: "Use CSS to configure your slider.",
+      },
+    ],
+  },
+]
 ---
 
 <Section class="px-gx">
-  <h2>Set</h2>
+  <LargeTitle
+    large="Set"
+    title="Configure Away"
+    description="Configure your slider away"
+  />
+
+  <div>
+    {
+      COLUMNS.map(column => (
+        <div>
+          <h3>{column.title}</h3>
+        </div>
+      ))
+    }
+  </div>
 </Section>

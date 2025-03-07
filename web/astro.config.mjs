@@ -3,12 +3,8 @@ import { defineConfig } from "astro/config"
 import { qrcode } from "vite-plugin-qrcode"
 
 import tailwindcss from "@tailwindcss/vite"
-
-import react from "@astrojs/react";
-
-import vue from "@astrojs/vue";
-
-import solidJs from "@astrojs/solid-js";
+import react from "@astrojs/react"
+import vue from "@astrojs/vue"
 
 // https://astro.build/config
 export default defineConfig({
@@ -20,5 +16,5 @@ export default defineConfig({
     svg: true,
   },
 
-  integrations: [react(), vue(), solidJs()],
+  integrations: [react(), vue()],
 })

@@ -1,7 +1,38 @@
 ---
 import Section from "@c/Section.astro"
+
+const CONTENT = {
+  title: "AKA Fix it yourself :D",
+  text: "Doesn't work? Feel free to PR. Or just tell me and I swear I'll do my best.",
+  links: [
+    {
+      title: "Contribute",
+      url: "https://github.com",
+    },
+    {
+      title: "Issues",
+      url: "https://github.com",
+    },
+  ],
+}
 ---
 
 <Section class="px-gx">
-  <h2>Open</h2>
+  <p>Open</p>
+  <div class="flex">
+    <div>
+      <h2>{CONTENT.title}</h2>
+      <p>{CONTENT.text}</p>
+    </div>
+    <ul>
+      {
+        CONTENT.links.map(link => (
+          <li>
+            <a href={link.url}>{link.title}</a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+  <p>Source</p>
 </Section>

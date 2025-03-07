@@ -1,32 +1,17 @@
 {
-  "include": [
-    ".astro/types.d.ts",
-    "**/*"
-  ],
+  "include": [".astro/types.d.ts", "**/*"],
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "~/*": [
-        "src/*"
-      ],
-      "@c/*": [
-        "src/components/*"
-      ],
-      "@js/*": [
-        "src/js/*"
-      ],
-      "@svg/*": [
-        "src/components/svg/*"
-      ],
-      "@package/*": [
-        "package/*"
-      ],
-      "@slider/*": [
-        "src/js/slider/*"
-      ]
+      "~/*": ["src/*"],
+      "@c/*": ["src/components/*"],
+      "@js/*": ["src/js/*"],
+      "@svg/*": ["src/components/svg/*"],
+      "@package/*": ["package/*"],
+      "@slider/*": ["src/js/slider/*"]
     },
     "jsx": "preserve",
-    "jsxImportSource": "solid-js",
+    "jsxImportSource": "react",
     "outDir": "./dist"
   }
 }

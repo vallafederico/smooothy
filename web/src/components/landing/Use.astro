@@ -1,7 +1,60 @@
 ---
 import Section from "@c/Section.astro"
+import LargeTitle from "@c/landing/LargeTitle.astro"
+
+const COLUMNS = [
+  {
+    title: "Vanilla Implementation",
+    img: () => null,
+    description:
+      "It's just javascript (and typescript actually) so it kinda just works.",
+
+    links: [
+      {
+        title: "Link",
+        url: "https://example.com",
+      },
+    ],
+  },
+  {
+    title: "Framework Agnostic",
+    img: () => null,
+    description:
+      "It's just javascript (and typescript actually) so it kinda just works.",
+
+    links: [
+      {
+        title: "Link",
+        url: "https://example.com",
+      },
+    ],
+  },
+  {
+    title: "Webflow Ready",
+    img: () => null,
+    description:
+      "It's just javascript (and typescript actually) so it kinda just works.",
+    links: [
+      {
+        title: "Link",
+        url: "https://example.com",
+      },
+    ],
+  },
+]
 ---
 
 <Section class="px-gx">
-  <h2>Use</h2>
+  <LargeTitle large="Use" title="Use" description="Use" />
+
+  <div>
+    {
+      COLUMNS.map(column => (
+        <div>
+          <h3>{column.title}</h3>
+          <p>{column.description}</p>
+        </div>
+      ))
+    }
+  </div>
 </Section>

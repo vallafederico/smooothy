@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @import "./fonts.css";
-
+@import "./grid.css";
 * {
   box-sizing: border-box;
 }
