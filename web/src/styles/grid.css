@@ -3,6 +3,7 @@
   --margin: var(--gx);
   --grid-columns: var(--columns);
   --grid-gutter: var(--gutter);
+
   --grid-column-width: calc(
     (
         100vw - 2 * var(--margin) -

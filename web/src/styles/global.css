@@ -1,6 +1,6 @@
 @import "tailwindcss";
-@import "./variables.css";
 @import "./fonts.css";
+@import "./variables.css";
 @import "./grid.css";
 
 * {
@@ -39,9 +39,9 @@ h4 {
 }
 
 @theme {
-  --font-family: "Geist", serif;
+  --font-sans: "Geist", sans-serif;
   --font-mono: "Geist Mono", monospace;
-  --font-weird: "SK Pupok Solid", serif;
+  --font-weird: "SK Pupok Solid", sans-serif;
 
   --spacing-gx: 1.8rem;
   --spacing-lgx: 3.2rem;
@@ -71,7 +71,7 @@ h4 {
 /* global  */
 body {
   font-size: 12px;
-  font-family: "Geist", serif;
+  font-family: "Geist", sans-serif;
   font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
