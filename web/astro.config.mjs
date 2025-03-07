@@ -11,7 +11,9 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss(), qrcode()],
   },
-
+  devToolbar: {
+    enabled: false,
+  },
   experimental: {
     svg: true,
   },

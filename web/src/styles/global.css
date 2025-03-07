@@ -1,6 +1,8 @@
 @import "tailwindcss";
+@import "./variables.css";
 @import "./fonts.css";
 @import "./grid.css";
+
 * {
   box-sizing: border-box;
 }
@@ -41,7 +43,7 @@ h4 {
   --font-mono: "Geist Mono", monospace;
   --font-weird: "SK Pupok Solid", serif;
 
-  --spacing-gx: 1rem;
+  --spacing-gx: 1.8rem;
   --spacing-lgx: 3.2rem;
   --spacing-gy: 1rem;
   --spacing-sm: 0.5rem;

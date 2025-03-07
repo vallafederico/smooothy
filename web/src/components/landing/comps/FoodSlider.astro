@@ -1,0 +1,40 @@
+---
+const SLIDES = Array.from({ length: 11 }, (_, i) => i)
+---
+
+<div class="gap-lg flex w-full flex-col overflow-clip py-4">
+  <!-- slider -->
+  <ul class="flex justify-center">
+    {
+      SLIDES.map(slide => (
+        <li class="shrink-0 p-2 md:w-[30vw] md:max-w-[30rem] md:min-w-[20rem]">
+          <div class="aspect-[4/5.5] outline outline-gray-800">
+            <h2>{slide}</h2>
+          </div>
+        </li>
+      ))
+    }
+  </ul>
+
+  <!-- bottom ui -->
+  <div class="flex justify-center -outline-offset-1">
+    <div class="flex flex-col gap-2">
+      <ul class="flex gap-[1.3rem]">
+        {
+          SLIDES.map(slide => (
+            <li>
+              <button>
+                <div class="aspect-square size-[.4rem] w-full rounded-full outline outline-white" />
+              </button>
+            </li>
+          ))
+        }
+      </ul>
+
+      <!-- sliding thingy -->
+      <div class="flex justify-center">
+        <div class="h-[2px] w-[30%] bg-white"></div>
+      </div>
+    </div>
+  </div>
+</div>

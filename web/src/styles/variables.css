@@ -1,0 +1,13 @@
+:root {
+  --gx: 1.8rem;
+  --columns: 12;
+  --gutter: 0.6rem;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --gx: 2.4rem;
+    --columns: 6;
+    --gutter: 0.6rem;
+  }
+}

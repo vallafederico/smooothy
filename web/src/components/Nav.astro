@@ -49,7 +49,10 @@ const links = [
         <li>
           <a
             href={link.href}
-            class:list={[link.style && link.style, "pointer-events-auto"]}
+            class:list={[
+              link.style && link.style,
+              "pointer-events-auto tracking-wide",
+            ]}
             target={link.target}
           >
             {!link.icon && link.label}
