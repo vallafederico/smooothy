@@ -72,12 +72,26 @@ h4 {
 body {
   font-size: 12px;
   font-family: "Geist", sans-serif;
-  font-optical-sizing: auto;
+  /* font-optical-sizing: auto; */
+
   font-weight: 400;
   font-style: normal;
 
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings:
+    "kern" 1,
+    "liga" 1,
+    "calt" 1;
+  font-synthesis: none;
+
   background: #000;
   color: #fff;
+}
+
+.tr-s {
+  letter-spacing: -0.08em;
 }
 
 /* fonts */
@@ -95,4 +109,21 @@ svg {
 a:hover {
   opacity: 0.7;
   transition: opacity 0.3s ease;
+}
+
+/* fount outline */
+.ft-out {
+  position: relative;
+}
+
+.ft-out:after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  color: hsl(0, 100%, 50%);
+  transform: scale(1.3);
+  z-index: -1;
 }

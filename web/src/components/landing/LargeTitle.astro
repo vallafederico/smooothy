@@ -1,18 +1,21 @@
 ---
+import Svgg from "../svg/Svgg.astro"
+
 const {
   large = "Set",
   title = "Configure Away",
   description = "Configure your slider away",
+  flip = false,
 } = Astro.props
 ---
 
-<div class="flex">
-  <p class="font-weird">
-    {large}
-  </p>
+<div class:list={["py-xl flex items-center", flip && "flex-row-reverse"]}>
+  <div class="w-grid-8 ml-grid-1">
+    <Svgg class="w-grid-7" name={large} />
+  </div>
 
-  <div>
-    <h2>{title}</h2>
+  <div class="w-grid-3">
+    <h2 class="text-[1.6rem] font-semibold">{title}</h2>
     <p>{description}</p>
   </div>
 </div>

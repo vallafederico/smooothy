@@ -2,7 +2,10 @@
 
 ---
 
-<div data-grid class="px-gx fixed inset-0 hidden gap-[var(--gutter)]">
+<div
+  data-grid
+  class="px-gx pointer-events-none fixed inset-0 hidden gap-[var(--gutter)]"
+>
   {
     Array.from({ length: 12 }).map((_, index) => (
       <div class="grid-item w-full bg-red-900 opacity-10" />

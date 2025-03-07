@@ -1,5 +1,6 @@
 ---
 import Section from "@c/Section.astro"
+import Svgg from "../svg/Svgg.astro"
 
 const items = [
   {
@@ -25,13 +26,19 @@ const items = [
 ]
 ---
 
-<Section class="px-gx flex justify-center">
-  <div class="w-grids-6">
-    <h2 class="inline-block text-xl leading-[1em]">
-      <span class="inline-block w-[3rem]"></span>
-      Configurable customisable Extendable <span class="inline-block w-[6rem]"
-      ></span> smooth bring your own tooling/whatever <span
-        class="inline-block w-[6rem]"></span> slider (or carousel?) API.
+<Section class="px-gx py-xl flex justify-center">
+  <div class="max-w-[24ch] text-[2.6rem]">
+    <h2 class="tr-s inline-block leading-[1em]">
+      <span class="inline-flex w-[5rem] items-center justify-center">
+        <Svgg name="wave" />
+      </span>
+      Configurable customisable extendable <span
+        class="inline-flex w-[8rem] items-center justify-center"
+        ><Svgg name="extend" /></span
+      > smooth bring your own tooling/whatever
+      <span class="inline-flex w-[6rem] items-center justify-center">
+        <Svgg name="slider" />
+      </span> slider (or carousel?) API.
     </h2>
   </div>
 
