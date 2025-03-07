@@ -10,7 +10,3 @@ gsap.defaults(defaults)
 
 export default gsap
 export { defaults }
-
-gsap.ticker.add(time => {
-  Scroll.raf(time * 1000)
-})

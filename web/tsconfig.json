@@ -10,7 +10,7 @@
       "@js/*": ["src/js/*"],
       "@svg/*": ["src/components/svg/*"],
       "@package/*": ["package/*"],
-      "@slider/*": ["src/js/slider/*"]
+      "@slider/*": ["src/wip/slider/*"]
     },
     "jsx": "preserve",
     "jsxImportSource": "react",
