@@ -1,4 +1,4 @@
-export function computeModules() {
+export function createModules() {
   const modules = import.meta.glob("../*.ts", { eager: true })
 
   return [...document.querySelectorAll("[data-module]")]

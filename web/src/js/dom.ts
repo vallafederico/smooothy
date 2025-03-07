@@ -1,4 +1,4 @@
-import { computeModules } from "./modules/_/compute"
+import { createModules } from "./modules/_/create"
 
 export class Dom {
   #items = []
@@ -8,12 +8,10 @@ export class Dom {
   }
 
   #create() {
-    this.#items = computeModules()
+    this.#items = createModules()
   }
 
   #destroy() {
     this.#items.forEach(item => item.destroy?.())
   }
 }
-
-// utils
