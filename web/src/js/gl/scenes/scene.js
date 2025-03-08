@@ -19,7 +19,7 @@ export default class extends Scene {
     // this.quad = new Quad()
     // this.add(this.quad)
 
-    const dom = document.querySelector("[data-slider='food']").children[4]
+    const dom = document.querySelector("[data-slider='wrapper']").children[1]
       .children[0]
 
     this.dom = new Dom(dom)

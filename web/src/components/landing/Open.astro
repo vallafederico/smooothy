@@ -18,27 +18,44 @@ const CONTENT = {
 }
 ---
 
-<Section class="px-gx">
-  <div>
+<Section class="px-gx md:gap-lg flex flex-col items-center">
+  <div class="w-grids-5 md:w-grids-6">
     <BouncySvg name="open" />
   </div>
-  <div class="flex">
-    <div>
-      <h2>{CONTENT.title}</h2>
+
+  <div class="md:w-grids-6 gap-sm hidden flex-col md:flex">
+    <h2>{CONTENT.title}</h2>
+    <div class="gap-sm flex justify-between">
       <p>{CONTENT.text}</p>
+      <ul>
+        {
+          CONTENT.links.map(link => (
+            <li>
+              <a href={link.url}>{link.title}</a>
+            </li>
+          ))
+        }
+      </ul>
     </div>
-    <ul>
-      {
-        CONTENT.links.map(link => (
-          <li>
-            <a href={link.url}>{link.title}</a>
-          </li>
-        ))
-      }
-    </ul>
   </div>
 
-  <div>
+  <div class="md:w-grids-10">
     <BouncySvg name="source" />
+  </div>
+
+  <div class="md:w-grids-6 gap-sm flex flex-col md:hidden">
+    <h2>{CONTENT.title}</h2>
+    <div class="gap-sm flex justify-between">
+      <p>{CONTENT.text}</p>
+      <ul>
+        {
+          CONTENT.links.map(link => (
+            <li>
+              <a href={link.url}>{link.title}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
   </div>
 </Section>

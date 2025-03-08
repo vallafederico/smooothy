@@ -5,33 +5,39 @@ const letters = ["S", "L", "I", "D", "E", "M", "E"]
 const SLIDES = Array.from({ length: letters.length }, (_, i) => i)
 ---
 
-<ul class="flex max-w-full overflow-clip">
-  {
-    SLIDES.map(slide => (
-      <li class="flex aspect-[3/4] w-[20vw] shrink-0 flex-col gap-2 p-2">
-        <div>
-          <p class="font-mono text-sm tracking-tighter">NO 00{slide}</p>
-        </div>
-        <div class="flex size-full shrink-0 items-center justify-center outline outline-gray-800">
-          <Svgg
-            class="w-[90%]"
-            name={"letter_" + letters[slide].toLowerCase()}
-          />
-        </div>
+<div data-module="gslider" class="w-full max-w-full overflow-clip py-[8rem]">
+  <ul
+    data-slider="wrapper"
+    style="--slide-width: clamp(10rem, 20vw, 30rem)"
+    class="ml-[calc(50vw-var(--slide-width)/2)] flex"
+  >
+    {
+      SLIDES.map(slide => (
+        <li class="flex aspect-[3/4] w-[var(--slide-width)] shrink-0 flex-col gap-2 p-2">
+          <div>
+            <p class="font-mono text-sm tracking-tighter">NO 00{slide}</p>
+          </div>
+          <div class="flex size-full shrink-0 items-center justify-center outline outline-gray-800">
+            <Svgg
+              class="w-[90%]"
+              name={"letter_" + letters[slide].toLowerCase()}
+            />
+          </div>
 
-        <ul class="flex flex-col font-mono text-[.8em] tracking-wider">
-          <li>
-            <p>
-              PARALLAX <span>0.000</span>
-            </p>
-          </li>
-          <li>
-            <p>
-              SPEED <span>0.000</span>
-            </p>
-          </li>
-        </ul>
-      </li>
-    ))
-  }
-</ul>
+          <ul class="flex flex-col font-mono text-[.8em] tracking-wider">
+            <li>
+              <p>
+                PARALLAX <span>0.000</span>
+              </p>
+            </li>
+            <li>
+              <p>
+                SPEED <span>0.000</span>
+              </p>
+            </li>
+          </ul>
+        </li>
+      ))
+    }
+  </ul>
+</div>

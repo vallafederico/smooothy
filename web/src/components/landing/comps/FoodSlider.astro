@@ -2,13 +2,17 @@
 const SLIDES = Array.from({ length: 11 }, (_, i) => i)
 ---
 
-<div class="gap-lg flex w-full flex-col overflow-clip py-4">
+<div
+  style="--slide-width: clamp(18rem, 25vw, 30rem)"
+  class="gap-lg flex w-full flex-col overflow-clip py-4"
+  data-module="fslider"
+>
   <!-- slider -->
-  <ul data-slider="food" class="flex justify-center">
+  <ul data-slider="wrapper" class="ml-[calc(50vw-var(--slide-width)/2)] flex">
     {
       SLIDES.map(slide => (
-        <li class="shrink-0 p-2 md:w-[30vw] md:max-w-[30rem] md:min-w-[20rem]">
-          <div class="aspect-[4/5.5] outline outline-gray-800">
+        <li class="shrink-0 p-2">
+          <div class="aspect-[4/5.5] w-[var(--slide-width)] outline outline-gray-800">
             <h2>{slide}</h2>
           </div>
         </li>

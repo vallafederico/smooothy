@@ -66,6 +66,7 @@ export class Logo {
       ...this.anim,
       xPercent: 0,
       yPercent: 0,
+      ease: "back.out(1.2)",
     })
   }
 

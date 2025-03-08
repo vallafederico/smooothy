@@ -1,6 +1,8 @@
 import gsap from "gsap"
 import Scroll from "./scroll"
+import { DrawSVGPlugin } from "gsap/DrawSVGPlugin"
 
+gsap.registerPlugin(DrawSVGPlugin)
 const defaults = {
   ease: "expo.out",
   duration: 1.2,
