@@ -35,21 +35,15 @@ export class Track extends Observe {
 
   constructor(
     element: HTMLElement,
-    {
-      config = DEFAULT_CONFIG,
-    }: {
-      config?: Partial<typeof DEFAULT_CONFIG>
-    } = {
-      config: DEFAULT_CONFIG,
-    }
+    config: Partial<typeof DEFAULT_CONFIG> = {}
   ) {
     super(element, {
       autoStart: true,
       once: false,
       threshold: 0,
     })
-    this.element = element
 
+    this.element = element
     this.config = {
       ...DEFAULT_CONFIG,
       ...config,
@@ -80,6 +74,7 @@ export class Track extends Observe {
       )
     )
 
+    // console.log(this.value)
     this.handleScroll?.(this.value)
     this.config.callback?.(this.value)
   }
@@ -92,11 +87,12 @@ export class Track extends Observe {
   }
 }
 
-// utils
+// ---------
 function computeBounds(el: HTMLElement, config: typeof DEFAULT_CONFIG) {
   const bounds = clientRect(el)
   const { top: topPos, bottom: bottomPos, wh } = bounds
 
+  // Calculate offsets once
   const centerOffset = wh / 2
 
   bounds.top =
