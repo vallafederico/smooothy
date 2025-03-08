@@ -3,6 +3,8 @@
 @import "./variables.css";
 @import "./grid.css";
 @import "./modules.css";
+@import "./animation.css";
+
 * {
   box-sizing: border-box;
 }

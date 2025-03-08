@@ -4,6 +4,8 @@ import { LINKS } from "~/content"
 
 import Twitter from "@svg/twitter.astro"
 import Github from "@svg/github.astro"
+
+import HoverUl from "@c/HoverUl.astro"
 import Svgg from "@c/svg/Svgg.astro"
 
 const links = [
@@ -62,7 +64,7 @@ const links = [
             ]}
             target={link.target}
           >
-            {!link.icon && link.label}
+            {!link.icon && <HoverUl text={link.label} />}
             {link.icon && link.icon === "Twitter" && <Twitter width="2rem" />}
             {link.icon && link.icon === "Github" && <Github width="2rem" />}
           </a>
