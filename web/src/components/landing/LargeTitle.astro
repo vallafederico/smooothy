@@ -9,9 +9,14 @@ const {
 } = Astro.props
 ---
 
-<div class:list={["py-xl flex items-center", flip && "flex-row-reverse"]}>
-  <div class="w-grid-8">
-    <Svgg class="w-grid-7 ml-grid-1" name={large} />
+<div
+  class:list={[
+    "py-xl gap-grid-1 flex items-center",
+    flip && "flex-row-reverse",
+  ]}
+>
+  <div class="w-grid-7">
+    <Svgg class="w-grid-6 ml-grid-1" name={large} />
   </div>
 
   <div class="w-grids-3 flex flex-col gap-2">
