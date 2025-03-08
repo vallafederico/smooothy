@@ -1,5 +1,5 @@
 import { Observe } from "./_/observe"
-import gsap from "../gsap"
+import gsap, { reduced } from "../gsap"
 
 export class Draw extends Observe {
   #anim = null
@@ -24,6 +24,7 @@ export class Draw extends Observe {
   }
 
   isIn() {
+    if (reduced) return
     this.#anim = gsap.to(this.svg, {
       drawSVG: i => this.sizes[i],
       ...this.anim,
@@ -31,6 +32,7 @@ export class Draw extends Observe {
   }
 
   isOut() {
+    if (reduced) return
     if (this.#anim) this.#anim.kill()
 
     gsap.set(this.svg, {

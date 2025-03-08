@@ -1,8 +1,11 @@
 import gsap from "gsap"
-import Scroll from "./scroll"
 import { DrawSVGPlugin } from "gsap/DrawSVGPlugin"
+import { prefersReducedMotion } from "./utils/media"
+
+const reduced = prefersReducedMotion()
 
 gsap.registerPlugin(DrawSVGPlugin)
+
 const defaults = {
   ease: "expo.out",
   duration: 1.2,
@@ -10,7 +13,5 @@ const defaults = {
 
 gsap.defaults(defaults)
 
-const random10 = () => Math.random() * 10
-
 export default gsap
-export { defaults, random10 }
+export { defaults, reduced }

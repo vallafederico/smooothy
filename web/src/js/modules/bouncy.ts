@@ -1,7 +1,8 @@
 import { Track } from "./_/track"
-import gsap from "../gsap"
+import gsap, { reduced } from "../gsap"
 
 // (*) IDEA make it based on vertical or not
+
 export class Bouncy extends Track {
   svg: SVGGElement[]
 
@@ -31,12 +32,14 @@ export class Bouncy extends Track {
   }
 
   isIn = ({ direction }) => {
+    if (reduced) return
     this.#anim = gsap.to(this.svg, {
       ...this.anim,
     })
   }
 
   isOut = ({ direction } = { direction: -1 }) => {
+    if (reduced) return
     if (this.#anim) this.#anim.kill()
 
     gsap.set(this.svg, {
