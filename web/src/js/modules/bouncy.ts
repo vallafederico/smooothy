@@ -5,6 +5,6 @@ export class Bouncy {
     this.svg = [...this.element.querySelector("svg").children].filter(
       (el): el is SVGGElement => el instanceof SVGGElement
     )
-    console.log(this.svg)
+    // console.log(this.svg)
   }
 }

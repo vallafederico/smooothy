@@ -23,7 +23,7 @@ const SLIDES = Array.from({ length: 11 }, (_, i) => i)
         {
           SLIDES.map(slide => (
             <li>
-              <button>
+              <button aria-label={`slide number ${slide}`}>
                 <div class="aspect-square size-[.4rem] w-full rounded-full outline outline-white" />
               </button>
             </li>
