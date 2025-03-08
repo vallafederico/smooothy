@@ -3,10 +3,7 @@ import { Track } from "./_/track"
 
 export class Callout extends Track {
   constructor(element: HTMLElement) {
-    super(element, {
-      top: "center",
-      bottom: "center",
-    })
+    super(element)
   }
 
   handleScroll = (value: number) => {

@@ -1,4 +1,4 @@
-import { createModules } from "./modules/_/create"
+import { createModules } from "./modules/_/index"
 
 export class Dom {
   #items = []
@@ -7,8 +7,18 @@ export class Dom {
     this.#create()
   }
 
+  /** Lifecycles */
+
   #create() {
     this.#items = createModules()
+  }
+
+  start() {
+    this.#items.forEach(item => item.start?.())
+  }
+
+  stop() {
+    this.#items.forEach(item => item.stop?.())
   }
 
   #destroy() {
