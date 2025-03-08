@@ -3,9 +3,7 @@ import { RawShaderMaterial, DoubleSide } from "three"
 import { clientRectGl } from "../../utils/client-rect"
 import { Resize } from "../../utils/subscribable"
 import { Scroll } from "../../scroll"
-
-// import { Observe } from "../../modules/_/observe"
-
+import { Gl } from "../gl"
 import vertexShader from "./vertex.vert"
 import fragmentShader from "./fragment.frag"
 
@@ -17,31 +15,21 @@ export class Dom extends Mesh {
     super()
     this.element = element
 
-    Resize.subscribe(this.#resize.bind(this))
-    Scroll.subscribe(this.#scroll.bind(this))
-
-    // this.observe = new Observe(this.element, {
-    //   callback: ({ isIn }) => {
-    //     // this.visible = isIn
-    //   },
-    // })
-
-    // console.log(this)
+    Resize.subscribe(this.resize.bind(this))
+    Scroll.subscribe(this.scroll.bind(this))
   }
 
-  #resize() {
+  resize() {
     this.bounds = clientRectGl(this.element)
     this.scale.set(this.bounds.width, this.bounds.height, 1)
     this.position.x = this.bounds.centerx
-    this.#scroll()
+    this.position.y = this.bounds.centery
 
-    // this.resize?.()
+    this.scroll()
   }
 
-  #scroll() {
-    this.position.y = this.bounds.centery + Scroll.ygl
-
-    // this.scroll?.()
+  scroll() {
+    this.position.y = this.bounds.centery + Scroll.y * Gl.vp.px
   }
 }
 
