@@ -11,18 +11,18 @@ const {
 
 <div
   class:list={[
-    "py-xl gap-grid-1 flex items-center",
-    flip && "flex-row-reverse",
+    "py-xl gap-grid-1 flex flex-col md:flex-row md:items-center",
+    flip && "md:flex-row-reverse",
   ]}
 >
-  <div class="w-grid-7">
-    <Svgg class="w-grid-6 ml-grid-1" name={large} />
+  <div class="md:w-grid-7">
+    <Svgg class="w-grid-6 md:ml-grid-1 h-auto" name={large} />
   </div>
 
-  <div class="w-grids-3 flex flex-col gap-2">
+  <div class="md:w-grids-3 flex flex-col gap-2">
     <h2 class="tr-s text-[1.6rem] leading-[1em] font-semibold text-balance">
       {title}
     </h2>
-    <p class="max-w-[80%]">{description}</p>
+    <p class="ml-grid-1 max-w-[80%] md:ml-0">{description}</p>
   </div>
 </div>
