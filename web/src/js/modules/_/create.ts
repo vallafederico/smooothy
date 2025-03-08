@@ -1,21 +1,24 @@
-export function createModules() {
-  const modules = import.meta.glob("../*.ts", { eager: true })
+const modules = import.meta.glob(`../*.ts`, { eager: true })
 
-  return [...document.querySelectorAll("[data-module]")]
+export function createModules(dataAttribute = "module") {
+  return [...document.querySelectorAll(`[data-${dataAttribute}]`)]
     .map((element: HTMLElement) => {
-      const moduleName = element.dataset.module
-      const modulePath = `../${moduleName}.ts`
+      const attributeValue = element.dataset[dataAttribute]
+      const modulePath = `../${attributeValue}.ts`
 
       if (modules[modulePath]) {
         const ModuleClass = Object.values(modules[modulePath])[0]
         try {
           return new ModuleClass(element)
         } catch (error) {
-          console.error(`Failed to instantiate module ${moduleName}:`, error)
+          console.error(
+            `Failed to instantiate ${dataAttribute} ${attributeValue}:`,
+            error
+          )
           return null
         }
       } else {
-        console.error(`Module not found: ${moduleName}`)
+        console.error(`${dataAttribute} not found: ${attributeValue}`)
         return null
       }
     })
