@@ -1,9 +1,46 @@
-// lerp
+import { Raf } from "./subscribable"
+
+/** ------------ Damp/Lerp **/
+
+/**
+ * Framerate independent dampening using power-based smoothing
+ * @param current - The current value
+ * @param target - The target value to transition towards
+ * @param smoothing - Smoothing factor (larger = smoother/slower, recommended: 0.001 to 1)
+ * @param dt - Delta time in seconds
+ * @returns Interpolated value between current and target
+ */
+export function dampPow(
+  current: number,
+  target: number,
+  smoothing: number,
+  dt: number = Raf.deltaTime
+): number {
+  return lerp(current, target, 1 - Math.pow(smoothing, dt))
+}
+
+/**
+ * Framerate independent dampening using exponential decay
+ * @param current - The current value
+ * @param target - The target value to transition towards
+ * @param lambda - Decay rate (larger = faster decay)
+ * @param dt - Delta time in seconds
+ * @returns Interpolated value between current and target
+ */
+export function damp(
+  current: number,
+  target: number,
+  lambda: number,
+  dt: number = Raf.deltaTime
+): number {
+  return lerp(current, target, 1 - Math.exp(-lambda * dt))
+}
+
 export function lerp(v0: number, v1: number, t: number): number {
   return v0 * (1 - t) + v1 * t
 }
 
-// map
+/** ------------ Map/Clamp **/
 export function map(
   value: number,
   low1: number,
@@ -14,7 +51,6 @@ export function map(
   return low2 + ((high2 - low2) * (value - low1)) / (high1 - low1)
 }
 
-// clamp
 export function clamp(min: number, max: number, num: number): number {
   return Math.min(Math.max(num, min), max)
 }

@@ -4,6 +4,13 @@ export class Logo {
   element: HTMLElement
   svg: SVGElement[]
 
+  anim = {
+    stagger: 0.02,
+    duration: 0.6,
+    yPercent: 0,
+    xPercent: 0,
+  }
+
   constructor(element: HTMLElement) {
     this.element = element
     this.svg = [...element.querySelector("svg").children] as SVGElement[]
@@ -13,18 +20,17 @@ export class Logo {
   init() {
     this.element.onmouseenter = () => {
       gsap.to(this.svg, {
-        duration: 0.6,
+        ...this.anim,
         yPercent: (i: number) =>
-          i % 2 === 0 ? Math.random() * 25 : -Math.random() * 20,
-        stagger: 0.02,
+          i % 2 === 0 ? Math.random() * 35 : -Math.random() * 35,
+        xPercent: (i: number) =>
+          i % 2 === 0 ? -Math.random() * 15 : Math.random() * 15,
       })
     }
 
     this.element.onmouseleave = () => {
       gsap.to(this.svg, {
-        duration: 0.6,
-        yPercent: 0,
-        stagger: 0.02,
+        ...this.anim,
       })
     }
   }

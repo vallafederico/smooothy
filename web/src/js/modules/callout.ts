@@ -7,6 +7,6 @@ export class Callout extends Track {
   }
 
   handleScroll = (value: number) => {
-    console.log(value)
+    // console.log(value)
   }
 }

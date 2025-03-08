@@ -61,13 +61,24 @@ class _Resize extends Subscribable {
 }
 
 export class _Raf extends Subscribable {
+  time = 0
+  deltaTime = 0
+  frame = 0
+
   constructor() {
     super()
+    gsap.ticker.add(this.raf)
   }
 
-  raf = () => {
+  raf = (time: number, deltaTime: number, frame: number) => {
+    this.time = time
+    this.deltaTime = deltaTime
+    this.frame = frame
+
     this.subs = {
-      time: performance.now(),
+      time,
+      deltaTime,
+      frame,
     }
   }
 }
