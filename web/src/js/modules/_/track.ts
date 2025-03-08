@@ -80,7 +80,6 @@ export class Track extends Observe {
       )
     )
 
-    // console.log(this.value)
     this.handleScroll?.(this.value)
     this.config.callback?.(this.value)
   }
@@ -93,33 +92,24 @@ export class Track extends Observe {
   }
 }
 
-// ---------
+// utils
 function computeBounds(el: HTMLElement, config: typeof DEFAULT_CONFIG) {
   const bounds = clientRect(el)
+  const { top: topPos, bottom: bottomPos, wh } = bounds
 
-  switch (config.top) {
-    case "top":
-      bounds.top = bounds.top
-      break
-    case "center":
-      bounds.top = bounds.top - bounds.wh / 2
-      break
-    case "bottom":
-      bounds.top = bounds.top - bounds.wh
-      break
-  }
+  const centerOffset = wh / 2
 
-  switch (config.bottom) {
-    case "top":
-      bounds.bottom = bounds.bottom
-      break
-    case "center":
-      bounds.bottom = bounds.bottom - bounds.wh / 2
-      break
-    case "bottom":
-      bounds.bottom = bounds.bottom - bounds.wh
-      break
-  }
+  bounds.top =
+    topPos -
+    (config.top === "center" ? centerOffset : config.top === "bottom" ? wh : 0)
+
+  bounds.bottom =
+    bottomPos -
+    (config.bottom === "center"
+      ? centerOffset
+      : config.bottom === "bottom"
+        ? wh
+        : 0)
 
   return bounds
 }
