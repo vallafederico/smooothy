@@ -1,8 +1,13 @@
 import { Observe } from "./_/observe"
+import { Track } from "./_/track"
 
-export class Callout extends Observe {
+export class Callout extends Track {
   constructor(element: HTMLElement) {
     super(element)
     // console.log(this)
+  }
+
+  handleScroll = (value: number) => {
+    // console.log(value)
   }
 }

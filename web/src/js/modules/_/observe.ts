@@ -2,10 +2,8 @@ interface ObserveConfig {
   root?: HTMLElement | null
   rootMargin?: string
   threshold?: number
-}
-
-interface ObserveParams {
   autoStart?: boolean
+  once?: boolean
 }
 
 interface ObserveEventData {
@@ -15,9 +13,8 @@ interface ObserveEventData {
 
 export class Observe {
   element: HTMLElement
-  config: ObserveConfig
+  #config: ObserveConfig
   #observer: IntersectionObserver
-
   isIn: ((data: ObserveEventData) => void) | undefined
   isOut: ((data: ObserveEventData) => void) | undefined
 
@@ -28,29 +25,34 @@ export class Observe {
 
   constructor(
     element: HTMLElement,
-    params: ObserveParams = { autoStart: true },
-    config: ObserveConfig = { root: null, rootMargin: "0px", threshold: 0.5 }
+    config: ObserveConfig = {
+      root: null,
+      rootMargin: "0px",
+      threshold: 0.1,
+      autoStart: true,
+      once: false,
+    }
   ) {
     this.#handleIntersection = this.#handleIntersection.bind(this)
     this.element = element
-    this.config = config
+    this.#config = config
     this.inView = false
 
     this.#create()
 
-    if (params.autoStart) this.start()
+    if (config.autoStart ?? true) this.start()
   }
 
   #create() {
     this.#observer = new IntersectionObserver(this.#handleIntersection, {
-      ...this.config,
-      threshold: [0, this.config.threshold || 0.1],
+      ...this.#config,
+      threshold: [0, this.#config.threshold || 0.1],
     })
   }
 
   #handleIntersection = ([entry]: IntersectionObserverEntry[]) => {
     const { isIntersecting, intersectionRatio, boundingClientRect } = entry
-    const threshold = this.config.threshold || 0.1
+    const threshold = this.#config.threshold || 0.1
 
     if (this.#wasIntersecting !== null) {
       this.#lastDirection = isIntersecting
@@ -74,6 +76,7 @@ export class Observe {
   }
 
   #isIn(entry: IntersectionObserverEntry, direction: number) {
+    if (this.#config.once && this.inView) this.stop()
     // console.log("IN", direction)
 
     this.inView = true
