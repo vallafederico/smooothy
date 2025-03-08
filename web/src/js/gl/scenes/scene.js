@@ -1,6 +1,6 @@
 import { Scene } from "three"
-import { Quad } from "../quad"
 import { Dom } from "../dom"
+// import { Quad } from "../quad"
 // import { Gl } from "./gl";
 
 export default class extends Scene {

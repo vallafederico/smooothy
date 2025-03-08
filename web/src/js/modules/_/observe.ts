@@ -4,6 +4,7 @@ interface ObserveConfig {
   threshold?: number
   autoStart?: boolean
   once?: boolean
+  callback?: (data: ObserveEventData) => void
 }
 
 interface ObserveEventData {
@@ -19,6 +20,15 @@ export class Observe {
   protected isOut(data: ObserveEventData): void {}
 
   inView: boolean
+  callback: ({
+    entry,
+    direction,
+    isIn,
+  }: {
+    entry: IntersectionObserverEntry
+    direction: number
+    isIn: boolean
+  }) => void
 
   #lastDirection: number | null = null
   #wasIntersecting: boolean | null = null
@@ -31,12 +41,14 @@ export class Observe {
       threshold: 0.1,
       autoStart: true,
       once: false,
+      callback: null,
     }
   ) {
     this.#handleIntersection = this.#handleIntersection.bind(this)
     this.element = element
     this.#config = config
     this.inView = false
+    this.callback = config.callback
 
     this.#create()
 
@@ -65,13 +77,14 @@ export class Observe {
     }
 
     this.#wasIntersecting = isIntersecting
-
     if (intersectionRatio === 0) {
       this.inView = false
       this.#isOut(entry, this.#lastDirection!)
+      this.callback?.({ entry, direction: this.#lastDirection!, isIn: false })
     } else if (intersectionRatio >= threshold) {
       this.inView = true
       this.#isIn(entry, this.#lastDirection!)
+      this.callback?.({ entry, direction: this.#lastDirection!, isIn: true })
     }
   }
 

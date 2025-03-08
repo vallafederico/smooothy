@@ -1,5 +1,6 @@
 import Lenis from "lenis"
 import gsap from "./gsap"
+import { Gl } from "./gl/gl"
 
 const SCROLL_CONFIG = {
   // wrapper: document.body,
@@ -19,6 +20,7 @@ class _Scroll extends Lenis {
   max = window.innerHeight
   speed = 0
   percent = 0
+  ygl = window.scrollY * Gl.vp.px
 
   constructor() {
     super(SCROLL_CONFIG)
@@ -26,9 +28,11 @@ class _Scroll extends Lenis {
   }
 
   #init() {
-    gsap.ticker.add(time => this.raf(time * 1000))
     this.percent = this.y / (document.body.scrollHeight - this.max)
+    this.ygl = this.y * Gl.vp.px
+
     this.on("scroll", this.#handleScroll)
+    gsap.ticker.add(time => this.raf(time * 1000))
   }
 
   #handleScroll = ({ scroll, limit, velocity, progress }) => {
@@ -36,6 +40,7 @@ class _Scroll extends Lenis {
     this.max = limit
     this.speed = velocity
     this.percent = progress
+    this.ygl = scroll * Gl.vp.px
     this.#subs = { scroll, limit, velocity, progress }
   }
 
@@ -48,8 +53,16 @@ class _Scroll extends Lenis {
     this.#subscribers.forEach(subscriber => subscriber.fn(value))
   }
 
-  subscribe(fn: (time: number) => void, id = Symbol()) {
-    this.#subscribers.push({ fn, id })
+  subscribe(fn: (time: number) => void, priority = 5, id = Symbol()) {
+    const subscriber = { fn, id, priority }
+    const index = this.#subscribers.findIndex(sub => sub.priority <= priority)
+
+    if (index === -1) {
+      this.#subscribers.push(subscriber)
+    } else {
+      this.#subscribers.splice(index, 0, subscriber)
+    }
+
     return () => this.#unsubscribe(id)
   }
 
