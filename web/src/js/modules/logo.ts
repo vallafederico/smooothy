@@ -32,7 +32,7 @@ export class Logo {
     this.element.onmouseenter = () => {
       gsap.to(this.svg, {
         ...this.anim,
-        ...randomXY,
+        ...randomXY(20),
       })
       this.scheduleReset()
     }
