@@ -8,3 +8,7 @@
     visibility: hidden;
   }
 }
+
+[data-module="alpha"] {
+  visibility: hidden;
+}
