@@ -1,10 +1,48 @@
-export class Bouncy {
+import { Track } from "./_/track"
+import gsap from "../gsap"
+
+// (*) IDEA make it based on vertical or not
+export class Bouncy extends Track {
   svg: SVGGElement[]
 
-  constructor(private element: HTMLElement) {
+  #anim = null
+  anim = {
+    duration: 1,
+    yPercent: 0,
+    xPercent: 0,
+    scale: 1,
+    stagger: {
+      each: 0.06,
+      from: "random",
+    },
+  }
+
+  constructor(element: HTMLElement) {
+    super(element)
     this.svg = [...this.element.querySelector("svg").children].filter(
       (el): el is SVGGElement => el instanceof SVGGElement
     )
-    // console.log(this.svg)
+
+    this.isOut()
+  }
+
+  handleScroll = value => {
+    // console.log(value)
+  }
+
+  isIn = ({ direction }) => {
+    this.#anim = gsap.to(this.svg, {
+      ...this.anim,
+    })
+  }
+
+  isOut = ({ direction } = { direction: -1 }) => {
+    if (this.#anim) this.#anim.kill()
+
+    gsap.set(this.svg, {
+      yPercent: i => 80 * -direction,
+      xPercent: i => (i - this.svg.length / 2) * 50,
+      scale: 0,
+    })
   }
 }

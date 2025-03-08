@@ -93,7 +93,7 @@ export class Observe {
     // console.log("IN", direction)
 
     this.inView = true
-    this.isIn?.({ entry, direction })
+    this.isIn?.({ entry, direction: direction || -1 })
   }
 
   #isOut(entry: IntersectionObserverEntry, direction: number) {
@@ -101,7 +101,7 @@ export class Observe {
     // console.log("OUT", direction)
 
     this.inView = false
-    this.isOut?.({ entry, direction })
+    this.isOut?.({ entry, direction: direction || -1 })
   }
 
   start() {
