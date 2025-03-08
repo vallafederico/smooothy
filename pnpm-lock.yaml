@@ -88,6 +88,9 @@ importers:
       prettier-plugin-tailwindcss:
         specifier: ^0.6.11
         version: 0.6.11(prettier-plugin-astro@0.14.1)(prettier@3.5.3)
+      vite-plugin-glsl:
+        specifier: ^1.3.3
+        version: 1.3.3(rollup@4.34.9)(vite@6.2.0(jiti@2.4.2)(lightningcss@1.29.1))
       vite-plugin-qrcode:
         specifier: ^0.2.4
         version: 0.2.4(vite@6.2.0(jiti@2.4.2)(lightningcss@1.29.1))
@@ -2356,6 +2359,12 @@ packages:
     resolution: {integrity: sha512-a1nzURqO7DDmnXqabFOliz908FRmIppkBKsJthS8rbe8hBEXwEwe4C3Pp33Z1JoFCYfVL4kTOMLKk0ZZxREIeA==}
     peerDependencies:
       vite: ^2.6.0 || ^3.0.0 || ^4.0.0 || ^5.0.0-0 || ^6.0.0-0
+
+  vite-plugin-glsl@1.3.3:
+    resolution: {integrity: sha512-ZN1PjwPN9MTqt75SAZHcNr9A4IFtxFxZsPwApVuhhnSSeDPk6ezD8LUmcoTQtZwerNT3vWiwv3+zSspT+8yInQ==}
+    engines: {node: '>= 20.17.0', npm: '>= 10.8.3'}
+    peerDependencies:
+      vite: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0
 
   vite-plugin-inspect@0.8.9:
     resolution: {integrity: sha512-22/8qn+LYonzibb1VeFZmISdVao5kC22jmEKm24vfFE8siEn47EpVcCLYMv6iKOYMJfjSvSJfueOwcFCkUnV3A==}
@@ -5033,6 +5042,13 @@ snapshots:
   vite-hot-client@0.2.4(vite@6.2.0(jiti@2.4.2)(lightningcss@1.29.1)):
     dependencies:
       vite: 6.2.0(jiti@2.4.2)(lightningcss@1.29.1)
+
+  vite-plugin-glsl@1.3.3(rollup@4.34.9)(vite@6.2.0(jiti@2.4.2)(lightningcss@1.29.1)):
+    dependencies:
+      '@rollup/pluginutils': 5.1.4(rollup@4.34.9)
+      vite: 6.2.0(jiti@2.4.2)(lightningcss@1.29.1)
+    transitivePeerDependencies:
+      - rollup
 
   vite-plugin-inspect@0.8.9(rollup@4.34.9)(vite@6.2.0(jiti@2.4.2)(lightningcss@1.29.1)):
     dependencies:
