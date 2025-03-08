@@ -18,8 +18,13 @@ export class Gl {
   static mouse = { x: 0, y: 0 }
 
   static {
+    const container = document.querySelector('[data-gl="c"]')
+    if (container) this.startup(container)
+  }
+
+  static startup(container) {
     this.vp = {
-      container: document.querySelector('[data-gl="c"]'),
+      container: container,
       w: window.innerWidth,
       h: window.innerHeight,
       aspect: () => {
