@@ -1,6 +1,8 @@
 export const LINKS = {
   github: "https://github.com/vallafederico/smooothy",
   twitter: "https://federic.ooo/s/twitter",
+  instagram: "https://federic.ooo/s/instagram",
+  website: "https://federic.ooo",
 }
 
 export const IN_USE = {

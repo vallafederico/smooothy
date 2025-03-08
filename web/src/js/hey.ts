@@ -164,7 +164,9 @@ const proxyHandler: ProxyHandler<ReturnType<typeof State.getProxy>> = {
   },
 }
 
-export default new Proxy(State.getProxy(), proxyHandler)
+const _hey = new Proxy(State.getProxy(), proxyHandler)
+export default _hey
+export const hey = _hey
 
 // Allow typing the state structure
 type StateSchema = {

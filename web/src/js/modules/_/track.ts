@@ -27,8 +27,8 @@ export class Track extends Observe {
     callback?: (value: number) => void
   }
 
-  resize?: (bounds: any) => void
-  handleScroll?: (value: number) => void
+  protected resize?: (bounds: any) => void
+  protected handleScroll?: (value: number) => void
 
   #scrollSub: () => void
   #resizeSub: () => void
@@ -92,7 +92,6 @@ function computeBounds(el: HTMLElement, config: typeof DEFAULT_CONFIG) {
   const bounds = clientRect(el)
   const { top: topPos, bottom: bottomPos, wh } = bounds
 
-  // Calculate offsets once
   const centerOffset = wh / 2
 
   bounds.top =

@@ -20,17 +20,15 @@ export class Subscribable {
 }
 
 class _Resize extends Subscribable {
+  #observer: ResizeObserver
   window = {
     innerWidth: window.innerWidth,
     innerHeight: window.innerHeight,
   }
 
-  #observer: ResizeObserver
-
   constructor() {
     super()
     this.#observer = new ResizeObserver(this.handleResize)
-    // Observe the document body by default
     this.#observer.observe(document.body)
   }
 
@@ -49,12 +47,10 @@ class _Resize extends Subscribable {
     }
   }
 
-  // Add method to observe different elements
   observe(element: Element) {
     this.#observer.observe(element)
   }
 
-  // Add method to stop observing
   unobserve(element: Element) {
     this.#observer.unobserve(element)
   }

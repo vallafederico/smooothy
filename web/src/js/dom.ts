@@ -1,4 +1,5 @@
 import { createModules } from "./modules/_/index"
+import hey from "./hey"
 
 export class Dom {
   #items = []

@@ -8,5 +8,7 @@ const defaults = {
 
 gsap.defaults(defaults)
 
+const random10 = () => Math.random() * 10
+
 export default gsap
-export { defaults }
+export { defaults, random10 }

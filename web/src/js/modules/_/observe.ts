@@ -15,8 +15,8 @@ export class Observe {
   element: HTMLElement
   #config: ObserveConfig
   #observer: IntersectionObserver
-  isIn: ((data: ObserveEventData) => void) | undefined
-  isOut: ((data: ObserveEventData) => void) | undefined
+  protected isIn(data: ObserveEventData): void {}
+  protected isOut(data: ObserveEventData): void {}
 
   inView: boolean
 
@@ -84,6 +84,7 @@ export class Observe {
   }
 
   #isOut(entry: IntersectionObserverEntry, direction: number) {
+    // if (!this.inView) return
     // console.log("OUT", direction)
 
     this.inView = false

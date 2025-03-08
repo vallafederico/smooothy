@@ -2,7 +2,7 @@
 @import "./fonts.css";
 @import "./variables.css";
 @import "./grid.css";
-
+@import "./modules.css";
 * {
   box-sizing: border-box;
 }
@@ -42,6 +42,8 @@ h4 {
   --font-sans: "Geist", sans-serif;
   --font-mono: "Geist Mono", monospace;
   --font-weird: "SK Pupok Solid", sans-serif;
+
+  --spacing-gutter: var(--gutter);
 
   --spacing-gx: 1.8rem;
   --spacing-lgx: 3.2rem;

@@ -1,8 +1,53 @@
 ---
+import { LINKS } from "~/content"
 import Svgg from "@c/svg/Svgg.astro"
+
+const CREDITS = [
+  {
+    name: "3d Models",
+    href: "https://google.com",
+  },
+  {
+    name: "Fonts",
+    href: "https://google.com/",
+  },
+]
 ---
 
-<footer data-s="footer" class="pb-xl">
-  <Svgg name="logo" class="h-auto w-full" />
-  <div class="px-gx">YOLO</div>
+<footer data-module="footer" class="pb-xl">
+  <figure class="h-[30vw]">
+    <Svgg name="logo" class="h-auto w-full" />
+    <figcaption class="sr-only">Smooothy logo</figcaption>
+  </figure>
+
+  <!-- links -->
+  <ul class="px-gx gap-gutter flex items-end">
+    <li class="md:w-grids-2 md:ml-grid-3 -translate-x-[15%]">
+      <p>Look mom I made this</p>
+      <a href={LINKS.website} target="_blank">HTTPS://FEDERIC.OOO</a>
+      <ul class="pt-md">
+        <li>
+          <a href={LINKS.instagram} target="_blank">Instagram</a>
+        </li>
+        <li>
+          <a href={LINKS.twitter} target="_blank">Twitter</a>
+        </li>
+      </ul>
+    </li>
+    <li class="md:w-grids-1 md:ml-grid-1">© 2025</li>
+    <li class="md:w-grids-1 md:ml-grid-3">
+      <h3>Credits</h3>
+      <ul>
+        {
+          CREDITS.map(credit => (
+            <li>
+              <a href={credit.href} target="_blank">
+                {credit.name}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </li>
+  </ul>
 </footer>
