@@ -1,5 +1,6 @@
 ---
 import Section from "@c/Section.astro"
+import BouncySvg from "./BouncySvg.astro"
 
 const CONTENT = {
   title: "AKA Fix it yourself :D",
@@ -18,7 +19,9 @@ const CONTENT = {
 ---
 
 <Section class="px-gx">
-  <p>Open</p>
+  <div>
+    <BouncySvg name="open" />
+  </div>
   <div class="flex">
     <div>
       <h2>{CONTENT.title}</h2>
@@ -34,5 +37,8 @@ const CONTENT = {
       }
     </ul>
   </div>
-  <p>Source</p>
+
+  <div>
+    <BouncySvg name="source" />
+  </div>
 </Section>

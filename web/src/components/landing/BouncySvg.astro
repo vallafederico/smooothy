@@ -1,0 +1,10 @@
+---
+import Svgg from "../svg/Svgg.astro"
+
+const { name, class: className } = Astro.props
+---
+
+<figure data-module="bouncy" class={className} role="img" aria-label={name}>
+  <Svgg name={name} class="size-full" />
+  <figcaption class="sr-only">{name}</figcaption>
+</figure>
