@@ -1,10 +1,20 @@
 import gsap from "~/js/gsap"
 
+// (*) IMPLEMENT PRIORITY
+
 export class Subscribable {
   #subscribers = []
 
-  subscribe(fn: (time: number) => void, id = Symbol()) {
-    this.#subscribers.push({ fn, id })
+  subscribe(fn: (time: number) => void, priority = 5, id = Symbol()) {
+    const subscriber = { fn, id, priority }
+    const index = this.#subscribers.findIndex(sub => sub.priority <= priority)
+
+    if (index === -1) {
+      this.#subscribers.push(subscriber)
+    } else {
+      this.#subscribers.splice(index, 0, subscriber)
+    }
+
     return () => this.#unsubscribe(id)
   }
 

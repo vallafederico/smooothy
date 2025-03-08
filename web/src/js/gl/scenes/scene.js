@@ -1,24 +1,32 @@
-import { Scene } from "three";
-import { Quad } from "../quad";
+import { Scene } from "three"
+import { Quad } from "../quad"
+import { Dom } from "../dom"
 // import { Gl } from "./gl";
 
 export default class extends Scene {
-  isOn = true;
+  isOn = true
 
   constructor(vp) {
-    super();
+    super()
     // this.vp = Gl.vp;
 
-    this.create();
+    this.create()
   }
 
   create() {
-    this.quad = new Quad();
-    this.add(this.quad);
+    // console.log("create")
+    // this.quad = new Quad()
+    // this.add(this.quad)
+
+    const dom = document.querySelector("[data-slider='food']").children[4]
+      .children[0]
+
+    this.dom = new Dom(dom)
+    this.add(this.dom)
   }
 
   render(t) {
-    this.quad?.render(t);
+    // this.quad?.render(t)
   }
 
   resize(vp) {

@@ -1,15 +1,15 @@
 import { WebGLRenderer, PerspectiveCamera } from "three"
 import { OrbitControls } from "three/addons/controls/OrbitControls.js"
-
-import Scene from "./scenes/scene.js"
+import { Raf, Resize } from "../utils/subscribable.js"
 import { Post } from "./post/index.js"
 
-import { Raf, Resize } from "../utils/subscribable.js"
+import Scene from "./scenes/scene.js"
 
 export const config = {
   // guiHidden: import.meta.env.PROD,
   clearColor: 0x000000,
   alpha: true,
+  controls: false,
 }
 
 export class Gl {
@@ -52,19 +52,21 @@ export class Gl {
 
     this.camera.position.set(0, 0, 2)
     this.controls = new OrbitControls(this.camera, this.renderer.domElement)
-    this.controls.enabled = false
+    this.controls.enabled = config.controls
 
-    Resize.subscribe(this.resize.bind(this))
+    Resize.subscribe(this.resize.bind(this), 100)
     this.init()
   }
 
   static async init() {
+    this.resize({ width: this.vp.w, height: this.vp.h })
+
     queueMicrotask(() => {
       this.scene = new Scene(this.vp)
       this.post = new Post()
-      this.paused = false
 
-      Raf.subscribe(this.render.bind(this))
+      this.paused = false
+      Raf.subscribe(this.render.bind(this), 100)
     })
   }
 
@@ -78,12 +80,16 @@ export class Gl {
   }
 
   static resize({ width, height }) {
+    // console.log("resize gl + attach values")
     this.vp.w = width
     this.vp.h = height
 
     this.renderer.setSize(this.vp.w, this.vp.h)
     this.camera.aspect = this.vp.w / this.vp.h
     this.camera.updateProjectionMatrix()
+
+    this.vp.viewSize = this.viewSize
+    this.vp.px = this.pixel
 
     this.scene?.resize(this.vp)
   }
@@ -96,5 +102,7 @@ export class Gl {
     return { w: height * (this.vp.w / this.vp.h), h: height }
   }
 
-  static get pixel() {}
+  static get pixel() {
+    return (this.viewSize.w / this.vp.w + this.viewSize.h / this.vp.h) / 2
+  }
 }

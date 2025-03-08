@@ -15,7 +15,7 @@ const SCROLL_CONFIG = {
 class _Scroll extends Lenis {
   #subscribers = []
 
-  y = window.scrollY
+  y = window.scrollY || 0
   max = window.innerHeight
   speed = 0
   percent = 0

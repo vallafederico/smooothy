@@ -1,20 +1,27 @@
 import { Mesh, PlaneGeometry } from "three"
 import { RawShaderMaterial, DoubleSide } from "three"
-import { Gl } from "../gl"
+import { clientRectGl } from "../../utils/client-rect"
+import { Resize } from "../../utils/subscribable"
 
 import vertexShader from "./vertex.vert"
 import fragmentShader from "./fragment.frag"
 
-export class Quad extends Mesh {
+export class Dom extends Mesh {
   geometry = new PlaneGeometry(1, 1, 1, 1)
   material = new Material()
 
-  constructor() {
+  constructor(element) {
     super()
+    this.element = element
+
+    Resize.subscribe(this.resize.bind(this))
   }
 
-  render(t) {
-    // console.log(t);
+  resize() {
+    this.bounds = clientRectGl(this.element)
+    this.scale.set(this.bounds.width, this.bounds.height, 1)
+    this.position.x = this.bounds.centerx
+    this.position.y = this.bounds.centery
   }
 }
 
