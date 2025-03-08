@@ -54,7 +54,7 @@ export class Gl {
     this.controls = new OrbitControls(this.camera, this.renderer.domElement)
     this.controls.enabled = config.controls
 
-    Resize.subscribe(this.resize.bind(this), 10)
+    Resize.subscribe(this.resize.bind(this), 100)
     this.init()
   }
 
@@ -66,7 +66,7 @@ export class Gl {
       this.post = new Post()
 
       this.paused = false
-      Raf.subscribe(this.render.bind(this), 10)
+      Raf.subscribe(this.render.bind(this), 100)
     })
   }
 
