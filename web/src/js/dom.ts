@@ -24,4 +24,9 @@ export class Dom {
   #destroy() {
     this.#items.forEach(item => item.destroy?.())
   }
+
+  /** Transitions */
+
+  handlePageOut() {}
+  handlePageIn() {}
 }
