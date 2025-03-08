@@ -41,16 +41,10 @@ class _Scroll extends Lenis {
     this.speed = velocity
     this.percent = progress
     this.ygl = scroll * Gl.vp.px
-    this.#subs = { scroll, limit, velocity, progress }
-  }
 
-  set #subs(value: {
-    scroll: number
-    limit: number
-    velocity: number
-    progress: number
-  }) {
-    this.#subscribers.forEach(subscriber => subscriber.fn(value))
+    this.#subscribers.forEach(subscriber =>
+      subscriber.fn({ scroll, limit, velocity, progress })
+    )
   }
 
   subscribe(fn: (time: number) => void, priority = 5, id = Symbol()) {

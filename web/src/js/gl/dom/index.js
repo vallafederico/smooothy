@@ -26,7 +26,7 @@ export class Dom extends Mesh {
     //   },
     // })
 
-    console.log(this)
+    // console.log(this)
   }
 
   #resize() {
@@ -35,13 +35,13 @@ export class Dom extends Mesh {
     this.position.x = this.bounds.centerx
     this.#scroll()
 
-    this.resize?.()
+    // this.resize?.()
   }
 
   #scroll() {
     this.position.y = this.bounds.centery + Scroll.ygl
 
-    this.scroll?.()
+    // this.scroll?.()
   }
 }
 

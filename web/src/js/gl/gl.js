@@ -80,7 +80,6 @@ export class Gl {
   }
 
   static resize({ width, height }) {
-    // console.log("resize gl + attach values")
     this.vp.w = width
     this.vp.h = height
 
