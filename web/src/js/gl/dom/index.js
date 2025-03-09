@@ -14,11 +14,6 @@ export const calculateSlidePosition = (index, slider) => {
   return (wrappedPos - index) * slider.viewport.itemWidth * Gl.vp.px
 }
 
-// (*) fix sync resize with slider when out of view
-
-let index = 0
-// const ind = [0, 1, 10]
-
 export class Dom extends Mesh {
   geometry = new PlaneGeometry(1, 1, 1, 1)
   material = new Material()
@@ -34,7 +29,6 @@ export class Dom extends Mesh {
     super()
     this.element = element
     this.index = index
-    index++
 
     // this.#observe = new Observe(this.element, {
     //   callback: ({ isIn }) => {
@@ -50,7 +44,6 @@ export class Dom extends Mesh {
   #resize() {
     this.bounds = clientRectGl(this.element)
     this.scale.set(this.bounds.width, this.bounds.height, 1)
-    this.bounds.centerx -= this.x
 
     this.position.x = this.bounds.centerx
     this.position.y = this.bounds.centery
@@ -64,10 +57,37 @@ export class Dom extends Mesh {
     this.scroll?.()
   }
 
-  onSlide(slider, value) {
-    this.x = value
-    // console.log(this.x)
-    this.position.x = this.bounds.centerx + this.x
+  // onSlide(slider, value) {
+  //   this.x = value
+  //   // console.log(this.x)
+  //   this.position.x = this.bounds.centerx + this.x
+  // }
+}
+
+export class NoScrollDom extends Mesh {
+  geometry = new PlaneGeometry(1, 1, 1, 1)
+  material = new Material()
+  frustumCulled = false
+
+  #isIn = false
+  x = 0
+
+  #resizer = Resize.subscribe(this.#resize.bind(this))
+
+  constructor(element) {
+    super()
+    this.element = element
+  }
+
+  #resize() {
+    this.bounds = clientRectGl(this.element)
+    this.scale.set(this.bounds.width, this.bounds.height, 1)
+
+    // this.position.x = this.bounds.centerx
+    // this.position.y = this.bounds.centery
+
+    // this.#scroll()
+    this.resize?.()
   }
 }
 
