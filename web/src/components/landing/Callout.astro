@@ -1,6 +1,12 @@
 ---
 import Section from "@c/Section.astro"
 import Svgg from "../svg/Svgg.astro"
+
+const texts = [
+  "Configurable customisable extendable",
+  "smooth bring your own whatever",
+  "slider (or carousel?) API.",
+]
 ---
 
 <Section class="px-gx flex justify-center">
@@ -12,17 +18,20 @@ import Svgg from "../svg/Svgg.astro"
       >
         <Svgg name="wave" />
       </span>
-      Configurable customisable extendable <span
+      <span> {texts[0]} </span>
+      <span
         data-module="draw"
         class="inline-flex w-[8rem] items-center justify-center"
         ><Svgg name="extend" /></span
-      > smooth bring your own whatever
+      >
+      <span> {texts[1]} </span>
       <span
         data-module="draw"
         class="inline-flex w-[6rem] items-center justify-center"
       >
         <Svgg name="slider" />
-      </span> slider (or carousel?) API.
+      </span>
+      <span> {texts[2]} </span>
     </h2>
   </div>
 </Section>

@@ -1,38 +1,8 @@
-/** underline hover effect */
-
-[data-css="hover-ul"] {
-  position: relative;
+/* --- opacity on hover */
+[data-hover="opacity"] {
+  transition: opacity 0.2s ease-out;
 }
 
-[data-css="hover-ul"]::before {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 1px;
-  background-color: white;
-
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.2s ease-in-out;
+[data-hover="opacity"]:hover {
+  opacity: 0.5;
 }
-
-[data-css="hover-ul"]:hover::before {
-  transform: scaleX(1);
-}
-
-/* [data-css="hover-ul"]::after {
-  content: attr(data-content);
-  position: absolute;
-  left: 0;
-  top: 120%;
-  width: 100%;
-  height: 100%;
-
-  transition: transform 0.2s ease-in-out;
-}
-
-[data-css="hover-ul"]:hover::after {
-  transform: translateY(-100%);
-} */

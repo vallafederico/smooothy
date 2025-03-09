@@ -8,7 +8,7 @@ export class Bouncy extends Track {
 
   #anim = null
   anim = {
-    duration: 1,
+    duration: 0.8,
     yPercent: 0,
     xPercent: 0,
     scale: 1,
@@ -45,7 +45,6 @@ export class Bouncy extends Track {
     gsap.set(this.svg, {
       yPercent: i => 80 * -direction,
       xPercent: i => (i - this.svg.length / 2) * 50,
-      scale: 0,
     })
   }
 }

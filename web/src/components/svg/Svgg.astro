@@ -16,7 +16,10 @@ const svgContent = await components[`./landing/${name}.svg`]?.()
 if (!svgContent) throw new Error(`SVG with name "${name}" not found`)
 
 const svgWithClass = className
-  ? (svgContent as string).replace("<svg", `<svg class="${className}"`)
+  ? (svgContent as string).replace(
+      "<svg",
+      `<svg style="overflow:visible" class="${className}"`
+    )
   : svgContent
 ---
 

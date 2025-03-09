@@ -63,10 +63,21 @@ const links = [
               "pointer-events-auto tracking-wide",
             ]}
             target={link.target}
+            data-module="alpha"
           >
             {!link.icon && <HoverUl text={link.label} />}
-            {link.icon && link.icon === "Twitter" && <Twitter width="2rem" />}
-            {link.icon && link.icon === "Github" && <Github width="2rem" />}
+            {link.icon && link.icon === "Twitter" && (
+              <figure data-hover="opacity">
+                <Twitter width="2rem" />
+                <figcaption class="sr-only">{link.label}</figcaption>
+              </figure>
+            )}
+            {link.icon && link.icon === "Github" && (
+              <figure data-hover="opacity">
+                <Github width="2rem" />
+                <figcaption class="sr-only">{link.label}</figcaption>
+              </figure>
+            )}
           </a>
         </li>
       ))

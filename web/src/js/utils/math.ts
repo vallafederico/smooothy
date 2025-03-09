@@ -67,3 +67,11 @@ export function degToRad(d: number): number {
 
 /** ------------ Bitwise **/
 export const isPowerOfTwo = (n: number): boolean => !!n && (n & (n - 1)) === 0
+
+export function symmetricMod(value: number, base: number): number {
+  let m = value % base
+  if (Math.abs(m) > base / 2) {
+    m = m > 0 ? m - base : m + base
+  }
+  return m
+}

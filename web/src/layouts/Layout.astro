@@ -3,7 +3,8 @@ import Script from "../components/Script.astro"
 import Nav from "../components/Nav.astro"
 import Css from "../components/Css.astro"
 import Grid from "../components/Grid.astro"
-const { class: className, nav } = Astro.props
+
+const { class: className, nav, isHome = false } = Astro.props
 ---
 
 <!doctype html>
@@ -21,6 +22,8 @@ const { class: className, nav } = Astro.props
       name="description"
       content="Smooth configurable extendable slider for creative code."
     />
+
+    <!-- {isHome && <script>history.scrollRestoration = "manual"</script>} -->
   </head>
   <body>
     <Nav>

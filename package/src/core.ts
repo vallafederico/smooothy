@@ -89,6 +89,7 @@ export class Core {
   touchStartX?: number
   scrollDirection?: "horizontal" | "vertical"
   parallaxValues?: number[]
+  webglValue: number = 0 // (*) ADD WEBGL VALUE TO SLIDER (better name)
 
   onSlideChange?: (current: number, previous: number) => void
   onResize?: (core: Core) => void

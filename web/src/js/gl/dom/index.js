@@ -6,12 +6,16 @@ import { Scroll } from "../../scroll"
 import { Gl } from "../gl"
 import vertexShader from "./vertex.vert"
 import fragmentShader from "./fragment.frag"
-// import { Observe } from "../../modules/_/observe"
+
+// (*) fix sync resize with slider when out of view
 
 export class Dom extends Mesh {
-  #isIn = false
   geometry = new PlaneGeometry(1, 1, 1, 1)
   material = new Material()
+  frustumCulled = false
+
+  #isIn = false
+  x = 0
 
   #resizer = Resize.subscribe(this.#resize.bind(this))
   #scroller = Scroll.subscribe(this.#scroll.bind(this))
@@ -30,7 +34,7 @@ export class Dom extends Mesh {
   #resize() {
     this.bounds = clientRectGl(this.element)
     this.scale.set(this.bounds.width, this.bounds.height, 1)
-    this.position.x = this.bounds.centerx
+    this.bounds.centerx -= this.x
     this.position.y = this.bounds.centery
 
     this.#scroll()
@@ -40,6 +44,11 @@ export class Dom extends Mesh {
   #scroll() {
     this.position.y = this.bounds.centery + Scroll.y * Gl.vp.px
     this.scroll?.()
+  }
+
+  onSlide(x) {
+    this.x = x
+    this.position.x = x + this.bounds.centerx
   }
 }
 
