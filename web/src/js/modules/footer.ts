@@ -32,18 +32,19 @@ export class Footer extends Track {
     return gsap
       .timeline({
         paused: true,
-        ease: "power2.in",
+        ease: "linear",
       })
       .fromTo(
         this.svg,
         {
           yPercent: 150,
-          rotate: () => Math.random() * 120 - 60,
+          scale: 0.2,
+          // rotate: () => Math.random() * 120 - 60,
         },
         {
           yPercent: 0,
           rotate: 0,
-          // ease: "none",
+          scale: 1,
           stagger: {
             each: 0.05,
             from: "random",
