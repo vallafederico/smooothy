@@ -4,7 +4,11 @@ import { Raf } from "../utils/subscribable"
 import { Gl } from "../gl/gl"
 import { symmetricMod } from "../utils/math"
 
-// (*) fix sync resize with webgl when out of view
+export const calculateSlidePosition = (index, slider) => {
+  const unitPos = slider.current + index
+  const wrappedPos = symmetricMod(unitPos, slider.items.length)
+  return (wrappedPos - index) * slider.viewport.itemWidth * Gl.vp.px
+}
 
 export class FSlider extends Core {
   #raf = Raf.subscribe(this.update.bind(this), 11)
@@ -14,9 +18,10 @@ export class FSlider extends Core {
   }
 
   onUpdate = () => {
-    if (Gl.scene && Gl.scene.children[0]) {
-      Gl.scene.children[0].children.forEach((child, i) => {
-        child.onSlide?.(this)
+    if (Gl.scene && Gl.scene.fslider) {
+      Gl.scene.fslider.children.forEach((child, i) => {
+        const arr = calculateSlidePosition(i, this)
+        child.onSlide?.(arr)
       })
     }
   }

@@ -64,8 +64,9 @@ export class Dom extends Mesh {
     this.scroll?.()
   }
 
-  onSlide(slider) {
-    this.x = calculateSlidePosition(this.index, slider)
+  onSlide(slider, value) {
+    this.x = value
+    // console.log(this.x)
     this.position.x = this.bounds.centerx + this.x
   }
 }
