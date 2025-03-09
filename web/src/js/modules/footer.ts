@@ -20,14 +20,6 @@ export class Footer extends Track {
     this.tl = this._tl
   }
 
-  // isIn = () => {
-  //   // console.log("in")
-  // }
-
-  // isOut = () => {
-  //   // console.log("out")
-  // }
-
   get _tl() {
     const tl = gsap
       .timeline({
@@ -37,28 +29,27 @@ export class Footer extends Track {
       .fromTo(
         this.svg,
         {
-          yPercent: 150,
+          yPercent: 50,
           // scale: 0.2,
-          rotate: () => Math.random() * 120 - 60,
+          // rotate: () => Math.random() * 120 - 60,
         },
         {
           yPercent: 0,
           rotate: 0,
           scale: 1,
-          ease: "back.out(.3)",
+          ease: "linear",
           stagger: {
             each: 0.05,
             from: "random",
           },
         }
       )
-    console.log(tl)
+    // console.log(tl)
 
-    return tl
+    return { tl, duration: tl.duration() }
   }
 
   handleScroll = () => {
-    console.log(this.value * this.tl.duration())
-    this.tl.seek(this.value * this.tl.duration())
+    this.tl.tl.seek(this.value * this.tl.duration)
   }
 }
