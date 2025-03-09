@@ -514,6 +514,7 @@ export default Core
 /*
 DOCS +
 - [ ] add the callable resize method to the documentation
+- [ ] add symmetricMod to named exports
     
 */
 
@@ -527,5 +528,5 @@ TODO
     symmetricMod(this.current, this.items.length) *
     this.viewport.itemWidth *
     Gl.vp.px
-     
+
 */

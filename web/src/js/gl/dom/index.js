@@ -6,8 +6,18 @@ import { Scroll } from "../../scroll"
 import { Gl } from "../gl"
 import vertexShader from "./vertex.vert"
 import fragmentShader from "./fragment.frag"
+import { symmetricMod } from "../../utils/math"
+
+export const calculateSlidePosition = (index, slider) => {
+  const unitPos = slider.current + index
+  const wrappedPos = symmetricMod(unitPos, slider.items.length)
+  return (wrappedPos - index) * slider.viewport.itemWidth * Gl.vp.px
+}
 
 // (*) fix sync resize with slider when out of view
+
+let index = 0
+// const ind = [0, 1, 10]
 
 export class Dom extends Mesh {
   geometry = new PlaneGeometry(1, 1, 1, 1)
@@ -23,18 +33,26 @@ export class Dom extends Mesh {
   constructor(element) {
     super()
     this.element = element
+    this.index = index
+    index++
 
     // this.#observe = new Observe(this.element, {
     //   callback: ({ isIn }) => {
     //     this.#isIn = isIn
     //   },
     // })
+
+    // setTimeout(() => {
+    //   this.#resize()
+    // }, 40)
   }
 
   #resize() {
     this.bounds = clientRectGl(this.element)
     this.scale.set(this.bounds.width, this.bounds.height, 1)
     this.bounds.centerx -= this.x
+
+    this.position.x = this.bounds.centerx
     this.position.y = this.bounds.centery
 
     this.#scroll()
@@ -46,9 +64,9 @@ export class Dom extends Mesh {
     this.scroll?.()
   }
 
-  onSlide(x) {
-    this.x = x
-    this.position.x = x + this.bounds.centerx
+  onSlide(slider) {
+    this.x = calculateSlidePosition(this.index, slider)
+    this.position.x = this.bounds.centerx + this.x
   }
 }
 

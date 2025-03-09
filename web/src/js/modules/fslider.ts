@@ -15,14 +15,9 @@ export class FSlider extends Core {
 
   onUpdate = () => {
     if (Gl.scene && Gl.scene.children[0]) {
-      // console.log(this.parallaxValues[0])
-
-      const x =
-        symmetricMod(this.current, this.items.length) *
-        this.viewport.itemWidth *
-        Gl.vp.px
-
-      Gl.scene.children[0].onSlide(x)
+      Gl.scene.children[0].children.forEach((child, i) => {
+        child.onSlide?.(this)
+      })
     }
   }
 }

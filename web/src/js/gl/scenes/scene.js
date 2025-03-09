@@ -1,6 +1,6 @@
 import { Scene } from "three"
 import { Dom } from "../dom"
-
+import { FSlider } from "../fslider"
 // import { Quad } from "../quad"
 // import { Gl } from "./gl";
 
@@ -15,15 +15,12 @@ export default class extends Scene {
   }
 
   create() {
-    // console.log("create")
-    // this.quad = new Quad()
-    // this.add(this.quad)
-
-    const dom = document.querySelector("[data-slider='wrapper']").children[1]
-      .children[0]
-
-    this.dom = new Dom(dom)
-    this.add(this.dom)
+    /** -- slider */
+    const slider = document.querySelector('[data-module="fslider"]')
+    if (slider) {
+      this.fslider = new FSlider(slider)
+      this.add(this.fslider)
+    }
   }
 
   render(t) {
