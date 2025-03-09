@@ -18,6 +18,7 @@ const DEFAULT_CONFIG: {
 
 export class Track extends Observe {
   value = 0
+  #init = false
 
   bounds: any
   config: {
@@ -52,6 +53,8 @@ export class Track extends Observe {
     this.#resize()
     this.#scrollSub = Scroll.subscribe(this.#handleScroll)
     this.#resizeSub = Resize.subscribe(this.#resize)
+    this.#handleScroll()
+    this.#init = true
   }
 
   #resize = () => {
@@ -61,7 +64,7 @@ export class Track extends Observe {
   }
 
   #handleScroll = () => {
-    if (!this.inView) return
+    if (!this.inView && !this.#init) return
     this.value = clamp(
       0,
       1,

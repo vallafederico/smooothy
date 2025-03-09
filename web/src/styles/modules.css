@@ -1,14 +1,17 @@
 /**** globals */
 
-/**** logo */
+/**** INITIAL STATES */
+@media (prefers-reduced-motion: no-preference) {
+  /**** --- logo */
+  [data-module="logo"] {
+    svg g {
+      /* outline: 1px solid red; */
+      visibility: hidden;
+    }
+  }
 
-[data-module="logo"] {
-  svg g {
-    /* outline: 1px solid red; */
+  /**** --- alpha */
+  [data-module="alpha"] {
     visibility: hidden;
   }
-}
-
-[data-module="alpha"] {
-  visibility: hidden;
 }

@@ -1,16 +1,58 @@
-import { Observe } from "./_/observe"
+import { Track } from "./_/track"
+import gsap from "../gsap"
 
-export class Footer extends Observe {
+export class Footer extends Track {
+  svg: SVGElement[]
+  lerped: number = 0
+  tl: any
+
   constructor(element: HTMLElement) {
-    super(element)
-    // console.log(element)
+    super(element, {
+      top: "bottom",
+      bottom: "bottom",
+      bounds: [0, 1],
+    })
+    this.element = element
+    this.svg = [...element.querySelector("svg").children].map(
+      child => child as SVGElement
+    )
+
+    this.tl = this._tl
   }
 
-  isIn = () => {
-    // console.log("in")
+  // isIn = () => {
+  //   // console.log("in")
+  // }
+
+  // isOut = () => {
+  //   // console.log("out")
+  // }
+
+  get _tl() {
+    return gsap
+      .timeline({
+        paused: true,
+        ease: "power2.in",
+      })
+      .fromTo(
+        this.svg,
+        {
+          yPercent: 150,
+          rotate: () => Math.random() * 120 - 60,
+        },
+        {
+          yPercent: 0,
+          rotate: 0,
+          // ease: "none",
+          stagger: {
+            each: 0.05,
+            from: "random",
+          },
+        }
+      )
   }
 
-  isOut = () => {
-    // console.log("out")
+  handleScroll = () => {
+    this.tl.seek(this.value)
   }
 }

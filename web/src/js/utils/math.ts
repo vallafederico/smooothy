@@ -33,6 +33,7 @@ export function damp(
   lambda: number,
   dt: number = Raf.deltaTime
 ): number {
+  // console.log(Raf.deltaTime, current, target, lambda)
   return lerp(current, target, 1 - Math.exp(-lambda * dt))
 }
 
