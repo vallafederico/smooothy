@@ -29,31 +29,36 @@ export class Footer extends Track {
   // }
 
   get _tl() {
-    return gsap
+    const tl = gsap
       .timeline({
         paused: true,
-        ease: "linear",
+        ease: "none",
       })
       .fromTo(
         this.svg,
         {
           yPercent: 150,
-          scale: 0.2,
-          // rotate: () => Math.random() * 120 - 60,
+          // scale: 0.2,
+          rotate: () => Math.random() * 120 - 60,
         },
         {
           yPercent: 0,
           rotate: 0,
           scale: 1,
+          ease: "back.out(.3)",
           stagger: {
             each: 0.05,
             from: "random",
           },
         }
       )
+    console.log(tl)
+
+    return tl
   }
 
   handleScroll = () => {
-    this.tl.seek(this.value)
+    console.log(this.value * this.tl.duration())
+    this.tl.seek(this.value * this.tl.duration())
   }
 }
