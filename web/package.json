@@ -19,7 +19,7 @@
     "lenis": "^1.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "smooothy": "0.0.15",
+    "smooothy": "0.0.17",
     "solid-js": "^1.9.5",
     "tailwindcss": "^4.0.9",
     "three": "^0.174.0",
