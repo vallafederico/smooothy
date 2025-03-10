@@ -41,24 +41,26 @@ const SLIDES = Array.from({ length: letters.length }, (_, i) => i)
         <ul
           data-configure
           data-module="alpha"
-          class="flex flex-col gap-1 font-mono text-sm tracking-widest"
+          class="[&_span]:transition-duration-300 flex flex-col gap-1 font-mono text-sm tracking-widest [&_span]:transition-opacity"
         >
           <li>
             <button>
               <p>
-                ENABLE <span>ON</span> / <span class="opacity-50">OFF</span>
+                ENABLE [<span>ON</span> / <span class="opacity-50">OFF</span>]
               </p>
             </button>
           </li>
           <li>
             <button>
-              <p>SNAP <span>ON</span> / <span class="opacity-50">OFF</span></p>
+              <p>
+                SNAP [<span>ON</span> / <span class="opacity-50">OFF</span>]
+              </p>
             </button>
           </li>
           <li>
             <button>
               <p>
-                INFINITE <span>ON</span> / <span class="opacity-50">OFF</span>
+                INFINITE [<span>ON</span> / <span class="opacity-50">OFF</span>]
               </p>
             </button>
           </li>
@@ -76,12 +78,22 @@ const SLIDES = Array.from({ length: letters.length }, (_, i) => i)
           <Svgg name="read" />
         </figure>
         <div class="flex font-mono text-sm tracking-widest">
-          <div data-module="alpha" class="flex w-1/2 flex-col gap-2">
+          <div
+            data-module="alpha"
+            data-delay={0.2}
+            class="flex w-1/2 flex-col gap-2"
+          >
             <p class="flex w-[80%] justify-between">
               <span>SPEED</span>
               <span data-read="speed">0.000</span>
             </p>
-            <div>
+            <div class="relative">
+              <div
+                data-direction
+                class="absolute inset-0 flex w-1/2 items-center justify-center opacity-50"
+              >
+                +0
+              </div>
               <svg class="w-1/2" viewBox="0 0 100 100">
                 <circle
                   cx="50"
@@ -104,8 +116,8 @@ const SLIDES = Array.from({ length: letters.length }, (_, i) => i)
             </div>
           </div>
 
-          <ul data-module="alpha" class="flex w-1/2 flex-col gap-3">
-            <li class="">
+          <ul class="flex w-1/2 flex-col gap-3">
+            <li data-module="alpha" data-delay={0.25} class="">
               <p class="flex justify-between">
                 <span>CURRENT</span>
                 <span data-read="current">0.000</span>
@@ -115,7 +127,7 @@ const SLIDES = Array.from({ length: letters.length }, (_, i) => i)
                 </div>
               </div>
             </li>
-            <li class="">
+            <li data-module="alpha" data-delay={0.35} class="">
               <p class="flex justify-between">
                 <span>TARGET</span>
                 <span data-read="target">0.000</span>
@@ -125,7 +137,7 @@ const SLIDES = Array.from({ length: letters.length }, (_, i) => i)
                 </div>
               </div>
             </li>
-            <li class="">
+            <li data-module="alpha" data-delay={0.45} class="">
               <p class="flex justify-between">
                 <span>PROGRESS</span>
                 <span data-read="progress">0.000</span>
@@ -149,7 +161,11 @@ const SLIDES = Array.from({ length: letters.length }, (_, i) => i)
         <figure class="py-xl" data-module="draw">
           <Svgg name="events" />
         </figure>
-        <div data-module="alpha" class="font-mono text-sm tracking-widest">
+        <div
+          data-module="alpha"
+          data-delay={0.4}
+          class="font-mono text-sm tracking-widest"
+        >
           <ul
             data-events
             data-css="progressive-fade"

@@ -6,86 +6,61 @@ import ExampleHead from "~/components/ExampleHead.astro"
 // vanilla
 import ControlsSlider from "~/components/vanilla/ControlsSlider.astro"
 import Parallax1Slider from "~/components/vanilla/Parallax1Slider.astro"
-import FullInterface from "~/components/vanilla/FullInterface.astro"
 import KeyboardControls from "~/components/vanilla/KeyboardControls.astro"
 import ParallaxSpeedSlider from "~/components/vanilla/ParallaxSpeed.astro"
 import LinkSlider from "~/components/vanilla/LinkSlider.astro"
+
+import ExamplePageHead from "~/components/ExamplePageHead.astro"
 ---
 
 <Layout>
-  <Section top class="flex flex-col justify-center">
-    <div class="px-gx md:px-ex-gx">
-      <h1 class="text-xl font-semibold">Examples.</h1>
-      <p class="max-w-[40ch] text-sm text-gray-500">
-        A collection of examples of the slider in action and implementation
-        ideas.
-      </p>
-      <ul class="py-3">
-        <li>
-          <a href="/examples/frameworks">Frameworks</a>
-        </li>
-      </ul>
-    </div>
-  </Section>
-
-  <Section id={"controls"} class="min-h-[80svh] pt-[1rem]">
-    <ExampleHead
-      title={"Full interface."}
-      description={"Available settings with toggle buttons and meters. Please don't do this in prod this is for figuring out how it works"}
-      features={[
-        "interface",
-        "speed",
-        "progress",
-        "enable",
-        "toggle",
-        "current",
-      ]}
-    />
-    <FullInterface />
-  </Section>
-
-  <Section id={"controls"} class="min-h-[80svh] pt-[10svh]">
-    <ExampleHead
-      title={"Controls."}
-      description={"Previous and next buttons, clickable dots."}
-      features={["Infinite", "Snap", "controls", "current"]}
-    />
-    <ControlsSlider />
-  </Section>
-
-  <Section id={"keyboard-controls"} class="min-h-[80svh] pt-[10svh]">
-    <ExampleHead
-      title={"Keyboard controls."}
-      description={"Arrow keys, spacebar, and number keys to navigate. Nothing on mobile."}
-      features={["Infinite", "Snap", "controls"]}
-    />
-    <KeyboardControls />
-  </Section>
-
-  <Section id={"parallax1"} class="min-h-[80svh] pt-[10svh]">
-    <ExampleHead
-      title={"Parallax."}
-      description={"Weird parallax effect but kinda exemplifies why you might want it."}
-      features={["Infinite", "Snap", "Parallax", "current"]}
-    />
-    <Parallax1Slider />
-  </Section>
-
-  <Section id={"parallax-speed"} class="min-h-[80svh] pt-[10svh]">
-    <ExampleHead
-      title={"Parallax + speed."}
-      description={"Parallax and speed used in conjunction to create a bouncy effect."}
-      features={["Infinite", "Snap", "Parallax", "Speed"]}
-    />
-    <ParallaxSpeedSlider />
-  </Section>
-
-  <Section id={"link-slider"} class="min-h-[80svh] pt-[10svh]">
-    <ExampleHead
-      title={"Link slider."}
-      description={"A slider that navigates to a link when clicked."}
-      features={["Infinite", "Snap", "Link"]}
-    />
-    <LinkSlider />
-  </Section>
+  <ExamplePageHead
+    title={"Examples."}
+    description={"A collection of examples of the slider in action and implementation ideas."}
+  />
 </Layout>
+
+<Section id={"controls"} class="min-h-[80svh] pt-[10svh]">
+  <ExampleHead
+    title={"Controls."}
+    description={"Previous and next buttons, clickable dots."}
+    features={["Infinite", "Snap", "controls", "current"]}
+  />
+  <ControlsSlider />
+</Section>
+
+<Section id={"keyboard-controls"} class="min-h-[80svh] pt-[10svh]">
+  <ExampleHead
+    title={"Keyboard controls."}
+    description={"Arrow keys, spacebar, and number keys to navigate. Nothing on mobile."}
+    features={["Infinite", "Snap", "controls"]}
+  />
+  <KeyboardControls />
+</Section>
+
+<Section id={"parallax1"} class="min-h-[80svh] pt-[10svh]">
+  <ExampleHead
+    title={"Parallax."}
+    description={"Weird parallax effect but kinda exemplifies why you might want it."}
+    features={["Infinite", "Snap", "Parallax", "current"]}
+  />
+  <Parallax1Slider />
+</Section>
+
+<Section id={"parallax-speed"} class="min-h-[80svh] pt-[10svh]">
+  <ExampleHead
+    title={"Parallax + speed."}
+    description={"Parallax and speed used in conjunction to create a bouncy effect."}
+    features={["Infinite", "Snap", "Parallax", "Speed"]}
+  />
+  <ParallaxSpeedSlider />
+</Section>
+
+<Section id={"link-slider"} class="min-h-[80svh] pt-[10svh]">
+  <ExampleHead
+    title={"Link slider."}
+    description={"A slider that navigates to a link when clicked."}
+    features={["Infinite", "Snap", "Link"]}
+  />
+  <LinkSlider />
+</Section>

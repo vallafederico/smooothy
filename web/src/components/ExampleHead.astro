@@ -1,17 +1,25 @@
 ---
-const { title, description, features } = Astro.props
+const { title, description, features, link } = Astro.props
+import Svgg from "./svg/Svgg.astro"
 ---
 
-<div class="px-gx py-gy md:pl-ex-gx pb-xl pt-[4rem]">
-  <h2 class="font-semibold">{title}</h2>
-  <p class="max-w-[40ch] text-sm text-gray-500">{description}</p>
-  <div class="flex max-w-[40ch] flex-wrap gap-2 py-2">
-    {
-      features.map((feature: string) => (
-        <p class="mono rounded-xl p-1 px-3 text-sm !text-[.5rem] leading-[1.4em] text-gray-400 outline outline-gray-700">
-          {feature}
-        </p>
-      ))
-    }
+<div class="px-gx py-gy pb-xl pt-[4rem]">
+  <div class="md:ml-grid-2">
+    <h2 class="text-md mb-2 font-semibold tracking-tighter">{title}</h2>
+    <p class="max-w-[40ch] text-gray-400">{description}</p>
+    <div class="flex max-w-[40ch] flex-wrap gap-2 py-4">
+      {
+        features.map((feature: string) => (
+          <p class="mono rounded-xl p-1 px-3 text-sm !text-[.5rem] leading-[1.4em] text-gray-300 outline outline-gray-800">
+            {feature}
+          </p>
+        ))
+      }
+    </div>
+
+    <a href={"link"} data-hover="opacity" class="flex items-center gap-2">
+      <span class="inline-block w-[2em]"><Svgg name="github" /></span>
+      <span class="font-mono">Github</span>
+    </a>
   </div>
 </div>

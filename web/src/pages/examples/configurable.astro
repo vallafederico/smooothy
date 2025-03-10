@@ -1,0 +1,17 @@
+---
+import Layout from "~/layouts/Layout.astro"
+import Section from "@c/Section.astro"
+import FullInterface from "~/components/vanilla/FullInterface.astro"
+
+import ExamplePageHead from "~/components/ExamplePageHead.astro"
+---
+
+<Layout>
+  <ExamplePageHead
+    title={"Configurable."}
+    description={"The full slider configuration and parameters interface exposed. Available settings with toggle buttons and meters. Please don't do this in prod this is for figuring out how it works."}
+  />
+
+  <FullInterface />
+  <div class="h-[40vh]"></div>
+</Layout>
