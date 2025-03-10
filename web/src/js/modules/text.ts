@@ -20,7 +20,7 @@ export class Text extends Observe {
 
   a = {
     duration: 1,
-    delay: 0.2 + Math.random() * 0.w,
+    delay: 0.2 + Math.random() * 0.2,
     autoAlpha: 1,
     // yPercent: 0,
     stagger: {
