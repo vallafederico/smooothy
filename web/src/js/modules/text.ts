@@ -1,7 +1,7 @@
 import { Observe } from "./_/observe"
 import SplitText from "@activetheory/split-text"
 import gsap, { reduced } from "../gsap"
-
+import { computeParams } from "./_/index"
 const DEFAULT = "words"
 
 const split = (element: HTMLElement) => {
@@ -41,8 +41,7 @@ export class Text extends Observe {
     if (reduced) return
 
     this.split = split(this.element).result
-    let delay = this.element.dataset.delay
-    if (delay) this.a.delay += parseFloat(delay)
+    computeParams(this.element, this.a)
   }
 
   isIn = () => {

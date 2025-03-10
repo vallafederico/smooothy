@@ -2,7 +2,10 @@
 import Svgg from "~/components/svg/Svgg.astro"
 
 const letters = ["S", "L", "I", "D", "E", "M", "E"]
-const SLIDES = Array.from({ length: letters.length }, (_, i) => i)
+const SLIDES = Array.from(
+  { length: letters.length * 2 },
+  (_, i) => i % letters.length
+)
 ---
 
 <div
@@ -29,17 +32,21 @@ const SLIDES = Array.from({ length: letters.length }, (_, i) => i)
         >
           <li>
             <button>
-              <p>ENABLE <span>ON</span>/<span>OFF</span></p>
+              <p>
+                ENABLE <span>ON</span> / <span class="opacity-50">OFF</span>
+              </p>
             </button>
           </li>
           <li>
             <button>
-              <p>SNAP <span>ON</span>/<span>OFF</span></p>
+              <p>SNAP <span>ON</span> / <span class="opacity-50">OFF</span></p>
             </button>
           </li>
           <li>
             <button>
-              <p>INFINITE <span>ON</span>/<span>OFF</span></p>
+              <p>
+                INFINITE <span>ON</span> / <span class="opacity-50">OFF</span>
+              </p>
             </button>
           </li>
         </ul>
@@ -139,23 +146,25 @@ const SLIDES = Array.from({ length: letters.length }, (_, i) => i)
     {
       SLIDES.map(slide => (
         <li class="flex aspect-[3/4] w-[var(--slide-width)] shrink-0 flex-col gap-2 p-2">
-          <div>
+          <div data-module="alpha" data-delay={0.0}>
             <p class="font-mono text-sm tracking-tighter">NO 00{slide}</p>
           </div>
           <div class="flex size-full shrink-0 items-center justify-center outline outline-gray-800">
-            <Svgg
-              class="w-[90%]"
-              name={"letter_" + letters[slide].toLowerCase()}
-            />
+            <figure data-a="letter">
+              <Svgg
+                class="w-[90%]"
+                name={"letter_" + letters[slide].toLowerCase()}
+              />
+            </figure>
           </div>
 
           <ul class="flex flex-col font-mono text-[.8em] tracking-wider">
-            <li>
+            <li data-module="alpha" data-delay={0.04}>
               <p>
                 PARALLAX <span>0.000</span>
               </p>
             </li>
-            <li>
+            <li data-module="alpha" data-delay={0.08}>
               <p>
                 SPEED <span>0.000</span>
               </p>

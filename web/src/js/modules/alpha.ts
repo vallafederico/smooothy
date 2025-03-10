@@ -1,11 +1,20 @@
 import gsap, { reduced } from "../gsap"
 import { Observe } from "./_/observe"
 
+import { computeParams } from "./_/index"
+
 export class Alpha extends Observe {
   #anim = null
+  a = {
+    duration: 1,
+    delay: 0.2,
+    autoAlpha: 1,
+  }
 
   constructor(element: HTMLElement) {
     super(element)
+
+    computeParams(this.element, this.a)
     this.isOut()
   }
 
@@ -13,9 +22,7 @@ export class Alpha extends Observe {
     if (reduced) return
 
     this.#anim = gsap.to(this.element, {
-      autoAlpha: 1,
-      duration: 1,
-      delay: 0.2,
+      ...this.a,
     })
   }
 

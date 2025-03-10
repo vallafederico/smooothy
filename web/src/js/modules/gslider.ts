@@ -9,9 +9,16 @@ export class GSlider extends Core {
     super(element.querySelector('[data-slider="wrapper"]'), {
       infinite: true,
     })
+
+    this.letters = [...element.querySelectorAll('[data-a="letter"]')]
   }
 
-  // onUpdate = () => {
-  //   // console.log("updating", this.current)
-  // }
+  onUpdate = ({ parallaxValues }) => {
+    this.letters.forEach((letter, i) => {
+      letter.style.transform = `
+      translateY(${Math.sin(parallaxValues[i] * 1) * 20}%)
+      scale(${Math.sin(Math.abs(parallaxValues[i]) * 0.5 + 0.5)})
+      `
+    })
+  }
 }
