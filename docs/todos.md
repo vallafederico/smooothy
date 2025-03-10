@@ -22,3 +22,7 @@
 - [ ] add symmetricMod to named exports
   - [ ] check all named exports and document those
 - [ ] check slider.paused and slider.snap in state control section
+
+## Website
+
+- [ ] check homepage links for docs
