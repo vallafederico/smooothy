@@ -1,23 +1,82 @@
 ---
-import { IN_USE } from "~/content"
+import { IN_USE, GITHUB } from "~/content"
 import Section from "@c/Section.astro"
+import Svgg from "../svg/Svgg.astro"
 ---
 
 <Section class="px-gx">
-  <h2>InUse</h2>
-  <p>Using Smooothy?</p>
-  <a href={IN_USE.url}>Slap your website here thanks {"<3"} </a>
+  <div class="ml-grids-3 py-[5rem]">
+    <div class="py-xl flex tracking-tighter">
+      <div class="w-grids-2">
+        <h2 data-module="text" data-type="chars" class="text-xl font-semibold">
+          In Use.
+        </h2>
+      </div>
+      <div>
+        <h3 data-module="text" data-type="words">Using Smooothy?</h3>
+        <a
+          data-hover="opacity"
+          data-module="text"
+          data-type="words"
+          href={GITHUB.pull_requests}
+          >Slap your website here thanks {"<3"}
+        </a>
+      </div>
+    </div>
 
-  <ul>
-    {
-      IN_USE.items.map(({ title, year, description, url }) => (
-        <li>
-          <h3>{title}</h3>
-          <p>{year}</p>
-          <p>{description}</p>
-          <a href={url}>{url}</a>
-        </li>
-      ))
-    }
-  </ul>
+    <figure data-module="draw" class="py-xl relative">
+      <Svgg name="drink" class="" />
+      <figcaption class="sr-only">A smoothie</figcaption>
+    </figure>
+
+    <ul class="flex flex-col gap-3 py-4">
+      <li
+        class="w-grids-6 gap-gutter grid grid-cols-6 py-8 font-mono text-xs uppercase"
+      >
+        <h3 data-module="text" data-type="chars" class="col-span-2">Title</h3>
+        <p data-module="text" data-type="chars" class="col-span-2">Year</p>
+        <p data-module="text" data-type="chars" class="col-span-2">By</p>
+      </li>
+      {
+        IN_USE.items.map(({ title, year, by, url, by_url }, i) => (
+          <li class="w-grids-6 gap-gutter grid grid-cols-6">
+            <a
+              data-hover="opacity"
+              href={url}
+              target="_blank"
+              class="col-span-2"
+            >
+              <h3
+                data-module="text"
+                data-type="chars"
+                data-delay={i * 0.15}
+                class="col-span-2"
+              >
+                {title}
+              </h3>
+            </a>
+            <p
+              data-module="text"
+              data-type="chars"
+              data-delay={i * 0.15}
+              class="col-span-2"
+            >
+              {year}
+            </p>
+
+            <a
+              data-hover="opacity"
+              href={by_url}
+              target="_blank"
+              class="col-span-2"
+            >
+              <p data-module="text" data-type="chars" data-delay={i * 0.15}>
+                {by}
+              </p>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
 </Section>

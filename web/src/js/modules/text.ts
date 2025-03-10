@@ -20,7 +20,7 @@ export class Text extends Observe {
 
   a = {
     duration: 1,
-    delay: 0.2,
+    delay: 0.2 + Math.random() * 0.w,
     autoAlpha: 1,
     // yPercent: 0,
     stagger: {
@@ -33,6 +33,9 @@ export class Text extends Observe {
   constructor(element: HTMLElement) {
     super(element)
     this.split = split(this.element).result
+    let delay = this.element.dataset.delay
+    if (delay) this.a.delay += parseFloat(delay)
+    // console.log(this.a.delay)
 
     this.isOut()
   }

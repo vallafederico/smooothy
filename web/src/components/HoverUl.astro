@@ -1,6 +1,6 @@
 ---
 const { text } = Astro.props
-const letters = text.split("")
+const letters = text.split("").map(char => (char === " " ? "\u00A0" : char))
 ---
 
 <p
@@ -34,7 +34,7 @@ const letters = text.split("")
 </p>
 
 <style>
-  [data-css="hover-ul"]::after {
+  /* [data-css="hover-ul"]::after {
     content: "";
     position: absolute;
     top: 99%;
@@ -49,7 +49,7 @@ const letters = text.split("")
 
   [data-css="hover-ul"]:hover::after {
     transform: scaleY(1);
-  }
+  } */
 
   span > span {
     transition: transform 0.2s ease-out;

@@ -5,25 +5,33 @@ export const LINKS = {
   website: "https://federic.ooo",
 }
 
+export const GITHUB = {
+  issues: "https://github.com/vallafederico/smooothy/issues",
+  pull_requests: "https://github.com/vallafederico/smooothy/pulls",
+}
+
 export const IN_USE = {
   url: "https://example.com",
   items: [
     {
-      title: "Title",
+      title: "VisualBusiness",
       year: "2025",
-      description: "Description",
-      url: "https://example.com",
+      by: "Federico",
+      by_url: "https://federic.ooo",
+      url: "https://vvisual.biz",
     },
     {
-      title: "Title 2",
+      title: "Siena Film",
       year: "2025",
-      description: "Description",
-      url: "https://example.com",
+      by: "Federico",
+      by_url: "https://federic.ooo",
+      url: "https://siena.film",
     },
     {
-      title: "Title 3",
+      title: "Some Title",
       year: "2025",
-      description: "Description",
+      by: "Federico",
+      by_url: "https://federic.ooo",
       url: "https://example.com",
     },
   ],

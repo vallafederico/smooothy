@@ -78,11 +78,11 @@ const SET = [
     description="Through callback functions running with the slider, and an evet API interface."
   />
 
-  <div class="pl-grid-2">
-    <ul class="gap-gutter w-grids-9 flex">
+  <div class="md:pl-grid-2">
+    <ul class="md:gap-gutter w-grids-9 flex flex-col gap-[8rem] md:flex-row">
       {
         SET.map(column => (
-          <li class="w-grid-3 flex flex-col gap-[4rem]">
+          <li class="md:w-grid-3 flex flex-col gap-[4rem]">
             <h3
               data-module="text"
               data-type="chars"
@@ -90,9 +90,9 @@ const SET = [
             >
               {column.title}
             </h3>
-            <ul class="gap-xl flex flex-col">
+            <ul class="gap-xl flex flex-col items-start">
               {column.items.map(item => (
-                <li class="max-w-[80%]">
+                <li class="md:max-w-[80%]">
                   <figure
                     data-module="draw"
                     class="py-xl inline-flex w-full items-center justify-center"
@@ -102,7 +102,7 @@ const SET = [
                   <h4
                     data-module="text"
                     data-type="chars"
-                    class="text-[1.4em] font-semibold tracking-tighter"
+                    class="w-full py-2 text-[1.4em] leading-[1.1em] font-semibold tracking-tighter"
                   >
                     {item.title}
                   </h4>

@@ -5,6 +5,10 @@
 @import "./modules.css";
 @import "./animation.css";
 
+/* div {
+  outline: 3px solid red;
+} */
+
 * {
   box-sizing: border-box;
 }
