@@ -5,9 +5,9 @@ import Svgg from "../svg/Svgg.astro"
 ---
 
 <Section class="px-gx">
-  <div class="ml-grids-3 py-[5rem]">
-    <div class="py-xl flex tracking-tighter">
-      <div class="w-grids-2">
+  <div class="md:ml-grid-3 py-[5rem]">
+    <div class="py-xl flex flex-col tracking-tighter md:flex-row">
+      <div class="w-grid-2">
         <h2 data-module="text" data-type="chars" class="text-xl font-semibold">
           In Use.
         </h2>
@@ -33,8 +33,20 @@ import Svgg from "../svg/Svgg.astro"
       <li
         class="w-grids-6 gap-gutter grid grid-cols-6 py-8 font-mono text-xs uppercase"
       >
-        <h3 data-module="text" data-type="chars" class="col-span-2">Title</h3>
-        <p data-module="text" data-type="chars" class="col-span-2">Year</p>
+        <h3
+          data-module="text"
+          data-type="chars"
+          class="col-span-3 md:col-span-2"
+        >
+          Title
+        </h3>
+        <p
+          data-module="text"
+          data-type="chars"
+          class="col-span-2 hidden md:block"
+        >
+          Year
+        </p>
         <p data-module="text" data-type="chars" class="col-span-2">By</p>
       </li>
       {
@@ -44,13 +56,13 @@ import Svgg from "../svg/Svgg.astro"
               data-hover="opacity"
               href={url}
               target="_blank"
-              class="col-span-2"
+              class="col-span-3 md:col-span-2"
             >
               <h3
                 data-module="text"
                 data-type="chars"
                 data-delay={i * 0.15}
-                class="col-span-2"
+                class="w-full"
               >
                 {title}
               </h3>
@@ -59,7 +71,7 @@ import Svgg from "../svg/Svgg.astro"
               data-module="text"
               data-type="chars"
               data-delay={i * 0.15}
-              class="col-span-2"
+              class="col-span-2 hidden md:block"
             >
               {year}
             </p>
