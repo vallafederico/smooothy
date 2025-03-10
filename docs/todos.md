@@ -2,7 +2,7 @@
 
 ## Config
 
-- [ ] configurable parallax callabck
+- [ ] configurable parallax callback
 
 ---
 
