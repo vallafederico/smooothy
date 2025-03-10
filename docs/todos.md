@@ -16,3 +16,4 @@
 - [ ] add a clear "bring your own raf" indication
 - [ ] add a clear use arrow functions whene extending
 - [ ] add **expandable** HTML structure in example
+- [ ] add a link to the configurable example in the main doc page
