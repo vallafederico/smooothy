@@ -1,6 +1,9 @@
 ---
 const { title, description, features, link } = Astro.props
 import Svgg from "./svg/Svgg.astro"
+
+import { LINKS } from "~/content"
+// extend.md#capture-link-clicks
 ---
 
 <div class="px-gx py-gy pb-xl pt-[4rem]">
@@ -17,7 +20,12 @@ import Svgg from "./svg/Svgg.astro"
       }
     </div>
 
-    <a href={"link"} data-hover="opacity" class="flex items-center gap-2">
+    <a
+      href={link ? LINKS.docs + link : LINKS.docs}
+      data-hover="opacity"
+      class="flex items-center gap-2"
+      target="_blank"
+    >
       <span class="inline-block w-[2em]"><Svgg name="github" /></span>
       <span class="font-mono">Github</span>
     </a>

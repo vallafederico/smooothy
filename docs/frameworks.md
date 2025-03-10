@@ -4,7 +4,7 @@
 
 While it works as just the Core, the idea is to provide all the core functionality, keep it as light as it can be, and extend it based on your needs.
 
-### React / Nextjs
+### React
 
 If Nextjs for the love of god "useclient". Probably abstract the hook.
 
@@ -66,7 +66,7 @@ export default function ReactSlider() {
 }
 ```
 
-### Vue / Nuxt
+### Vue
 
 If Nextjs for the love of god "useclient". Probably abstract the hook.
 
