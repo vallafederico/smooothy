@@ -2,12 +2,12 @@
 
 ## AKA Smarter Usage
 
-While it works as just the Core, the idea is to provide all the core functionality, keep it as light as it can be, and extend it based on your needs.
+While it works as just the Core, the idea is for the library to provide all the baseline functionality and a nice interface to extend it, keep it as light as it can be but as flexible as you want.
 
 
 ### Controls
 
-Adds keyboard (arrows, spacebar) controls for next and previous slide, and numpad controls to get to a specific slide.
+Add dots, arrows and navigation methods.
 
 ```js
 import Core from "smooothy"
@@ -168,61 +168,82 @@ export class KeyboardSlider extends Core {
 Pretty common issue is mixing sliding and click behaviour with slides that are actual links.
 
 ```js
-  import Core from "smooothy"
-  import gsap from "~/js/gsap"
+import Core from "smooothy"
+import gsap from "~/js/gsap"
 
-  export class LinkSlider extends Core {
-    constructor(container: HTMLElement, config = {}) {
-      super(container.querySelector("[data-slider]"))
-      gsap.ticker.add(this.update.bind(this))
+export class LinkSlider extends Core {
+  constructor(container: HTMLElement, config = {}) {
+    super(container.querySelector("[data-slider]"))
+    gsap.ticker.add(this.update.bind(this))
 
-      this.#handleLinks()
-    }
-    #handleLinks() {
-      ;[...this.wrapper.querySelectorAll("a")].forEach((item, i) => {
-        let startX = 0
-        let startY = 0
-        let startTime = 0
-        let isDragging = false
-
-        item.style.pointerEvents = "none"
-
-        const handleMouseDown = e => {
-          startX = e.clientX
-          startY = e.clientY
-          startTime = Date.now()
-          isDragging = false
-        }
-
-        const handleMouseMove = e => {
-          if (!startTime) return
-
-          const deltaX = Math.abs(e.clientX - startX)
-          const deltaY = Math.abs(e.clientY - startY)
-
-          if (deltaX > 5 || deltaY > 5) {
-            isDragging = true
-          }
-        }
-
-        const handleMouseUp = e => {
-          const deltaTime = Date.now() - startTime
-
-          if (!isDragging && deltaTime < 200) {
-            item.click()
-          }
-
-          startTime = 0
-          isDragging = false
-        }
-
-        item.parentElement.addEventListener("mousedown", handleMouseDown)
-        item.parentElement.addEventListener("mousemove", handleMouseMove)
-        item.parentElement.addEventListener("mouseup", handleMouseUp)
-      })
-    }
+    this.#handleLinks()
   }
+  #handleLinks() {
+    ;[...this.wrapper.querySelectorAll("a")].forEach((item, i) => {
+      let startX = 0
+      let startY = 0
+      let startTime = 0
+      let isDragging = false
+
+      item.style.pointerEvents = "none"
+
+      const handleMouseDown = e => {
+        startX = e.clientX
+        startY = e.clientY
+        startTime = Date.now()
+        isDragging = false
+      }
+
+      const handleMouseMove = e => {
+        if (!startTime) return
+
+        const deltaX = Math.abs(e.clientX - startX)
+        const deltaY = Math.abs(e.clientY - startY)
+
+        if (deltaX > 5 || deltaY > 5) {
+          isDragging = true
+        }
+      }
+
+      const handleMouseUp = e => {
+        const deltaTime = Date.now() - startTime
+
+        if (!isDragging && deltaTime < 200) {
+          item.click()
+        }
+
+        startTime = 0
+        isDragging = false
+      }
+
+      item.parentElement.addEventListener("mousedown", handleMouseDown)
+      item.parentElement.addEventListener("mousemove", handleMouseMove)
+      item.parentElement.addEventListener("mouseup", handleMouseUp)
+    })
+  }
+}
 ```
+
+### Base parallax
+
+```html
+<!-- ... -->
+```
+
+```js
+// 
+```
+
+### Parallax and Speed
+
+```html
+<!-- ... -->
+```
+
+```js
+// 
+```
+
 
 ### Full Control Interface
 
@@ -231,14 +252,5 @@ Pretty common issue is mixing sliding and click behaviour with slides that are a
 ```
 
 ```js
-import Core from "smooothy"
-import gsap from "../gsap"
-
-export class ControlSlider extends Core {
-  constructor(wrapper, config) {
-    super(wrapper, config)
-
-    // ...
-  }
-}
+// 
 ```

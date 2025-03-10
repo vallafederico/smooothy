@@ -15,3 +15,4 @@
 
 - [ ] add a clear "bring your own raf" indication
 - [ ] add a clear use arrow functions whene extending
+- [ ] add **expandable** HTML structure in example
