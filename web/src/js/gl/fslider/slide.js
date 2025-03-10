@@ -39,7 +39,7 @@ export class Slide extends SliderGroup {
   }
 
   resize() {
-    console.log("resize")
+    // console.log("resize")
     this.bg.scale.set(this.bounds.width, this.bounds.height, 1)
   }
 }

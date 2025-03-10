@@ -27,6 +27,9 @@ importers:
 
   web:
     dependencies:
+      '@activetheory/split-text':
+        specifier: ^1.1.2
+        version: 1.1.2
       '@astrojs/react':
         specifier: ^4.2.1
         version: 4.2.1(@types/react-dom@19.0.4(@types/react@19.0.10))(@types/react@19.0.10)(jiti@2.4.2)(lightningcss@1.29.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -96,6 +99,12 @@ importers:
         version: 0.2.4(vite@6.2.0(jiti@2.4.2)(lightningcss@1.29.1))
 
 packages:
+
+  '@activetheory/balance-text@1.0.2':
+    resolution: {integrity: sha512-RD57R4ZviYjl6Gt7JEBdQ6t45dppk7WER5uxZBJ3cxdXfatpIcDIpLseFW3ajLMKA4+IShD/sO2/dhaB6jYreQ==}
+
+  '@activetheory/split-text@1.1.2':
+    resolution: {integrity: sha512-DLrf6HSCf3Y4x4BEFEaazWc59NGFONIdMTmCI4nCnfeg4uuIs8ecn6L8rGCmFBT+5ULaK+jFLlXuop2vDSdVRw==}
 
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
@@ -2535,6 +2544,12 @@ packages:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
 
 snapshots:
+
+  '@activetheory/balance-text@1.0.2': {}
+
+  '@activetheory/split-text@1.1.2':
+    dependencies:
+      '@activetheory/balance-text': 1.0.2
 
   '@ampproject/remapping@2.3.0':
     dependencies:

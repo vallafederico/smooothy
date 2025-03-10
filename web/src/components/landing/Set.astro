@@ -1,25 +1,30 @@
 ---
 import Section from "@c/Section.astro"
 import LargeTitle from "@c/landing/LargeTitle.astro"
+import Svgg from "../svg/Svgg.astro"
+import { Code } from "astro:components"
 
-const COLUMNS = [
+const SET = [
   {
     title: "Setup",
     items: [
       {
-        img: () => null,
-        title: "CSS Based Setup",
-        description: "Use CSS to configure your slider.",
+        img: "set_css",
+        title: "CSS based styling.",
+        description:
+          "Style your slides as you want, size to offsets, fully in CSS.",
       },
       {
-        img: () => null,
-        title: "Infinite",
-        description: "Use CSS to configure your slider.",
+        img: "set_infinite",
+        title: "Infinite.",
+        description:
+          "Automatically loop through slides and repeat them, or simply have a start and stop point.",
       },
       {
-        img: () => null,
-        title: "Infinite",
-        description: "Use CSS to configure your slider.",
+        img: "set_snapping",
+        title: "Snapping.",
+        description:
+          "Set if slides are self centering or are allowed to be dragged freely.",
       },
     ],
   },
@@ -27,9 +32,22 @@ const COLUMNS = [
     title: "Options",
     items: [
       {
-        img: () => null,
-        title: "Infinite",
-        description: "Use CSS to configure your slider.",
+        img: "set_drag",
+        title: "Drag speed.",
+        description:
+          "Set how powerful the dragging event and the horizontal trackpad gesture moves the slides.",
+      },
+      {
+        img: "set_conditional",
+        title: "Conditional activation.",
+        description:
+          "Decide which screen sizes or any condition that turn the slider on or off.",
+      },
+      {
+        img: "set_speed",
+        title: "Lerp/Damp speed.",
+        description:
+          "Choose how fast the slider settles and smoothly gets to the target position, consistent through different screens refresh rate.",
       },
     ],
   },
@@ -37,9 +55,16 @@ const COLUMNS = [
     title: "Customize",
     items: [
       {
-        img: () => null,
-        title: "Infinite",
-        description: "Use CSS to configure your slider.",
+        img: "set_extensible",
+        title: "Extensible API.",
+        description:
+          "Extend behaviour and functionality as you please as it’s built for that (and has a nice interface for it).",
+      },
+      {
+        img: "set_configure",
+        title: "Configuration setups.",
+        description:
+          "Pre made slider for most common behaviours, or create your own.",
       },
     ],
   },
@@ -53,13 +78,39 @@ const COLUMNS = [
     description="Through callback functions running with the slider, and an evet API interface."
   />
 
-  <div>
-    {
-      COLUMNS.map(column => (
-        <div>
-          <h3>{column.title}</h3>
-        </div>
-      ))
-    }
+  <div class="pl-grid-2">
+    <ul class="gap-gutter w-grids-9 flex">
+      {
+        SET.map(column => (
+          <li class="w-grid-3 flex flex-col gap-[4rem]">
+            <h3 class="font-mono text-[1.1em] tracking-widest uppercase">
+              {column.title}
+            </h3>
+            <ul class="gap-xl flex flex-col">
+              {column.items.map(item => (
+                <li class="max-w-[80%]">
+                  <figure
+                    data-module="draw"
+                    class="py-xl inline-flex w-full items-center justify-center"
+                  >
+                    <Svgg name={item.img} />
+                  </figure>
+                  <h4
+                    data-module="text"
+                    data-type="chars"
+                    class="text-[1.4em] font-semibold tracking-tighter"
+                  >
+                    {item.title}
+                  </h4>
+                  <p data-module="text" data-type="words" class="max-w-[28ch]">
+                    {item.description}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </li>
+        ))
+      }
+    </ul>
   </div>
 </Section>

@@ -24,3 +24,6 @@ pnpm-debug.log*
 .idea/
 
 .npmrc
+
+
+__progress

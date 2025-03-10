@@ -9,6 +9,7 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@activetheory/split-text": "^1.1.2",
     "@astrojs/react": "^4.2.1",
     "@astrojs/solid-js": "^5.0.5",
     "@astrojs/vue": "^5.0.7",

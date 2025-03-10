@@ -1,5 +1,6 @@
 import gsap from "gsap"
 import { DrawSVGPlugin } from "gsap/DrawSVGPlugin"
+// import { SplitText } from "gsap/SplitText"
 import { prefersReducedMotion } from "./utils/media"
 
 const reduced = prefersReducedMotion()

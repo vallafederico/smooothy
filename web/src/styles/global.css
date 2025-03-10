@@ -74,7 +74,7 @@ h4 {
 
 /* global  */
 body {
-  font-size: 12px;
+  font-size: 14px;
   font-family: "Geist", sans-serif;
   /* font-optical-sizing: auto; */
 
@@ -128,4 +128,10 @@ svg {
 
 button {
   cursor: pointer;
+}
+
+/** -- SPLITTEXT */
+
+[data-module="text"] > span {
+  visibility: hidden;
 }
