@@ -6,7 +6,7 @@ While it works as just the Core, the idea is to provide all the core functionali
 
 ### React
 
-If Nextjs for the love of god "useclient". Probably abstract the hook.
+Basic react example with a hook you can abstract.
 
 ```tsx
 import { useEffect, useRef, useState } from "react"
@@ -66,9 +66,17 @@ export default function ReactSlider() {
 }
 ```
 
-### Vue
+#### Remix
+
+Basic example whould work but make it isomorphic.
+
+#### Next
 
 If Nextjs for the love of god "useclient". Probably abstract the hook.
+
+### Vue
+
+Vue example with composable to abstract.
 
 ```vue
 <script setup lang="ts">
@@ -127,3 +135,31 @@ const { sliderElement, slider } = useSmooothy({
   </div>
 </template>
 ```
+
+#### Nuxt
+
+...
+
+### Solid
+
+```html
+<!-- ... -->
+```
+
+```js
+//
+```
+
+#### Solidstart
+
+### Svelte
+
+```html
+<!-- ... -->
+```
+
+```js
+//
+```
+
+#### Sveltekit

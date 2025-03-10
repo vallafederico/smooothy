@@ -2,6 +2,8 @@
 import Section from "@c/Section.astro"
 
 const { title, description } = Astro.props
+import { LINKS } from "~/content"
+
 const EXAMPLE_LINKS = [
   {
     title: "Vanilla",
@@ -13,7 +15,8 @@ const EXAMPLE_LINKS = [
   },
   {
     title: "Webflow",
-    href: "/examples/webflow",
+    href: LINKS.docs + "webflow",
+    target: "_blank",
   },
 ]
 
@@ -35,7 +38,7 @@ const filteredLinks = EXAMPLE_LINKS.filter(link => link.href !== currentPath)
         filteredLinks.map(link => (
           <li class="w-1/3 font-semibold tracking-tight">
             <div class="max-w-[80%]">
-              <a data-hover="opacity" href={link.href}>
+              <a data-hover="opacity" target={link.target} href={link.href}>
                 {link.title}
               </a>
             </div>
