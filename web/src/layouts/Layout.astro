@@ -2,8 +2,9 @@
 import Script from "../components/Script.astro"
 import Nav from "../components/Nav.astro"
 import Css from "../components/Css.astro"
+import Grid from "../components/Grid.astro"
 
-const { class: className, nav } = Astro.props
+const { class: className, nav, isHome = false } = Astro.props
 ---
 
 <!doctype html>
@@ -17,24 +18,23 @@ const { class: className, nav } = Astro.props
     <title>Smooothy</title>
 
     <meta name="viewport" content="width=device-width, user-scalable=no" />
+    <meta
+      name="description"
+      content="Smooth configurable extendable slider for creative code."
+    />
+
+    <!-- {isHome && <script>history.scrollRestoration = "manual"</script>} -->
   </head>
   <body>
     <Nav>
       {nav}
     </Nav>
-    <main class={className}>
+    <main class="w-screen overflow-clip">
       <slot />
     </main>
+
+    <Grid />
 
     <Script />
   </body>
 </html>
-
-<style>
-  html,
-  body {
-    margin: 0;
-    width: 100%;
-    height: 100%;
-  }
-</style>

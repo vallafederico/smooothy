@@ -1,0 +1,8 @@
+/* --- opacity on hover */
+[data-hover="opacity"] {
+  transition: opacity 0.2s ease-out;
+}
+
+[data-hover="opacity"]:hover {
+  opacity: 0.5;
+}

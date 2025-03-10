@@ -1,26 +1,12 @@
 # Todos
 
-tiny :D
+## global
 
----
+- [ ] finish website sections
 
-## Functionlity
+## animation
 
-- [ ] useSmooth should only affect vertical AND scroller should have an "el"
-- [ ] breakpoint able / disable
-- [ ]
+## svgs
 
----
-
-## Accessibility
-
-- [ ] tabbable slides
-
-## Examples
-
-- [ ] add configurable property in live example
-- [ ] PARALLAX mix parallax effect with speed
-
-## Sad
-
-- [ ] make if fucking typescript
+- [ ] bubbly titles
+- [ ] footer

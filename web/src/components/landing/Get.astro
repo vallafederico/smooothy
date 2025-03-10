@@ -1,0 +1,19 @@
+---
+import Section from "@c/Section.astro"
+import LargeTitle from "@c/landing/LargeTitle.astro"
+import GetSlider from "@c/landing/comps/GetSlider.astro"
+---
+
+<Section>
+  <div class="py-[8rem]">
+    <div class="px-gx">
+      <LargeTitle
+        large="get"
+        flip={true}
+        title="Read parameters for state and animation."
+        description="Through callback functions running with the slider, and an evet API interface."
+      />
+    </div>
+    <GetSlider />
+  </div>
+</Section>

@@ -1,0 +1,57 @@
+---
+
+---
+
+<div
+  data-grid
+  class="px-gx pointer-events-none fixed inset-0 hidden gap-[var(--gutter)]"
+>
+  {
+    Array.from({ length: 12 }).map((_, index) => (
+      <div class="grid-item w-full bg-pink-900 opacity-10" />
+    ))
+  }
+</div>
+
+<script>
+  function getGridValues() {
+    const computed = getComputedStyle(document.documentElement)
+    const gx = computed.getPropertyValue("--gx")
+    const gutter = computed.getPropertyValue("--gutter")
+    const columns = computed.getPropertyValue("--columns")
+
+    return { gx, gutter, columns }
+  }
+
+  const grid = document.querySelector("[data-grid]")
+
+  const handleGrid = () => {
+    const { gx, gutter, columns } = getGridValues()
+
+    ;[...grid.children].forEach((child, i) => {
+      if (i >= parseInt(columns)) {
+        child.style.display = "none"
+      } else {
+        child.style.display = "block"
+      }
+    })
+  }
+
+  window.addEventListener("resize", handleGrid)
+  handleGrid()
+
+  const handleKeyDown = e => {
+    if (e.shiftKey && e.key.toLowerCase() === "g") {
+      const savedDisplay = localStorage.getItem("gridDisplay") || "flex"
+      const newDisplay = savedDisplay === "none" ? "flex" : "none"
+      grid.style.display = newDisplay
+      localStorage.setItem("gridDisplay", newDisplay)
+    }
+  }
+
+  document.addEventListener("keydown", handleKeyDown)
+
+  // Set initial grid display from localStorage
+  const initialDisplay = localStorage.getItem("gridDisplay") || "flex"
+  grid.style.display = initialDisplay
+</script>

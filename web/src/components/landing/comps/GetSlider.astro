@@ -1,0 +1,213 @@
+---
+import Svgg from "~/components/svg/Svgg.astro"
+
+const letters = [
+  "S",
+  "L",
+  "I",
+  "D",
+  "E",
+  "M",
+  "E",
+  "S",
+  "L",
+  "I",
+  "D",
+  "E",
+  "M",
+  "E",
+]
+const SLIDES = Array.from({ length: letters.length }, (_, i) => i)
+---
+
+<div
+  data-module="gslider"
+  class="min-h-[90svh] w-full max-w-full overflow-clip"
+>
+  <!-- interface -->
+  <div class="px-gx">
+    <div class="gap-gutter pb-xl mb-xl md:pl-grid-2 flex flex-col md:flex-row">
+      <div class="w-grids-3">
+        <h3
+          data-module="text"
+          data-type="chars"
+          class="font-semibold tracking-tighter uppercase"
+        >
+          CONFIGURE
+        </h3>
+        <figure class="py-xl" data-module="draw">
+          <Svgg name="toggle" />
+        </figure>
+        <ul
+          data-configure
+          data-module="alpha"
+          class="flex flex-col gap-1 font-mono text-sm tracking-widest"
+        >
+          <li>
+            <button>
+              <p>
+                ENABLE <span>ON</span> / <span class="opacity-50">OFF</span>
+              </p>
+            </button>
+          </li>
+          <li>
+            <button>
+              <p>SNAP <span>ON</span> / <span class="opacity-50">OFF</span></p>
+            </button>
+          </li>
+          <li>
+            <button>
+              <p>
+                INFINITE <span>ON</span> / <span class="opacity-50">OFF</span>
+              </p>
+            </button>
+          </li>
+        </ul>
+      </div>
+      <div class="w-grids-3">
+        <h3
+          data-module="text"
+          data-type="chars"
+          class="font-semibold tracking-tighter uppercase"
+        >
+          READ
+        </h3>
+        <figure class="py-xl" data-module="draw">
+          <Svgg name="read" />
+        </figure>
+        <div class="flex font-mono text-sm tracking-widest">
+          <div data-module="alpha" class="flex w-1/2 flex-col gap-2">
+            <p class="flex w-[80%] justify-between">
+              <span>SPEED</span>
+              <span data-read="speed">0.000</span>
+            </p>
+            <div>
+              <svg class="w-1/2" viewBox="0 0 100 100">
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="45"
+                  fill="none"
+                  stroke="currentColor"
+                  style="opacity: 0.2"
+                  stroke-width="3"></circle>
+
+                <circle
+                  data-read="speed"
+                  cx="50"
+                  cy="50"
+                  r="45"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="3"></circle>
+              </svg>
+            </div>
+          </div>
+
+          <ul data-module="alpha" class="flex w-1/2 flex-col gap-3">
+            <li class="">
+              <p class="flex justify-between">
+                <span>CURRENT</span>
+                <span data-read="current">0.000</span>
+              </p>
+              <div class="mt-1 h-[2px] w-full bg-gray-800">
+                <div data-read="current" class="h-[2px] origin-left bg-white">
+                </div>
+              </div>
+            </li>
+            <li class="">
+              <p class="flex justify-between">
+                <span>TARGET</span>
+                <span data-read="target">0.000</span>
+              </p>
+              <div class="mt-1 h-[2px] w-full bg-gray-800">
+                <div data-read="target" class="h-[2px] origin-left bg-white">
+                </div>
+              </div>
+            </li>
+            <li class="">
+              <p class="flex justify-between">
+                <span>PROGRESS</span>
+                <span data-read="progress">0.000</span>
+              </p>
+              <div class="mt-1 h-[2px] w-full bg-gray-800">
+                <div data-read="progress" class="h-[2px] origin-left bg-white">
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="w-grids-3 ml-grid-1">
+        <h3
+          data-module="text"
+          data-type="chars"
+          class="font-semibold tracking-tighter uppercase"
+        >
+          EVENTS
+        </h3>
+        <figure class="py-xl" data-module="draw">
+          <Svgg name="events" />
+        </figure>
+        <div data-module="alpha" class="font-mono text-sm tracking-widest">
+          <ul
+            data-events
+            data-css="progressive-fade"
+            class="flex h-[7ch] flex-col-reverse justify-start overflow-clip [&>li]:shrink-0"
+          >
+            <li>[SLIDE] SETTLED #0</li>
+            <li>[SLIDER] IN VIEW</li>
+            <li>[SLIDER] INITIALISED</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- slider -->
+  <ul
+    data-slider="wrapper"
+    style="--slide-width: clamp(10rem, 20vw, 30rem)"
+    class="ml-[calc(50vw-var(--slide-width)/2)] flex"
+  >
+    {
+      SLIDES.map(slide => (
+        <li class="flex aspect-[3/4] w-[var(--slide-width)] shrink-0 flex-col gap-2 p-2">
+          <div data-module="alpha" data-delay={0.0}>
+            <p class="font-mono text-sm tracking-tighter">NO 00{slide}</p>
+          </div>
+          <div class="flex size-full shrink-0 items-center justify-center outline outline-gray-800">
+            <figure data-a="letter">
+              <Svgg
+                class="w-[90%]"
+                name={"letter_" + letters[slide].toLowerCase()}
+              />
+            </figure>
+          </div>
+
+          <ul class="flex flex-col font-mono text-[.8em] tracking-wider">
+            <li data-module="alpha" data-delay={0.04}>
+              <p>
+                PARALLAX <span>0.000</span>
+              </p>
+            </li>
+            <li data-module="alpha" data-delay={0.08}>
+              <p>
+                SPEED <span>0.000</span>
+              </p>
+            </li>
+          </ul>
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<style>
+  [data-css="progressive-fade"] > li:nth-child(2) {
+    opacity: 60%;
+  }
+  [data-css="progressive-fade"] > li:nth-child(3) {
+    opacity: 40%;
+  }
+</style>

@@ -1,8 +1,27 @@
 ---
-import Layout from "~/layouts/Layout.astro";
-import Section from "@c/Section.astro";
+import Layout from "~/layouts/Layout.astro"
+
+// * homepage
+import Hero from "@c/landing/Hero.astro"
+import Callout from "@c/landing/Callout.astro"
+import Set from "@c/landing/Set.astro"
+import Get from "@c/landing/Get.astro"
+import Use from "@c/landing/Use.astro"
+import Open from "@c/landing/Open.astro"
+import InUse from "@c/landing/InUse.astro"
+import Footer from "@c/Footer.astro"
+import Canvas from "~/components/Canvas.astro"
 ---
 
-<Layout>
-  <Section class="px-0 h-screen flex flex-col justify-center" />
+<Layout isHome={true}>
+  <Hero />
+  <Callout />
+  <Set />
+  <Get />
+  <Use />
+  <Open />
+  <InUse />
+  <Footer />
 </Layout>
+
+<Canvas />

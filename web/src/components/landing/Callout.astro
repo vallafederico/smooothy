@@ -1,0 +1,37 @@
+---
+import Section from "@c/Section.astro"
+import Svgg from "../svg/Svgg.astro"
+
+const texts = [
+  "Configurable customisable extendable",
+  "smooth bring your own whatever",
+  "slider (or carousel?) API.",
+]
+---
+
+<Section class="px-gx flex justify-center">
+  <div data-module="callout" class="max-w-[24ch] py-[10rem] text-[2.6rem]">
+    <h2 class="tr-s inline-block leading-[1em]">
+      <span
+        data-module="draw"
+        class="inline-flex w-[5rem] items-center justify-center"
+      >
+        <Svgg name="wave" />
+      </span>
+      <span data-module="text" data-type="chars"> {texts[0]} </span>
+      <span
+        data-module="draw"
+        class="inline-flex w-[8rem] items-center justify-center"
+        ><Svgg name="extend" /></span
+      >
+      <span data-module="text" data-type="chars"> {texts[1]} </span>
+      <span
+        data-module="draw"
+        class="inline-flex w-[6rem] items-center justify-center"
+      >
+        <Svgg name="slider" />
+      </span>
+      <span data-module="text" data-type="chars"> {texts[2]} </span>
+    </h2>
+  </div>
+</Section>

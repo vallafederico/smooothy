@@ -1,32 +1,33 @@
 ---
+import { version } from "../../../package.json"
+import { LINKS } from "~/content"
+
 import Twitter from "@svg/twitter.astro"
 import Github from "@svg/github.astro"
-import { version } from "../../../package.json"
+
+import HoverUl from "@c/HoverUl.astro"
+import Svgg from "@c/svg/Svgg.astro"
 
 const links = [
-  {
-    label: "HOME",
-    href: "/",
-  },
-
   {
     label: "EXAMPLES",
     href: "/examples",
   },
   {
-    label: "(WIP)",
-    href: "/wip",
-    style: "text-gray-600",
+    label: "DOCS",
+    href: LINKS.github,
+    target: "_blank",
+    style: "font-semibold",
   },
   {
     label: "TWITTER",
-    href: "https://federic.ooo/s/twitter",
+    href: LINKS.twitter,
     icon: "Twitter",
     target: "_blank",
   },
   {
     label: "GITHUB",
-    href: "https://github.com/vallafederico/smooothy",
+    href: LINKS.github,
     icon: "Github",
     target: "_blank",
   },
@@ -34,29 +35,52 @@ const links = [
 ---
 
 <nav
-  class="px-gx py-gy pointer-events-none fixed top-0 z-10 flex w-full justify-between md:items-center"
+  class="px-gx py-gy pointer-events-none fixed top-0 z-10 flex w-full justify-between md:items-start"
 >
-  <a href="/" class="pointer-events-auto flex flex-col gap-1">
-    <h1 class="text-md leading-[.8em] font-semibold tracking-tighter">
-      Smooothy
-    </h1>
-    <p class="text-sm leading-[.8em] font-light text-gray-200">
-      version {version}
+  <a
+    href="/"
+    aria-label="back to homepage"
+    class="pointer-events-auto flex -translate-[.3rem] flex-col"
+  >
+    <div data-module="logo">
+      <Svgg name="logo" class="w-[10rem] md:w-[7rem]" />
+    </div>
+    <p
+      data-module="alpha"
+      class="flex w-[90%] justify-between font-mono text-[.7em] tracking-widest uppercase"
+    >
+      <span>VERSION</span>
+      <span>{version}</span>
     </p>
   </a>
-  <slot />
+
   <ul class="flex flex-col items-end gap-2 md:flex-row md:gap-4">
     {
       links.map(link => (
-        <li>
+        <li class="text-[12px]">
           <a
             href={link.href}
-            class:list={[link.style && link.style, "pointer-events-auto"]}
+            class:list={[
+              link.style && link.style,
+              "pointer-events-auto tracking-wide",
+              link.style && link.style,
+            ]}
             target={link.target}
+            data-module="alpha"
           >
-            {!link.icon && link.label}
-            {link.icon && link.icon === "Twitter" && <Twitter width="2rem" />}
-            {link.icon && link.icon === "Github" && <Github width="2rem" />}
+            {!link.icon && <HoverUl text={link.label} />}
+            {link.icon && link.icon === "Twitter" && (
+              <figure data-hover="opacity">
+                <Twitter width="2rem" />
+                <figcaption class="sr-only">{link.label}</figcaption>
+              </figure>
+            )}
+            {link.icon && link.icon === "Github" && (
+              <figure data-hover="opacity">
+                <Github width="2rem" />
+                <figcaption class="sr-only">{link.label}</figcaption>
+              </figure>
+            )}
           </a>
         </li>
       ))

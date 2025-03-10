@@ -1,0 +1,26 @@
+---
+interface Props {
+  name: string
+  class?: string
+}
+
+const { name, class: className } = Astro.props
+
+const components = import.meta.glob("./landing/*.svg", {
+  query: "?raw",
+  import: "default",
+})
+
+const svgContent = await components[`./landing/${name}.svg`]?.()
+
+if (!svgContent) throw new Error(`SVG with name "${name}" not found`)
+
+const svgWithClass = className
+  ? (svgContent as string).replace(
+      "<svg",
+      `<svg style="overflow:visible" class="${className}"`
+    )
+  : svgContent
+---
+
+<Fragment set:html={svgWithClass} />

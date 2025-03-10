@@ -89,6 +89,7 @@ export class Core {
   touchStartX?: number
   scrollDirection?: "horizontal" | "vertical"
   parallaxValues?: number[]
+  webglValue: number = 0 // (*) ADD WEBGL VALUE TO SLIDER (better name)
 
   onSlideChange?: (current: number, previous: number) => void
   onResize?: (core: Core) => void
@@ -213,10 +214,11 @@ export class Core {
     window.addEventListener("touchmove", handleTouchMove, { passive: false })
     window.addEventListener("touchend", handleTouchEnd)
 
-    window.addEventListener("resize", () => {
+    const resizeObserver = new ResizeObserver(() => {
       if (this.resizeTimeout) clearTimeout(this.resizeTimeout)
-      this.resizeTimeout = setTimeout(() => this.#setupViewport(), 10)
+      this.resizeTimeout = setTimeout(() => this.resize(), 10)
     })
+    resizeObserver.observe(this.wrapper)
   }
 
   /** Events */
@@ -488,6 +490,43 @@ export class Core {
       return Math.max(0, Math.min(1, current / total))
     }
   }
+
+  resize(): void {
+    this.#setupViewport()
+
+    // Force a single update, bypassing visibility check
+    const wasActive = this.#isActive
+    const wasVisible = this.isVisible
+
+    this.#isActive = true
+    this.isVisible = true
+    this.update()
+
+    this.#isActive = wasActive
+    this.isVisible = wasVisible
+  }
 }
 
 export default Core
+
+// ////////////////////////////////////////
+
+/*
+DOCS +
+- [ ] add the callable resize method to the documentation
+- [ ] add symmetricMod to named exports
+    
+*/
+
+/*
+TODO
+
+(*) ADD WEBGL VALUE UTILS
+(/fslider.ts)
+
+  const x =
+    symmetricMod(this.current, this.items.length) *
+    this.viewport.itemWidth *
+    Gl.vp.px
+
+*/

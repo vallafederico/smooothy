@@ -1,4 +1,13 @@
 @import "tailwindcss";
+@import "./fonts.css";
+@import "./variables.css";
+@import "./grid.css";
+@import "./modules.css";
+@import "./animation.css";
+
+/* div {
+  outline: 3px solid red;
+} */
 
 * {
   box-sizing: border-box;
@@ -36,10 +45,13 @@ h4 {
 }
 
 @theme {
-  --font-family: "Inter", serif;
-  --font-family-mono: "Ubuntu Mono", serif;
+  --font-sans: "Geist", sans-serif;
+  --font-mono: "Geist Mono", monospace;
+  --font-weird: "SK Pupok Solid", sans-serif;
 
-  --spacing-gx: 1rem;
+  --spacing-gutter: var(--gutter);
+
+  --spacing-gx: 1.8rem;
   --spacing-lgx: 3.2rem;
   --spacing-gy: 1rem;
   --spacing-sm: 0.5rem;
@@ -66,14 +78,28 @@ h4 {
 
 /* global  */
 body {
-  font-size: 12px;
-  font-family: "Inter", serif;
-  font-optical-sizing: auto;
+  font-size: 14px;
+  font-family: "Geist", sans-serif;
+  /* font-optical-sizing: auto; */
+
   font-weight: 400;
   font-style: normal;
 
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings:
+    "kern" 1,
+    "liga" 1,
+    "calt" 1;
+  font-synthesis: none;
+
   background: #000;
   color: #fff;
+}
+
+.tr-s {
+  letter-spacing: -0.08em;
 }
 
 /* fonts */
@@ -83,12 +109,33 @@ body {
 
 /* svg */
 svg {
-  width: 1.2rem;
-  height: 1.2rem;
+  min-width: 1.2rem;
+  min-height: 1.2rem;
 }
 
 /* links */
-a:hover {
+/* a:hover {
   opacity: 0.7;
   transition: opacity 0.3s ease;
+} */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+button {
+  cursor: pointer;
+}
+
+/** -- SPLITTEXT */
+
+[data-module="text"] > span {
+  visibility: hidden;
 }

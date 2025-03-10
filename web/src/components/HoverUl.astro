@@ -1,0 +1,64 @@
+---
+const { text } = Astro.props
+const letters = text.split("").map(char => (char === " " ? "\u00A0" : char))
+---
+
+<p
+  data-hover="opacity"
+  data-css="hover-ul"
+  aria-label={text}
+  data-content={text}
+  class="relative block h-[1.3em] overflow-clip pb-1"
+>
+  <span aria-hidden="true" class="relative block">
+    {
+      letters.map((letter, i) => (
+        <span class="inline-block" style={`transition-delay: ${i * 0.02}s`}>
+          {letter}
+        </span>
+      ))
+    }
+  </span>
+  <span
+    aria-hidden="true"
+    class="absolute top-[100%] left-0 block h-full w-full"
+  >
+    {
+      letters.map((letter, i) => (
+        <span class="inline-block" style={`transition-delay: ${i * 0.02}s`}>
+          {letter}
+        </span>
+      ))
+    }
+  </span>
+</p>
+
+<style>
+  /* [data-css="hover-ul"]::after {
+    content: "";
+    position: absolute;
+    top: 99%;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background-color: white;
+    transform: scaleY(0);
+    transform-origin: left;
+    transition: transform 0.2s ease-out;
+  }
+
+  [data-css="hover-ul"]:hover::after {
+    transform: scaleY(1);
+  } */
+
+  span > span {
+    transition: transform 0.2s ease-out;
+  }
+
+  :hover {
+    span > span {
+      transform: translateY(-1.3em);
+      transition: transform 0.2s ease-out;
+    }
+  }
+</style>

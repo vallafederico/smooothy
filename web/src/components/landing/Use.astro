@@ -1,0 +1,120 @@
+---
+import Section from "@c/Section.astro"
+import LargeTitle from "@c/landing/LargeTitle.astro"
+import Svgg from "@c/svg/Svgg.astro"
+
+const USE = [
+  {
+    title: "Vanilla implementation.",
+    img: "use_vanilla",
+    description:
+      "It's just Javascript (and Typescript actually) so it kinda just works.",
+    links: [
+      {
+        title: "Docs",
+        url: "https://example.com",
+      },
+      {
+        title: "Example",
+        url: "https://example.com",
+      },
+    ],
+  },
+  {
+    title: "Framework agnostic.",
+    img: "use_framework",
+    description:
+      "It's just javascript (and typescript actually) so it kinda just works.",
+
+    links: [
+      {
+        title: "React",
+        url: "https://example.com",
+      },
+      {
+        title: "Vue",
+        url: "https://example.com",
+      },
+      {
+        title: "Solid ",
+        url: "https://example.com",
+      },
+      {
+        title: "Svelte",
+        url: "https://example.com",
+      },
+    ],
+  },
+  {
+    title: "Webflow ready.",
+    img: "use_webflow",
+    description:
+      "It's just javascript (and typescript actually) so it kinda just works.",
+    links: [
+      {
+        title: "Example",
+        url: "https://example.com",
+      },
+      {
+        title: "Cloneable",
+        url: "https://example.com",
+      },
+      {
+        title: "Docs",
+        url: "https://example.com",
+      },
+    ],
+  },
+]
+---
+
+<Section class="px-gx">
+  <LargeTitle
+    large="use"
+    title="Works everywhere."
+    description="I think. Kinda tested it around in all major frameworks/plaforms, and made some hooks."
+  />
+
+  <div class="py-xl md:py-0">
+    <ul class="md:ml-grid-3 flex flex-col gap-22 md:py-[8rem]">
+      {
+        USE.map(row => (
+          <li class="md:w-grids-7 gap-gutter flex w-full items-center nth-[even]:flex-row-reverse">
+            <figure data-module="draw" class="w-grids-3 p-2">
+              <Svgg name={row.img} class="w-full" />
+              <figcaption class="sr-only">{row.title}</figcaption>
+            </figure>
+            <div class="md:w-grids-4 w-grids-3 flex flex-col">
+              <h3
+                data-module="text"
+                data-type="chars"
+                class="text-md mb-2 leading-[1.3em] font-semibold"
+              >
+                {row.title}
+              </h3>
+              <p
+                data-module="text"
+                data-type="words"
+                data-delay={0.2}
+                class="max-w-[25ch]"
+              >
+                {row.description}
+              </p>
+              <ul class="w-grid-2 gap-gutter flex flex-col py-8 md:flex-row md:flex-wrap">
+                {row.links.map(link => (
+                  <li data-hover="opacity" class="w-1/3 font-semibold">
+                    <a href={link.url}>
+                      <p data-module="text" data-type="chars" data-delay={0.4}>
+                        {link.title}
+                      </p>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</Section>

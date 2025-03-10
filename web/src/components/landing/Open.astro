@@ -1,0 +1,85 @@
+---
+import Section from "@c/Section.astro"
+import BouncySvg from "./BouncySvg.astro"
+
+const CONTENT = {
+  title: "AKA fix it yourself.",
+  text: "Doesn't work? Feel free to PR. Or just tell me and I swear I'll do my best.",
+  links: [
+    {
+      title: "Contribute",
+      url: "https://github.com",
+    },
+    {
+      title: "Issues",
+      url: "https://github.com",
+    },
+  ],
+}
+---
+
+<Section class="px-gx md:gap-lg flex flex-col items-center">
+  <div class="w-grids-5 md:w-grids-6 md:pb-xl">
+    <BouncySvg name="open" />
+  </div>
+
+  <div class="md:w-grids-4 gap-md hidden flex-col md:flex">
+    <h2
+      data-module="text"
+      data-type="chars"
+      class="text-md leading-[1.2em] font-semibold"
+    >
+      {CONTENT.title}
+    </h2>
+    <div class="gap-sm flex justify-between">
+      <p data-module="text" data-type="words" class="max-w-[30ch]">
+        {CONTENT.text}
+      </p>
+      <ul class="font-semibold">
+        {
+          CONTENT.links.map(link => (
+            <li data-hover="opacity">
+              <a href={link.url}>
+                <p data-module="text" data-type="chars">
+                  {link.title}
+                </p>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+
+  <div class="md:w-grids-10">
+    <BouncySvg name="source" />
+  </div>
+
+  <div class="md:w-grids-4 gap-md py-xl flex flex-col md:hidden">
+    <h2
+      data-module="text"
+      data-type="chars"
+      class="text-md leading-[1.2em] font-semibold"
+    >
+      {CONTENT.title}
+    </h2>
+    <div class="gap-sm flex flex-col justify-between">
+      <p data-module="text" data-type="words" class="max-w-[30ch]">
+        {CONTENT.text}
+      </p>
+      <ul class="font-semibold">
+        {
+          CONTENT.links.map(link => (
+            <li data-hover="opacity">
+              <a href={link.url}>
+                <p data-module="text" data-type="chars">
+                  {link.title}
+                </p>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</Section>

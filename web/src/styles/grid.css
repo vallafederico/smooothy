@@ -1,0 +1,74 @@
+:root {
+  /* Grid configuration */
+  --margin: var(--gx);
+  --grid-columns: var(--columns);
+  --grid-gutter: var(--gutter);
+
+  --grid-column-width: calc(
+    (
+        100vw - 2 * var(--margin) -
+          (var(--grid-gutter) * (var(--grid-columns) - 1))
+      ) /
+      var(--grid-columns)
+  );
+
+  /* (*) FIND A CLAMPING VALUE TO AUTOMATICALLY HANDLE LARGER THAN POSSIBLE GRIDS ON MOBILE */
+  /* --clamping: */
+}
+
+@theme {
+  /* SPACING */
+  --spacing-grid-1: calc(var(--grid-column-width) * 1 + var(--grid-gutter) * 1);
+  --spacing-grid-2: calc(var(--grid-column-width) * 2 + var(--grid-gutter) * 2);
+  --spacing-grid-3: calc(var(--grid-column-width) * 3 + var(--grid-gutter) * 3);
+  --spacing-grid-4: calc(var(--grid-column-width) * 4 + var(--grid-gutter) * 4);
+  --spacing-grid-5: calc(var(--grid-column-width) * 5 + var(--grid-gutter) * 5);
+  --spacing-grid-6: calc(var(--grid-column-width) * 6 + var(--grid-gutter) * 6);
+  --spacing-grid-7: calc(var(--grid-column-width) * 7 + var(--grid-gutter) * 7);
+  --spacing-grid-8: calc(var(--grid-column-width) * 8 + var(--grid-gutter) * 8);
+  --spacing-grid-9: calc(var(--grid-column-width) * 9 + var(--grid-gutter) * 9);
+  --spacing-grid-10: calc(
+    var(--grid-column-width) * 10 + var(--grid-gutter) * 10
+  );
+  --spacing-grid-11: calc(
+    var(--grid-column-width) * 11 + var(--grid-gutter) * 11
+  );
+  --spacing-grid-12: calc(
+    var(--grid-column-width) * 12 + var(--grid-gutter) * 12
+  );
+
+  /* SIZES */
+  --spacing-grids-1: calc(
+    var(--grid-column-width) * 1 + var(--grid-gutter) * 0
+  );
+  --spacing-grids-2: calc(
+    var(--grid-column-width) * 2 + var(--grid-gutter) * 1
+  );
+  --spacing-grids-3: calc(
+    var(--grid-column-width) * 3 + var(--grid-gutter) * 2
+  );
+  --spacing-grids-4: calc(
+    var(--grid-column-width) * 4 + var(--grid-gutter) * 3
+  );
+  --spacing-grids-5: calc(
+    var(--grid-column-width) * 5 + var(--grid-gutter) * 4
+  );
+  --spacing-grids-6: calc(
+    var(--grid-column-width) * 6 + var(--grid-gutter) * 5
+  );
+  --spacing-grids-7: calc(
+    var(--grid-column-width) * 7 + var(--grid-gutter) * 6
+  );
+  --spacing-grids-8: calc(
+    var(--grid-column-width) * 8 + var(--grid-gutter) * 7
+  );
+  --spacing-grids-9: calc(
+    var(--grid-column-width) * 9 + var(--grid-gutter) * 8
+  );
+  --spacing-grids-10: calc(
+    var(--grid-column-width) * 10 + var(--grid-gutter) * 9
+  );
+  --spacing-grids-11: calc(
+    var(--grid-column-width) * 11 + var(--grid-gutter) * 10
+  );
+}

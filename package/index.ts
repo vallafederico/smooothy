@@ -1,5 +1,5 @@
 import { Core } from "./src/core"
-import { lerp, damp } from "./src/utils"
+import { lerp, damp, symmetricMod } from "./src/utils"
 
 export default Core
-export { lerp, damp }
+export { lerp, damp, symmetricMod }
