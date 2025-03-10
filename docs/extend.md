@@ -11,7 +11,7 @@ Add dots, arrows and navigation methods.
 
 ```js
 import Core from "smooothy"
-import gsap from "~/js/gsap"
+import gsap from "gsap"
 
 class ControlsSlider extends Core {
   constructor(container: HTMLElement, config = {}) {
@@ -117,7 +117,7 @@ Adds keyboard (arrows, spacebar) controls for next and previous slide, and numpa
 
 ```js
 import Core from "smooothy"
-import gsap from "../gsap"
+import gsap from "gsap"
 
 export class KeyboardSlider extends Core {
   constructor(wrapper, config) {
@@ -163,13 +163,35 @@ export class KeyboardSlider extends Core {
 }
 ```
 
+
+
+### Base parallax
+
+```html
+<!-- ... -->
+```
+
+```js
+// 
+```
+
+### Parallax and Speed
+
+```html
+<!-- ... -->
+```
+
+```js
+// 
+```
+
 ### Capture Link Clicks
 
 Pretty common issue is mixing sliding and click behaviour with slides that are actual links.
 
 ```js
 import Core from "smooothy"
-import gsap from "~/js/gsap"
+import gsap from "gsap"
 
 export class LinkSlider extends Core {
   constructor(container: HTMLElement, config = {}) {
@@ -224,28 +246,7 @@ export class LinkSlider extends Core {
 }
 ```
 
-### Base parallax
-
-```html
-<!-- ... -->
-```
-
-```js
-// 
-```
-
-### Parallax and Speed
-
-```html
-<!-- ... -->
-```
-
-```js
-// 
-```
-
-
-### Full Control Interface
+### Settled Queue
 
 ```html
 <!-- ... -->
