@@ -32,12 +32,17 @@ export class Text extends Observe {
 
   constructor(element: HTMLElement) {
     super(element)
+
+    this.create()
+    this.isOut()
+  }
+
+  create() {
+    if (reduced) return
+
     this.split = split(this.element).result
     let delay = this.element.dataset.delay
     if (delay) this.a.delay += parseFloat(delay)
-    // console.log(this.a.delay)
-
-    this.isOut()
   }
 
   isIn = () => {
