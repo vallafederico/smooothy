@@ -20,14 +20,22 @@ import { LINKS } from "~/content"
       }
     </div>
 
-    <a
-      href={link ? LINKS.docs + link : LINKS.docs}
-      data-hover="opacity"
-      class="flex items-center gap-2"
-      target="_blank"
-    >
-      <span class="inline-block w-[2em]"><Svgg name="github" /></span>
-      <span class="font-mono">Github</span>
-    </a>
+    {
+      link && (
+        <a
+          href={link ? LINKS.docs + link : LINKS.docs}
+          data-hover="opacity"
+          class="flex items-center gap-2"
+          target="_blank"
+        >
+          <span class="inline-block w-[2em]">
+            <Svgg name="github" />
+          </span>
+          <span class="font-mono text-sm tracking-widest uppercase">
+            Github
+          </span>
+        </a>
+      )
+    }
   </div>
 </div>
