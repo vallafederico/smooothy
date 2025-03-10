@@ -75,6 +75,12 @@ export class GSlider extends Core {
       this.interface.read.speedlength -
       this.interface.read.speedlength * map(this.#lspeed, 0, 10, 0, 1)
     }`
+
+    if (Math.abs(this.speed) > 0.01) {
+      this.interface.read.direction.textContent = this.speed > 0 ? "-1" : "+1"
+    } else {
+      this.interface.read.direction.textContent = "0"
+    }
   }
 
   initInterface(element: HTMLElement) {
@@ -83,13 +89,26 @@ export class GSlider extends Core {
       item => item.querySelector("button")
     )
 
-    config[0].onclick = () => (this.paused = !this.paused)
+    config[0].onclick = () => {
+      this.paused = !this.paused
+      ;[...config[0].querySelectorAll("span")].forEach(span => {
+        span.classList.toggle("opacity-50")
+      })
+    }
 
-    config[1].onclick = () => (this.config.snap = !this.config.snap)
+    config[1].onclick = () => {
+      this.config.snap = !this.config.snap
+      ;[...config[1].querySelectorAll("span")].forEach(span => {
+        span.classList.toggle("opacity-50")
+      })
+    }
 
     config[2].onclick = () => {
       this.current = this.target = 0
       this.config.infinite = !this.config.infinite
+      ;[...config[2].querySelectorAll("span")].forEach(span => {
+        span.classList.toggle("opacity-50")
+      })
     }
 
     // read
@@ -97,6 +116,7 @@ export class GSlider extends Core {
     const read = {
       speedv: readWrapper[0],
       speed: readWrapper[1],
+      direction: document.querySelector("[data-direction]"),
       speedlength: readWrapper[1].getTotalLength(),
       currentv: readWrapper[2],
       current: readWrapper[3],

@@ -24,6 +24,7 @@ const { class: className, nav, isHome = false } = Astro.props
     />
 
     <!-- {isHome && <script>history.scrollRestoration = "manual"</script>} -->
+    {!isHome && <link href="/code.css" rel="stylesheet" />}
   </head>
   <body>
     <Nav>

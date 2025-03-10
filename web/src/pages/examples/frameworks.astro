@@ -2,42 +2,42 @@
 import Layout from "~/layouts/Layout.astro"
 import Section from "@c/Section.astro"
 import ExampleHead from "~/components/ExampleHead.astro"
-
+import ExamplePageHead from "~/components/ExamplePageHead.astro"
 import ReactSlider from "~/components/frameworks/ReactSlider"
 import VueSlider from "~/components/frameworks/VueSlider.vue"
+
+import Code from "~/components/Code.astro"
+
+const reactExample = await import.meta.glob(
+  "/src/components/frameworks/ReactSlider.tsx",
+  { as: "raw" }
+)
+const reactContent = await Object.values(reactExample)[0]()
 ---
 
 <Layout>
-  <Section top class="flex flex-col justify-center">
-    <div class="px-gx md:px-ex-gx">
-      <h1 class="text-xl font-semibold">Frameworks.</h1>
-      <p class="max-w-[40ch] text-sm text-gray-500">
-        A collection of examples of the slider in action and implementation
-        ideas.
-      </p>
-      <ul class="py-3">
-        <li>
-          <a href="/examples">Back to examples</a>
-        </li>
-      </ul>
-    </div>
-  </Section>
-
-  <Section id={"controls"} class="min-h-[80svh] pt-[1rem]">
-    <ExampleHead
-      title={"React"}
-      description={"React implementation of the slider. also creates a useSmooothy hook for comvenience."}
-      features={["react", "infinite", "snap", "framework"]}
-    />
-    <ReactSlider client:load />
-  </Section>
-
-  <Section id={"controls"} class="min-h-[80svh] pt-[10svh]">
-    <ExampleHead
-      title={"Vue"}
-      description={"Vue implementation. Create a composable to handle the slider instance."}
-      features={["vue", "infinite", "snap", "framework"]}
-    />
-    <VueSlider client:load />
-  </Section>
+  <ExamplePageHead
+    title={"Frameworks."}
+    description={"A collection of examples of the slider in action and implementation ideas."}
+  />
 </Layout>
+
+<Section id={"controls"} class="min-h-[80svh] pt-[1rem]">
+  <ExampleHead
+    title={"React"}
+    description={"React implementation of the slider. also creates a useSmooothy hook for comvenience."}
+    features={["react", "infinite", "snap", "framework"]}
+    link={"frameworks#react"}
+  />
+
+  <ReactSlider client:load />
+</Section>
+
+<Section id={"controls"} class="min-h-[80svh] pt-[10svh]">
+  <ExampleHead
+    title={"Vue"}
+    description={"Vue implementation. Create a composable to handle the slider instance."}
+    features={["vue", "infinite", "snap", "framework"]}
+  />
+  <VueSlider client:load />
+</Section>

@@ -44,6 +44,13 @@ h4 {
   -ms-user-select: none; /* Internet Explorer/Edge */
 }
 
+[data-selectable] {
+  user-select: text;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+}
+
 @theme {
   --font-sans: "Geist", sans-serif;
   --font-mono: "Geist Mono", monospace;
@@ -61,6 +68,15 @@ h4 {
   --spacing-2xl: 4rem;
   --spacing-3xl: 5rem;
   --spacing-nav-height: 8em;
+
+  /* --color-*: initial; */
+  --color-gray-300: oklch(0.872 0 0);
+  --color-gray-400: oklch(0.707 0 0);
+  --color-gray-500: oklch(0.551 0 0);
+  --color-gray-600: oklch(0.446 0 0);
+  --color-gray-700: oklch(0.373 0 0);
+  --color-gray-800: oklch(0.278 0 0);
+  --color-gray-900: oklch(0.21 0 0);
 
   --text-sm: 0.7rem;
   --text-base: 12px;

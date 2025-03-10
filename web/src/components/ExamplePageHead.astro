@@ -1,0 +1,51 @@
+---
+import Section from "@c/Section.astro"
+
+const { title, description } = Astro.props
+const EXAMPLE_LINKS = [
+  {
+    title: "Vanilla",
+    href: "/examples",
+  },
+  {
+    title: "Frameworks",
+    href: "/examples/frameworks",
+  },
+  {
+    title: "Webflow",
+    href: "/examples/webflow",
+  },
+  {
+    title: "Configurable",
+    href: "/examples/configurable",
+  },
+]
+
+const currentPath = Astro.url.pathname
+const filteredLinks = EXAMPLE_LINKS.filter(link => link.href !== currentPath)
+---
+
+<Section top class="px-gx flex flex-col justify-center">
+  <div class="md:ml-grid-2">
+    <div class="md:w-grids-4">
+      <h1 class="text-xl font-semibold tracking-tighter">{title}</h1>
+      <p class="max-w-[35ch] text-gray-400">
+        {description}
+      </p>
+    </div>
+
+    <ul class="w-grid-3 gap-gutter flex flex-wrap py-4">
+      {
+        filteredLinks.map(link => (
+          <li class="w-1/3 font-semibold tracking-tight">
+            <div class="max-w-[80%]">
+              <a data-hover="opacity" href={link.href}>
+                {link.title}
+              </a>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</Section>

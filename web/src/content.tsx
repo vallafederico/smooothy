@@ -3,6 +3,7 @@ export const LINKS = {
   twitter: "https://federic.ooo/s/twitter",
   instagram: "https://federic.ooo/s/instagram",
   website: "https://federic.ooo",
+  docs: "https://github.com/vallafederico/smooothy/blob/master/docs/",
 }
 
 export const GITHUB = {

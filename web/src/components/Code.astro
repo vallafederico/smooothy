@@ -1,0 +1,8 @@
+---
+import { Prism } from "@astrojs/prism"
+const { lang, code } = Astro.props
+---
+
+<div data-selectable>
+  <Prism lang={lang} code={code} />
+</div>
