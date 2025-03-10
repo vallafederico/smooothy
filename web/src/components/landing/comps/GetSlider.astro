@@ -13,11 +13,20 @@ const SLIDES = Array.from({ length: letters.length }, (_, i) => i)
   <div class="px-gx">
     <div class="gap-gutter pb-xl mb-xl pl-grid-2 flex">
       <div class="w-grids-3">
-        <h3 class="font-semibold tracking-tighter uppercase">CONFIGURE</h3>
+        <h3
+          data-module="text"
+          data-type="chars"
+          class="font-semibold tracking-tighter uppercase"
+        >
+          CONFIGURE
+        </h3>
         <figure class="py-xl" data-module="draw">
           <Svgg name="toggle" />
         </figure>
-        <ul class="flex flex-col gap-1 font-mono text-sm tracking-widest">
+        <ul
+          data-module="alpha"
+          class="flex flex-col gap-1 font-mono text-sm tracking-widest"
+        >
           <li>
             <button>
               <p>ENABLE <span>ON</span>/<span>OFF</span></p>
@@ -36,12 +45,18 @@ const SLIDES = Array.from({ length: letters.length }, (_, i) => i)
         </ul>
       </div>
       <div class="w-grids-3">
-        <h3 class="font-semibold tracking-tighter uppercase">READ</h3>
+        <h3
+          data-module="text"
+          data-type="chars"
+          class="font-semibold tracking-tighter uppercase"
+        >
+          READ
+        </h3>
         <figure class="py-xl" data-module="draw">
           <Svgg name="read" />
         </figure>
         <div class="flex font-mono text-sm tracking-widest">
-          <div class="flex w-1/2 flex-col gap-2">
+          <div data-module="alpha" class="flex w-1/2 flex-col gap-2">
             <p class="flex w-[80%] justify-between">
               <span>SPEED</span>
               <span>0.000</span>
@@ -59,7 +74,7 @@ const SLIDES = Array.from({ length: letters.length }, (_, i) => i)
             </div>
           </div>
 
-          <ul class="flex w-1/2 flex-col gap-2">
+          <ul data-module="alpha" class="flex w-1/2 flex-col gap-2">
             <li class="">
               <p class="flex justify-between">
                 <span>CURRENT</span>
@@ -91,11 +106,17 @@ const SLIDES = Array.from({ length: letters.length }, (_, i) => i)
         </div>
       </div>
       <div class="w-grids-3 ml-grid-1">
-        <h3 class="font-semibold tracking-tighter uppercase">EVENTS</h3>
+        <h3
+          data-module="text"
+          data-type="chars"
+          class="font-semibold tracking-tighter uppercase"
+        >
+          EVENTS
+        </h3>
         <figure class="py-xl" data-module="draw">
           <Svgg name="events" />
         </figure>
-        <div class="font-mono text-sm tracking-widest">
+        <div data-module="alpha" class="font-mono text-sm tracking-widest">
           <ul
             data-css="progressive-fade"
             class="flex h-[7ch] flex-col-reverse justify-start overflow-clip [&>li]:shrink-0"

@@ -83,7 +83,11 @@ const SET = [
       {
         SET.map(column => (
           <li class="w-grid-3 flex flex-col gap-[4rem]">
-            <h3 class="font-mono text-[1.1em] tracking-widest uppercase">
+            <h3
+              data-module="text"
+              data-type="chars"
+              class="font-mono text-[1.1em] tracking-widest uppercase"
+            >
               {column.title}
             </h3>
             <ul class="gap-xl flex flex-col">

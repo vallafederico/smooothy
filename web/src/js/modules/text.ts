@@ -24,8 +24,8 @@ export class Text extends Observe {
     autoAlpha: 1,
     // yPercent: 0,
     stagger: {
-      each: 0.02,
-      from: "start",
+      each: 0.03,
+      from: "random",
       grid: "auto",
     },
   }
