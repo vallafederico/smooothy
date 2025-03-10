@@ -10,6 +10,7 @@
 
 - [ ] variable Slide Width
 - [ ] Control Interface Slider
+- [ ] add proper svg arrows to control example
 
 ## Docs
 
@@ -17,3 +18,7 @@
 - [ ] add a clear use arrow functions whene extending
 - [ ] add **expandable** HTML structure in example
 - [ ] add a link to the configurable example in the main doc page
+- [ ] add the callable resize method to the documentation
+- [ ] add symmetricMod to named exports
+  - [ ] check all named exports and document those
+- [ ] check slider.paused and slider.snap in state control section

@@ -101,12 +101,10 @@ export class Core {
       ...config,
     }
 
-    // Store the callback but don't delete it
     if (config.onSlideChange) this.onSlideChange = config.onSlideChange
     if (config.onResize) this.onResize = config.onResize
     if (config.onUpdate) this.onUpdate = config.onUpdate
 
-    // Remove from config but keep the method
     delete this.config.onSlideChange
     delete this.config.onResize
     delete this.config.onUpdate
@@ -114,7 +112,6 @@ export class Core {
     this.wrapper = wrapper
     this.items = [...wrapper.children] as HTMLElement[]
 
-    // State
     this.current = 0
     this.target = 0
     this.isDragging = false
@@ -512,9 +509,8 @@ export default Core
 // ////////////////////////////////////////
 
 /*
-DOCS +
-- [ ] add the callable resize method to the documentation
-- [ ] add symmetricMod to named exports
+- [ ] ...
+
     
 */
 
