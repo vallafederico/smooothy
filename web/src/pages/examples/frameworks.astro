@@ -5,14 +5,6 @@ import ExampleHead from "~/components/ExampleHead.astro"
 import ExamplePageHead from "~/components/ExamplePageHead.astro"
 import ReactSlider from "~/components/frameworks/ReactSlider"
 import VueSlider from "~/components/frameworks/VueSlider.vue"
-
-import Code from "~/components/Code.astro"
-
-const reactExample = await import.meta.glob(
-  "/src/components/frameworks/ReactSlider.tsx",
-  { as: "raw" }
-)
-const reactContent = await Object.values(reactExample)[0]()
 ---
 
 <Layout>
@@ -27,7 +19,7 @@ const reactContent = await Object.values(reactExample)[0]()
     title={"React"}
     description={"React implementation of the slider. also creates a useSmooothy hook for comvenience."}
     features={["react", "infinite", "snap", "framework"]}
-    link={"frameworks#react"}
+    link={"frameworks.md#react"}
   />
 
   <ReactSlider client:load />
@@ -38,6 +30,7 @@ const reactContent = await Object.values(reactExample)[0]()
     title={"Vue"}
     description={"Vue implementation. Create a composable to handle the slider instance."}
     features={["vue", "infinite", "snap", "framework"]}
+    link={"frameworks.md#vue"}
   />
   <VueSlider client:load />
 </Section>
