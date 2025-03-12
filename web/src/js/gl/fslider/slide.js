@@ -4,6 +4,7 @@ import {
   MeshNormalMaterial,
   Mesh,
   PlaneGeometry,
+  FrontSide,
 } from "three"
 import { SliderGroup } from "../dom/group"
 import { WiggleBone } from "wiggle"
@@ -16,7 +17,10 @@ const randomShape = () => {
     Math.random() > 0.5
       ? new BoxGeometry(0.2, 0.2, 0.2)
       : new SphereGeometry(0.2, 16, 16)
-  const material = new MeshNormalMaterial()
+  const material = new MeshNormalMaterial({
+    // depthTest: false,
+    // depthWrite: false,
+  })
   return new Mesh(geometry, material)
 }
 
@@ -34,8 +38,13 @@ export class Slide extends SliderGroup {
     this.element = element
     this.index = index
 
-    // this.bg = new Mesh(new PlaneGeometry(1, 1), new MeshNormalMaterial())
-    // this.add(this.bg)
+    this.bg = new Mesh(
+      new PlaneGeometry(1, 1),
+      new MeshNormalMaterial({
+        depthWrite: false,
+      })
+    )
+    this.add(this.bg)
 
     if (this.index === 0) {
       hey.on("WEBGL_LOADED", this.onLoad)
@@ -47,11 +56,15 @@ export class Slide extends SliderGroup {
   }
 
   onLoad = () => {
-    console.log(Gl.scene.assets)
     const model = Gl.scene.assets.model
+    model.renderOrder = 1
 
     model.traverse(child => {
-      if (child.isMesh) child.material = new MeshNormalMaterial()
+      if (child.isMesh)
+        child.material = new MeshNormalMaterial({
+          depthTest: true,
+          // side: FrontSide,
+        })
       if (child.isSkinnedMesh) {
         child.skeleton.bones.forEach(bone => {
           if (!bone.parent.isBone) {
@@ -72,7 +85,7 @@ export class Slide extends SliderGroup {
 
   resize() {
     // console.log("resize")
-    // this.bg.scale.set(this.bounds.width, this.bounds.height, 1)
+    this.bg.scale.set(this.bounds.width, this.bounds.height, 1)
   }
 
   raf = () => {
