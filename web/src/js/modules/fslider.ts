@@ -3,6 +3,7 @@ import gsap from "../gsap"
 import { Raf } from "../utils/subscribable"
 import { Gl } from "../gl/gl"
 import { symmetricMod } from "../utils/math"
+import { hey } from "../hey"
 
 export const calculateSlidePosition = (index, slider) => {
   const unitPos = slider.current + index
@@ -15,6 +16,7 @@ export class FSlider extends Core {
 
   constructor(element: HTMLElement) {
     super(element.querySelector('[data-slider="wrapper"]'))
+    hey.FSLIDER = this
   }
 
   onUpdate = () => {

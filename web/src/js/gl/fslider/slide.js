@@ -4,13 +4,13 @@ import {
   MeshNormalMaterial,
   Mesh,
   PlaneGeometry,
-  FrontSide,
 } from "three"
 import { SliderGroup } from "../dom/group"
 import { WiggleBone } from "wiggle"
 import { hey } from "../../hey"
 import { Gl } from "../gl"
 import { Raf } from "../../utils/subscribable"
+// import { App } from "../../app"
 
 const randomShape = () => {
   const geometry =
@@ -31,7 +31,7 @@ let _root = null
 // //////////////////////////////////
 
 export class Slide extends SliderGroup {
-  #raf = Raf.subscribe(() => this.raf())
+  #raf = Raf.subscribe(t => this.raf(t))
 
   constructor(element, { index }) {
     super(element, { index })
@@ -88,13 +88,28 @@ export class Slide extends SliderGroup {
     this.bg.scale.set(this.bounds.width, this.bounds.height, 1)
   }
 
-  raf = () => {
+  raf = ({ time }) => {
     _bones.forEach(bone => bone.update(Raf.deltaTime * 1000))
 
-    if (this.model) {
-      this.model.rotation.y += 0.01
-      this.model.rotation.x += 0.006
-      this.model.rotation.z += 0.008
+    if (_root) {
+      _root.position.y = Math.sin(time) * 0.1
+      _root.position.x = Math.cos(time) * 0.1
+
+      const speed = hey.FSLIDER.speed * 0.01
+      _root.rotation.y += speed * 0.5
+      _root.rotation.x += speed * 0.5
+      _root.rotation.z += speed * 0.1
+      // _root.rotation.z += hey.FSLIDER.speed * 0.01
+
+      // _root.rotation.y = Math.sin(time) * 0.1
+      // _root.rotation.x = Math.cos(time) * 0.1
+      // _root.rotation.z = Math.sin(time) * 0.1
     }
+
+    // if (this.model) {
+    // this.model.rotation.y += 0.01
+    // this.model.rotation.x += 0.006
+    // this.model.rotation.z += 0.008
+    // }
   }
 }

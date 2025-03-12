@@ -1,7 +1,7 @@
 import { Group as G } from "three"
 import { Slide } from "./slide"
 import { symmetricMod } from "../../utils/math"
-
+import { hey } from "../../hey"
 export class FSlider extends G {
   slides = []
   frustumCulled = false
@@ -11,6 +11,7 @@ export class FSlider extends G {
     this.wrapper = wrapper
     this.element = wrapper.querySelector('[data-slider="wrapper"]')
     this.create()
+    console.log(hey.FSLIDER)
   }
 
   create() {
