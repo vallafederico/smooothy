@@ -81,6 +81,9 @@ importers:
       vue:
         specifier: ^3.5.13
         version: 3.5.13(typescript@5.8.2)
+      wiggle:
+        specifier: ^0.0.17
+        version: 0.0.17(three@0.174.0)
     devDependencies:
       astro:
         specifier: ^5.4.2
@@ -2490,6 +2493,11 @@ packages:
   widest-line@5.0.0:
     resolution: {integrity: sha512-c9bZp7b5YtRj2wOe6dlj32MK+Bx/M/d+9VB2SHM1OtsUHR0aV0tdP6DWh/iMt0kWi1t5g1Iudu6hQRNd1A4PVA==}
     engines: {node: '>=18'}
+
+  wiggle@0.0.17:
+    resolution: {integrity: sha512-vF4Kx9a+lHVWia3ZLhZcMnam9VhFGND0+9WYnHq0rcnYDLlbL4iFzYUXJk2cx5reDolwt+EN5mhUP3uHGhWtRQ==}
+    peerDependencies:
+      three: '>= 0.152.0'
 
   wrap-ansi@7.0.0:
     resolution: {integrity: sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==}
@@ -5172,6 +5180,10 @@ snapshots:
   widest-line@5.0.0:
     dependencies:
       string-width: 7.2.0
+
+  wiggle@0.0.17(three@0.174.0):
+    dependencies:
+      three: 0.174.0
 
   wrap-ansi@7.0.0:
     dependencies:
