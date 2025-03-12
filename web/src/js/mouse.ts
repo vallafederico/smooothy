@@ -38,7 +38,7 @@ type Config = {
 const CONFIG: Config = {
   damp: 8,
   dampFunc: damp,
-  dampDecay: 1.2,
+  dampDecay: 1.4,
   events: [
     { name: "mousemove", handler: (self: Mouse) => self.handleMove.bind(self) },
     {

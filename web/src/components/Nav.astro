@@ -57,13 +57,12 @@ const links = [
   <ul class="flex flex-col items-end gap-2 md:flex-row md:gap-4">
     {
       links.map(link => (
-        <li class="text-[12px]">
+        <li class="relative text-[12px] leading-[1em]">
           <a
             href={link.href}
             class:list={[
               link.style && link.style,
               "pointer-events-auto tracking-wide",
-              link.style && link.style,
             ]}
             target={link.target}
             data-module="alpha"
