@@ -155,3 +155,61 @@ button {
 [data-module="text"] > span {
   visibility: hidden;
 }
+
+/** -- CURSOR */
+
+/* (*) REMOVE FROM MOBILE */
+
+/* remove on links and shit */
+body:has(nav:hover) [data-module="cursor"] > div {
+  transform: scale(0.2);
+  transition: transform 0.4s;
+}
+
+body:has(a:hover) [data-module="cursor"] [cursor-main],
+body:has(button:hover) [data-module="cursor"] [cursor-main],
+body:has([data-no-cursor]:hover) [data-module="cursor"] [cursor-main] {
+  transform: scale(0);
+  transition: transform 0.4s;
+}
+
+/* out/in */
+[data-module="cursor"] {
+  transition: opacity 0.2s;
+}
+
+.mouse-out [data-module="cursor"] {
+  opacity: 0;
+}
+
+[data-module="cursor"] [cursor-main] {
+  transition:
+    transform 0.4s,
+    border-radius 0.4s;
+  transform: scale(1);
+}
+
+/* down/up */
+.mouse-down [data-module="cursor"] [cursor-main] {
+  transform: scale(1.2);
+  border-radius: 100%;
+}
+
+[cursor-circle] {
+  transform: scale(0);
+  transition: transform 0.8s;
+  transition-delay: 0.3s;
+}
+
+.mouse-down [cursor-circle] {
+  transform: scale(1);
+  transition: transform 0.4s;
+}
+
+[cursor-circle] {
+  visibility: hidden;
+}
+
+body:has([data-slider="wrapper"]:hover) [cursor-circle] {
+  visibility: visible;
+}

@@ -1,8 +1,8 @@
-import gsap from "./gsap"
 import { Scroll } from "./scroll"
 
 import { Dom } from "./dom"
 import { Gl } from "./gl/gl"
+import { Mouse } from "./mouse"
 
 export class App {
   static scroll = Scroll
@@ -10,3 +10,5 @@ export class App {
   static gl = Gl
   static {}
 }
+
+// /////////////////

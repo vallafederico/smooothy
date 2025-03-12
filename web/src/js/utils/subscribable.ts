@@ -78,7 +78,7 @@ export class _Raf extends Subscribable {
 
   raf = (time: number, deltaTime: number, frame: number) => {
     this.time = time
-    this.deltaTime = deltaTime
+    this.deltaTime = deltaTime / 1000
     this.frame = frame
 
     this.subs = {

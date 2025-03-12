@@ -37,7 +37,7 @@ export class GSlider extends Core {
     if (this.config.infinite) {
       this.letters.forEach((letter, i) => {
         letter.style.transform = `
-        translateY(${Math.sin(parallaxValues[i] * 1) * 20}%)
+        translateY(${Math.sin(parallaxValues[i] * 1) * 20 + this.#lspeed * 4}%)
         scale(${Math.sin(Math.abs(parallaxValues[i]) * 0.5 + 2) + speed})
         `
       })
