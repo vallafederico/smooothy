@@ -151,8 +151,8 @@ export class Mouse {
   static in: boolean = true
   static down: boolean = false
 
-  static x: number = 0
-  static y: number = 0
+  static x: number = window.innerWidth / 2
+  static y: number = window.innerHeight / 2
   static ex: number[] = [0, 0]
   static ey: number[] = [0, 0]
   static sx: number = 0
@@ -179,9 +179,29 @@ export class Mouse {
     this.ex[0] = CONFIG.dampFunc(this.ex[0], x, CONFIG.damp)
     this.ey[0] = CONFIG.dampFunc(this.ey[0], y, CONFIG.damp)
 
-    if (this.down) return
-    this.ex[1] = CONFIG.dampFunc(this.ex[1], x, CONFIG.damp * CONFIG.dampDecay)
-    this.ey[1] = CONFIG.dampFunc(this.ey[1], y, CONFIG.damp * CONFIG.dampDecay)
+    if (this.down) {
+      this.ex[1] = CONFIG.dampFunc(
+        this.ex[1],
+        x,
+        CONFIG.damp * CONFIG.dampDecay * 0.2
+      )
+      this.ey[1] = CONFIG.dampFunc(
+        this.ey[1],
+        y,
+        CONFIG.damp * CONFIG.dampDecay * 0.2
+      )
+    } else {
+      this.ex[1] = CONFIG.dampFunc(
+        this.ex[1],
+        x,
+        CONFIG.damp * CONFIG.dampDecay
+      )
+      this.ey[1] = CONFIG.dampFunc(
+        this.ey[1],
+        y,
+        CONFIG.damp * CONFIG.dampDecay
+      )
+    }
     // console.log(this.ex, this.ey)
   }
 }

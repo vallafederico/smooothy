@@ -20,7 +20,7 @@ export class Cursor {
   handleRaf(time: number) {
     this.element.style.left = `${Mouse.ex[0]}px`
     this.element.style.top = `${Mouse.ey[0]}px`
-    this.element.style.transform = `rotate(${Mouse.sex * 360 * 2}deg)`
+    this.element.style.transform = `rotate(${Mouse.sex * 360 * 4}deg)`
 
     this.circle.style.left = `${Mouse.ex[1]}px`
     this.circle.style.top = `${Mouse.ey[1]}px`

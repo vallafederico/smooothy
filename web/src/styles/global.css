@@ -173,6 +173,13 @@ body:has([data-no-cursor]:hover) [data-module="cursor"] [cursor-main] {
   transition: transform 0.4s;
 }
 
+body:has(a:hover) [data-module="cursor"] [cursor-circle],
+body:has(button:hover) [data-module="cursor"] [cursor-circle],
+body:has([data-no-cursor]:hover) [data-module="cursor"] [cursor-circle] {
+  transform: scale(0);
+  transition: transform 0.4s;
+}
+
 /* out/in */
 [data-module="cursor"] {
   transition: opacity 0.2s;
@@ -191,25 +198,32 @@ body:has([data-no-cursor]:hover) [data-module="cursor"] [cursor-main] {
 
 /* down/up */
 .mouse-down [data-module="cursor"] [cursor-main] {
-  transform: scale(1.2);
+  transform: scale(0.8);
   border-radius: 100%;
 }
 
-[cursor-circle] {
-  transform: scale(0);
+[cursor-circle-w] {
   transition: transform 0.8s;
+
+  transform: scale(0);
   transition-delay: 0.3s;
 }
 
-.mouse-down [cursor-circle] {
+body:not(:has([data-module="fslider"]:hover)) [cursor-circle-w] {
+  transform: scale(0);
+  transition: transform 0.2s;
+}
+
+body:has([data-module="fslider"]:hover) [cursor-circle-w] {
   transform: scale(1);
-  transition: transform 0.4s;
+  transition: transform 0.2s;
 }
 
 [cursor-circle] {
-  visibility: hidden;
+  transition: transform 0.4s;
+  transform: scale(1);
 }
 
-body:has([data-slider="wrapper"]:hover) [cursor-circle] {
-  visibility: visible;
+.mouse-down [cursor-circle] {
+  transform: scale(1.2);
 }
