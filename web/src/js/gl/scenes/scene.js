@@ -16,11 +16,11 @@ export default class extends Scene {
 
   create() {
     /** -- slider */
-    // const slider = document.querySelector('[data-module="fslider"]')
-    // if (slider) {
-    //   this.fslider = new FSlider(slider)
-    //   this.add(this.fslider)
-    // }
+    const slider = document.querySelector('[data-module="fslider"]')
+    if (slider) {
+      this.fslider = new FSlider(slider)
+      this.add(this.fslider)
+    }
   }
 
   render(t) {
