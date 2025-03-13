@@ -17,8 +17,10 @@ export default class extends Scene {
   }
 
   async load() {
+    let t = performance.now()
     this.assets = await loadAssets()
-    console.log(this.assets.model)
+    console.log("(ms):::", performance.now() - t, this.assets)
+
     hey.WEBGL_LOADED = true
   }
 

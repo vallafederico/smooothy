@@ -11,10 +11,11 @@ const SLIDES = Array.from({ length: 11 }, (_, i) => i)
   <ul data-slider="wrapper" class="ml-[calc(50vw-var(--slide-width)/2)] flex">
     {
       SLIDES.map(slide => (
-        <li class="shrink-0 p-2">
-          <div class="aspect-[4/5.5] w-[var(--slide-width)] outline outline-gray-800">
-            <h2>{slide}</h2>
+        <li class="relative z-2 shrink-0 p-2">
+          <div class="z-10 aspect-[4/5.5] w-[var(--slide-width)] outline outline-gray-800">
+            {/* <h2>{slide}</h2> */}
           </div>
+          <div class="absolute inset-0 z-[100]">HELLO</div>
         </li>
       ))
     }

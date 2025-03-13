@@ -7,12 +7,34 @@
   "endOfLine": "lf",
   "trailingComma": "es5",
   "arrowParens": "avoid",
-  "plugins": ["prettier-plugin-astro", "prettier-plugin-tailwindcss"],
+  "plugins": [
+    "prettier-plugin-astro",
+    "prettier-plugin-tailwindcss",
+    "prettier-plugin-glsl"
+  ],
   "overrides": [
     {
       "files": "*.astro",
       "options": {
         "parser": "astro"
+      }
+    },
+    {
+      "files": "*.glsl",
+      "options": {
+        "parser": "glsl"
+      }
+    },
+    {
+      "files": "*.vert",
+      "options": {
+        "parser": "glsl"
+      }
+    },
+    {
+      "files": "*.frag",
+      "options": {
+        "parser": "glsl"
       }
     }
   ]
