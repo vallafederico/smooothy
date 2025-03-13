@@ -23,6 +23,10 @@ export class Bg extends Mesh {
     })
   }
 
+  set speed(val) {
+    this.material.uniforms.u_a_speed.value = val
+  }
+
   set time(t) {
     this.material.uniforms.u_time.value = t
   }
@@ -37,6 +41,7 @@ class Material extends RawShaderMaterial {
         u_time: { value: 0 },
         u_t1: { value: options?.u_t1 || null },
         u_a_view: { value: 0 },
+        u_a_speed: { value: 0 },
       },
       side: DoubleSide,
       // wireframe: true,

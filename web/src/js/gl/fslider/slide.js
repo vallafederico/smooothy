@@ -75,6 +75,8 @@ export class Slide extends SliderGroup {
   }
 
   raf = ({ time }) => {
+    this.bg.speed = hey.FSLIDER.lspeed
+
     if (!this.#visible) return
     this.bg.time = time
 
@@ -83,7 +85,7 @@ export class Slide extends SliderGroup {
       _root.position.y = Math.sin(time + this.index) * 0.1
       _root.position.x = Math.sin(time + this.index) * 0.1
 
-      const speed = hey.FSLIDER.speed * 0.07
+      const speed = hey.FSLIDER.lspeed * 0.03
       _root.rotation.y += speed * 0.5
       _root.rotation.x += speed * 0.8
       _root.rotation.z += speed * 0.2
@@ -142,7 +144,7 @@ function getWiggle(child) {
         _root = bone
       } else {
         const wiggleBone = new WiggleBone(bone, {
-          velocity: 0.8,
+          velocity: 0.7,
         })
         _bones.push(wiggleBone)
       }

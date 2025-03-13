@@ -22,6 +22,7 @@ export class FSlider extends G {
     })
 
     this.add(...this.slides)
+    hey.on("FSLIDE_CHANGE", this.onSlideChange)
   }
 
   onSlide(x) {
@@ -29,5 +30,12 @@ export class FSlider extends G {
       const actual = symmetricMod(x, this.slides.length / 2)
       slide.onSlide(actual)
     })
+  }
+
+  onSlideChange = ([current, prev]) => {
+    // console.log(current, prev)
+    // this.slides[index].onSlideChange()
+    // this.slides[prev].bg.view = 0.9
+    // this.slides[current].bg.view = 1
   }
 }
