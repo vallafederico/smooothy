@@ -75,26 +75,25 @@ export class Slide extends SliderGroup {
   }
 
   raf = ({ time }) => {
-    _bones.forEach(bone => bone.update(Raf.deltaTime * 1000))
     if (!this.#visible) return
     this.bg.time = time
 
-    if (_root) {
-      _root.position.y = Math.sin(time) * 0.1
-      _root.position.x = Math.cos(time) * 0.1
+    if (_root && this.model) {
+      _bones.forEach(bone => bone.update(Raf.deltaTime * 1000))
+      _root.position.y = Math.sin(time + this.index) * 0.1
+      _root.position.x = Math.sin(time + this.index) * 0.1
 
-      const speed = hey.FSLIDER.speed * 0.01
+      const speed = hey.FSLIDER.speed * 0.07
       _root.rotation.y += speed * 0.5
-      _root.rotation.x += speed * 0.5
-      _root.rotation.z += speed * 0.1
+      _root.rotation.x += speed * 0.8
+      _root.rotation.z += speed * 0.2
     }
   }
 
   /** -- Animation */
   handleInView = isIn => {
-    // if (this.index !== 0) returns
-    // if (this.model) {
     let anim = null
+
     if (isIn) {
       this.#visible = true
 
@@ -109,7 +108,7 @@ export class Slide extends SliderGroup {
         })
       }
 
-      this.bg.view = 0.8
+      this.bg.view = 1
     } else {
       this.#visible = false
       if (anim) anim.kill()
@@ -124,7 +123,6 @@ export class Slide extends SliderGroup {
 
       this.bg.view = 0.5
     }
-    // }
   }
 }
 
@@ -144,7 +142,7 @@ function getWiggle(child) {
         _root = bone
       } else {
         const wiggleBone = new WiggleBone(bone, {
-          velocity: 0.15,
+          velocity: 0.8,
         })
         _bones.push(wiggleBone)
       }

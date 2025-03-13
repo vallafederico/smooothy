@@ -16,7 +16,7 @@ export class FSlider extends G {
 
   create() {
     this.slides = [...this.element.children].map((child, i) => {
-      return new Slide(child.children[0], {
+      return new Slide(child.querySelector("[data-gl]"), {
         index: i,
       })
     })

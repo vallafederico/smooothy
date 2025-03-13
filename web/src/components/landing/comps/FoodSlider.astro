@@ -8,14 +8,25 @@ const SLIDES = Array.from({ length: 11 }, (_, i) => i)
   data-module="fslider"
 >
   <!-- slider -->
-  <ul data-slider="wrapper" class="ml-[calc(50vw-var(--slide-width)/2)] flex">
+  <ul
+    data-slider="wrapper"
+    class="ml-[calc(50vw-var(--slide-width)/2)] flex text-[.8em]"
+  >
     {
       SLIDES.map(slide => (
-        <li class="relative z-2 shrink-0 p-2">
-          <div class="z-10 aspect-[4/5.5] w-[var(--slide-width)] outline outline-gray-800">
-            {/* <h2>{slide}</h2> */}
+        <li class="relative z-2 flex shrink-0 flex-col gap-1 p-2">
+          <div class="flex justify-between px-2">
+            <p class="tracking-wide">{String(slide).padStart(4, "0")}</p>
+            <p class="font-mono text-sm tracking-widest uppercase">current</p>
           </div>
-          <div class="absolute inset-0 z-[100]">HELLO</div>
+          <div
+            data-gl
+            class="z-10 aspect-[4/5.5] w-[var(--slide-width)] outline outline-gray-800/20"
+          />
+          <div class="flex justify-between px-2">
+            <h2 class="font-semibold tracking-tighter uppercase">Some Ramen</h2>
+            <p>{"[HI]"}</p>
+          </div>
         </li>
       ))
     }
