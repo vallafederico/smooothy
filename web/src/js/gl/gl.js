@@ -1,4 +1,4 @@
-import { WebGLRenderer, PerspectiveCamera } from "three"
+import { WebGLRenderer, PerspectiveCamera, ACESFilmicToneMapping } from "three"
 import { OrbitControls } from "three/addons/controls/OrbitControls.js"
 import { Raf, Resize } from "../utils/subscribable.js"
 import { Post } from "./post/index.js"
@@ -39,6 +39,7 @@ export class Gl {
       // antialias: true,
       alpha: config.alpha,
       canvas: this.vp.container,
+      // toneMapping: ACESFilmicToneMapping,
     })
 
     this.renderer.setPixelRatio(this.vp.dpr())

@@ -2,8 +2,10 @@ import {
   BoxGeometry,
   SphereGeometry,
   MeshNormalMaterial,
+  MeshBasicMaterial,
   Mesh,
   PlaneGeometry,
+  Group,
 } from "three"
 import { SliderGroup } from "../dom/group"
 import { WiggleBone } from "wiggle"
@@ -26,6 +28,7 @@ const randomShape = () => {
 
 const _bones = []
 let _root = null
+let _root2 = null
 
 // //////////////////////////////////
 
@@ -67,7 +70,15 @@ export class Slide extends SliderGroup {
     })
 
     this.model = model
-    this.add(model)
+    this.ctrl = new Group()
+
+    // this.rotation.x = Math.PI * 2
+    this.ctrl.add(model)
+    const scale = 1.2
+    this.ctrl.scale.set(scale, scale, scale)
+
+    // _root.position.y = 2
+    this.add(this.ctrl)
   }
 
   resize() {
@@ -77,30 +88,35 @@ export class Slide extends SliderGroup {
   raf = ({ time }) => {
     this.bg.speed = hey.FSLIDER.lspeed
 
-    if (!this.#visible) return
+    // if (!this.#visible) return
     this.bg.time = time
 
     if (_root && this.model) {
-      _bones.forEach(bone => bone.update(Raf.deltaTime * 1000))
-      _root.position.y = Math.sin(time + this.index) * 0.1
-      _root.position.x = Math.sin(time + this.index) * 0.1
+      // _root.rotation.x += 2
 
-      const speed = hey.FSLIDER.lspeed * 0.03
-      _root.rotation.y += speed * 0.5
-      _root.rotation.x += speed * 0.8
-      _root.rotation.z += speed * 0.2
+      _bones.forEach(bone => bone.update(Raf.deltaTime))
+      _root.position.z = Math.sin(time + this.index) * 0.2
+      _root.position.x = Math.sin(time + this.index) * 0.2
+
+      const speed = hey.FSLIDER.lspeed * 0.06
+      _root.rotation.y += speed * 0.2
+      // _root.rotation.y += 0.2
+      // _root.rotation.x += speed * 0.8
+      _root.rotation.z += speed * 0.3
+      // _root.rotation.z += 0.2
     }
   }
 
   /** -- Animation */
-  handleInView = isIn => {
-    let anim = null
+  #anim = null
 
+  handleInView = isIn => {
     if (isIn) {
       this.#visible = true
 
       if (this.model) {
-        anim = gsap.to(this.model.scale, {
+        if (this.#anim) this.#anim.kill()
+        this.#anim = gsap.to(this.model.scale, {
           x: 1,
           y: 1,
           z: 1,
@@ -113,10 +129,10 @@ export class Slide extends SliderGroup {
       this.bg.view = 1
     } else {
       this.#visible = false
-      if (anim) anim.kill()
+      if (this.#anim) this.#anim.kill()
 
       if (this.model) {
-        gsap.set(this.model.scale, {
+        this.#anim = gsap.to(this.model.scale, {
           x: 0.1,
           y: 0.1,
           z: 0.1,
@@ -130,21 +146,25 @@ export class Slide extends SliderGroup {
 
 // //////////////////////////////////
 function setMaterial(child) {
-  if (child.isMesh)
-    child.material = new MeshNormalMaterial({
+  if (child.isMesh) {
+    const map = child.material.map
+    child.material = new MeshBasicMaterial({
       depthTest: true,
+      map,
       // side: FrontSide,
     })
+  }
 }
 
 function getWiggle(child) {
   if (child.isSkinnedMesh) {
     child.skeleton.bones.forEach(bone => {
-      if (!bone.parent.isBone) {
+      if (!bone.parent.isBone && !_root) {
+        console.log(bone)
         _root = bone
       } else {
         const wiggleBone = new WiggleBone(bone, {
-          velocity: 0.7,
+          velocity: 0.5,
         })
         _bones.push(wiggleBone)
       }

@@ -45,7 +45,7 @@ export class FSlider extends Core {
 
     this.#arrows = [...element.querySelector('[data-slider="arrows"]').children]
 
-    console.log(this.#arrows)
+    // console.log(this.#arrows)
 
     this.#buttons.forEach((button, i) => {
       button.onclick = () => this.goToIndex(i)
