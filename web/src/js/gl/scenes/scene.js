@@ -28,4 +28,10 @@ export default class extends Scene {
 
     await this.load()
   }
+
+  // ////////////////////// world
+
+  static world = {
+    env: null,
+  }
 }
