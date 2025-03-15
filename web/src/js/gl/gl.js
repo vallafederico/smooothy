@@ -81,7 +81,7 @@ export class Gl {
     this.time += 0.05
     this.controls?.update()
 
-    this.scene?.render(this.time)
+    this.scene?.render?.(this.time)
     this.post.renderPost()
   }
 
