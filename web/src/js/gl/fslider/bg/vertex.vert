@@ -16,11 +16,23 @@ uniform vec3 u_random;
 
 void main() {
   vec3 pos = position;
+
   
   pos.x += cos(pos.y * 3.14) * .06 * u_a_speed;
-  pos.xy *= u_a_view  - abs(u_a_speed) * .01;
 
+  // scale to size
+  float startAt = distance(uv, vec2(0.5));
+  float prog = smoothstep(startAt, 1., u_a_view);
+  vec2 scale = vec2(1. + prog);
+  pos.xy = mix(pos.xy * .1, pos.xy, prog);
 
+  
+  // float startAt = uv.x * .5;
+  // float prog = smoothstep(startAt, 1., u_a_view);
+  // vec2 scale = vec2(1. + prog);
+  // pos.xy = mix(pos.xy * scale * .1, pos.xy, prog);
+
+  
 
   gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
   v_uv = uv;

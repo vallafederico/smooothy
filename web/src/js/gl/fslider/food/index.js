@@ -57,17 +57,19 @@ export class Food extends Group {
 
   onRaf = (time, parallax) => {
     if (this._root && this.model) {
-      const scale = this.a.scale - Math.abs(parallax) * 0.3 + 0.1
+      const scale = this.a.scale - Math.abs(parallax) * 0.2 + 0.1
       this.scale.set(scale, scale, scale)
 
+      const loop = Math.sin(time + this.index) * 0.8
+
       this._bones.forEach(bone => bone.update(Raf.deltaTime))
-      this._root.position.z = Math.sin(time + this.index) * 0.05
-      this._root.position.x = Math.cos(time + this.index) * 0.08
+      this._root.position.z = Math.sin(loop) * 0.8
+      this._root.position.x = Math.cos(loop) * 0.04
       // this._root.position.y = Math.sin(time + this.index) * 0.05
 
       const speed = hey.FSLIDER.lspeed
       this._root.rotation.y = this.a.randoms[0] * speed * 0.2
-      this._root.rotation.z = speed * 0.4
+      this._root.rotation.z = speed * 0.4 + loop * 0.2
     }
   }
 
@@ -78,13 +80,13 @@ export class Food extends Group {
       this.#anim = gsap.to(this.a, {
         scale: 1.2,
         duration: 1.2,
-        delay: 0.1,
+        delay: 0.1 + Math.random() * 0.2,
         ease: "expo.out",
       })
     } else {
       if (this.#anim) this.#anim.kill()
       this.#anim = gsap.to(this.a, {
-        scale: 0.5,
+        scale: 0.2,
       })
     }
   }

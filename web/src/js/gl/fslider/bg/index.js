@@ -15,10 +15,14 @@ export class Bg extends Mesh {
     super()
   }
 
+  #a_view = null
   set view(val) {
-    gsap.to(this.material.uniforms.u_a_view, {
+    if (this.#a_view) this.#a_view.kill()
+
+    this.#a_view = gsap.to(this.material.uniforms.u_a_view, {
       value: val,
       duration: 1.4,
+      delay: val > 0.7 ? 0.05 : 0,
       ease: "expo.out",
     })
   }

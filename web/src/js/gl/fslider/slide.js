@@ -41,6 +41,8 @@ export class Slide extends SliderGroup {
   }
 
   raf = ({ time }) => {
+    if (!this.#visible) return
+
     this.bg.speed = hey.FSLIDER.lspeed
     this.bg.time = time * 0.4
 
@@ -56,7 +58,7 @@ export class Slide extends SliderGroup {
       this.bg.view = 1
     } else {
       this.#visible = false
-      this.bg.view = 0.5
+      this.bg.view = 0.45
     }
 
     if (this.food) {
