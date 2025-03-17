@@ -1,5 +1,6 @@
 import loadModel from "./model-loader"
 import loadTexture from "./texture-loader"
+import loadHDR from "./hdr-loader"
 import { assets as file } from "../assets/index"
 
 export async function loadAssets(opt = null) {
@@ -14,13 +15,15 @@ export async function loadAssets(opt = null) {
 
     const extension = asset.split(".").pop()
 
-    if (extension === "glb" || extension === "gltf") {
+    if (key.includes("hdr")) {
+      promises.push(loadHDR(asset))
+    } else if (extension === "glb" || extension === "gltf") {
       promises.push(loadModel(asset))
     } else if (
       extension === "jpg" ||
       extension === "png" ||
       extension === "webp" ||
-      extension === "jpeg" // !2 we need to add the extension as it's not covered
+      extension === "jpeg"
     ) {
       promises.push(loadTexture(asset))
     }

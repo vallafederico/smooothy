@@ -1,4 +1,4 @@
-import { Group, MeshBasicMaterial } from "three"
+import { Group, MeshPhysicalMaterial, MeshBasicMaterial } from "three"
 import { WiggleBone } from "wiggle"
 import { Raf } from "../../../utils/subscribable"
 import { hey } from "../../../hey"
@@ -73,10 +73,10 @@ export class Food extends Group {
 function setMaterial(child) {
   if (child.isMesh) {
     const map = child.material.map
-    child.material = new MeshBasicMaterial({
-      depthTest: true,
+    child.material = new MeshPhysicalMaterial({
       map,
-      // side: FrontSide,
+      metalness: 0,
+      roughness: 1,
     })
   }
 }
@@ -89,7 +89,7 @@ function getWiggle(child) {
         _root = bone
       } else {
         const wiggleBone = new WiggleBone(bone, {
-          velocity: 0.4,
+          velocity: 0.6,
         })
         _bones.push(wiggleBone)
       }

@@ -1,9 +1,9 @@
-import { Scene } from "three"
+import { Scene as THREE_Scene, DataTexture, Vector3 } from "three"
 import { FSlider } from "../fslider"
 import { loadAssets } from "../utils/loader"
 import { hey } from "../../hey"
 
-export default class extends Scene {
+export class Scene extends THREE_Scene {
   isOn = true
 
   constructor() {
@@ -15,6 +15,13 @@ export default class extends Scene {
     let t = performance.now()
     this.assets = await loadAssets()
     console.log("(ms):::", performance.now() - t, this.assets)
+
+    Scene.world.env = this.assets.hdr_world
+
+    this.environment = this.assets.hdr_world
+    this.environmentIntensity = 1
+    this.environmentRotation.set(0, 0.5, 1)
+
     hey.WEBGL_LOADED = true
   }
 
@@ -32,6 +39,6 @@ export default class extends Scene {
   // ////////////////////// world
 
   static world = {
-    env: null,
+    env: new DataTexture(null, 1, 1),
   }
 }
