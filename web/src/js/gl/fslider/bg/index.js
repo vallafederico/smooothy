@@ -40,6 +40,9 @@ class Material extends RawShaderMaterial {
       uniforms: {
         u_time: { value: 0 },
         u_t1: { value: options?.u_t1 || null },
+        u_random: {
+          value: [Math.random() * 3, Math.random() * 3, Math.random() * 4],
+        },
         u_a_view: { value: 0 },
         u_a_speed: { value: 0 },
       },

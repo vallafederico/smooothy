@@ -1,6 +1,7 @@
 ---
 import Svgg from "~/components/svg/Svgg.astro"
-const SLIDES = Array.from({ length: 11 }, (_, i) => i)
+import { SLIDER_FOOD } from "../../../content"
+const SLIDES = Array.from({ length: 6 }, (_, i) => i)
 ---
 
 <div
@@ -14,7 +15,7 @@ const SLIDES = Array.from({ length: 11 }, (_, i) => i)
     class="ml-[calc((50vw-var(--slide-w)/2)-2rem)] flex text-[.8em]"
   >
     {
-      SLIDES.map((slide, i) => (
+      SLIDER_FOOD.map((slide, i) => (
         <li
           class:list={[
             "relative z-2 flex shrink-0 flex-col gap-2 px-[2rem]",
@@ -22,13 +23,15 @@ const SLIDES = Array.from({ length: 11 }, (_, i) => i)
           ]}
         >
           <div class="flex justify-between px-2">
-            <p class="tracking-wide">{String(slide).padStart(4, "0")}</p>
+            <p class="tracking-wide">{String(i).padStart(4, "0")}</p>
             <p class="font-mono text-sm tracking-widest uppercase">current</p>
           </div>
           <div data-gl class="z-10 aspect-[4/5.5] w-[var(--slide-w)]" />
           <div class="flex justify-between px-2">
-            <h2 class="font-semibold tracking-tighter uppercase">Some Ramen</h2>
-            <p>{"[HI]"}</p>
+            <h2 class="font-semibold tracking-tighter uppercase">
+              "{slide.copy.name}"
+            </h2>
+            <p>{slide.copy.description}</p>
           </div>
         </li>
       ))

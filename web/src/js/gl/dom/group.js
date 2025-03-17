@@ -53,14 +53,16 @@ export class SliderGroup extends G {
   }
 
   #resize() {
-    this.bounds = clientRectGl(this.element)
-    this.bounds.centerx -= this.x
+    queueMicrotask(() => {
+      this.bounds = clientRectGl(this.element)
+      this.bounds.centerx -= this.x
 
-    this.position.x = this.bounds.centerx
-    this.position.y = this.bounds.centery
+      this.position.x = this.bounds.centerx
+      this.position.y = this.bounds.centery
 
-    this.#scroll()
-    this.resize?.()
+      this.#scroll()
+      this.resize?.()
+    })
   }
 
   #scroll() {

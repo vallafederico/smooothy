@@ -24,7 +24,7 @@ export class FSlider extends Core {
 
   constructor(element: HTMLElement) {
     super(element.querySelector('[data-slider="wrapper"]'), {
-      // lerpFactor: 0.27,
+      lerpFactor: 0.27,
       dragSensitivity: 0.003,
       // infinite: false,
     })
@@ -60,7 +60,7 @@ export class FSlider extends Core {
   lprogress = 0
 
   onUpdate = () => {
-    this.lspeed = damp(this.lspeed, this.speed, 40)
+    this.lspeed = damp(this.lspeed, this.speed, 10)
     this.lprogress = damp(this.lprogress, this.progress, 5)
 
     if (Gl.scene && Gl.scene.fslider) {

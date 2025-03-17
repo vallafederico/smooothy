@@ -1,22 +1,13 @@
 import { BoxGeometry, SphereGeometry, MeshNormalMaterial, Mesh } from "three"
 import { SliderGroup } from "../dom/group"
+import gsap from "../../gsap"
 
 import { hey } from "../../hey"
 import { Gl } from "../gl"
 import { Raf } from "../../utils/subscribable"
 import { Observe } from "../../modules/_/observe"
-import gsap from "../../gsap"
 import { Bg } from "./bg/"
 import { Food } from "./food"
-
-const randomShape = () => {
-  const geometry =
-    Math.random() > 0.5
-      ? new BoxGeometry(0.2, 0.2, 0.2)
-      : new SphereGeometry(0.2, 16, 16)
-  const material = new MeshNormalMaterial()
-  return new Mesh(geometry, material)
-}
 
 export class Slide extends SliderGroup {
   #visible = true
@@ -37,18 +28,11 @@ export class Slide extends SliderGroup {
     this.bg = new Bg()
     this.add(this.bg)
 
-    if (this.index === 0) {
-      hey.on("WEBGL_LOADED", this.onLoad)
-    } else {
-      this.shape = randomShape()
-      this.shape.rotation.set(0.4, 0.2, 0.7)
-      this.add(this.shape)
-    }
+    hey.on("WEBGL_LOADED", this.onLoad)
   }
 
   onLoad = () => {
-    const model = Gl.scene.assets.model
-    this.food = new Food(model, this.index)
+    this.food = new Food(Gl.scene.assets.model.children[0], this.index)
     this.add(this.food)
   }
 
@@ -58,10 +42,10 @@ export class Slide extends SliderGroup {
 
   raf = ({ time }) => {
     this.bg.speed = hey.FSLIDER.lspeed
-    this.bg.time = time
+    this.bg.time = time * 0.4
 
     if (this.food) {
-      this.food.onRaf(time)
+      this.food.onRaf(time, hey.FSLIDER.parallaxValues[this.index])
     }
   }
 

@@ -16,7 +16,9 @@ export class Scene extends THREE_Scene {
     this.assets = await loadAssets()
     console.log("(ms):::", performance.now() - t, this.assets)
 
-    Scene.world.env = this.assets.hdr_world
+    // this.assets.model.children.forEach(child => {
+    //   console.log(child.name)
+    // })
 
     this.environment = this.assets.hdr_world
     this.environmentIntensity = 1
@@ -38,7 +40,7 @@ export class Scene extends THREE_Scene {
 
   // ////////////////////// world
 
-  static world = {
-    env: new DataTexture(null, 1, 1),
-  }
+  // static world = {
+  //   env: new DataTexture(null, 1, 1),
+  // }
 }

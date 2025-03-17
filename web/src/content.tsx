@@ -37,3 +37,62 @@ export const IN_USE = {
     },
   ],
 }
+
+// /////////////////////////////////// (webgl)
+
+export const SLIDER_FOOD = [
+  {
+    name: "toast-a",
+    rot: [0, 0, 0],
+    wiggle: 0.4,
+    copy: {
+      name: "Toast",
+      description: "Toast",
+    },
+  },
+  {
+    name: "hotdog-a",
+    rot: [0, 0, 0],
+    wiggle: 0.65,
+    copy: {
+      name: "Hotdog",
+      description: "Hotdog",
+    },
+  },
+  {
+    name: "fish-a",
+    rot: [0, 0, 0],
+    wiggle: 0.6,
+    copy: {
+      name: "Fish",
+      description: "Fish",
+    },
+  },
+  {
+    name: "veggie-a",
+    rot: [0, 0, 0],
+    wiggle: 0.7,
+    copy: {
+      name: "Veggie",
+      description: "Veggie",
+    },
+  },
+  {
+    name: "icecream-a",
+    rot: [0, 0, 0],
+    wiggle: 0.9,
+    copy: {
+      name: "Ice Cream",
+      description: "Ice Cream",
+    },
+  },
+  {
+    name: "fungus-a",
+    rot: [0, 0, 0],
+    wiggle: 0.8,
+    copy: {
+      name: "Fungus",
+      description: "Fungus",
+    },
+  },
+]
