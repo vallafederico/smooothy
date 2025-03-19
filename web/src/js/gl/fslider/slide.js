@@ -21,6 +21,14 @@ export class Slide extends SliderGroup {
     },
   })
 
+  #onSlideSettle = hey.on("FSLIDE_CHANGE", ([current, old]) => {
+    // console.log("slide settle", current, old)
+  })
+
+  #onLoad = hey.on("WEBGL_LOADED", () => {
+    this.onLoad()
+  })
+
   constructor(element, { index }) {
     super(element, { index })
     this.element = element
@@ -29,8 +37,6 @@ export class Slide extends SliderGroup {
 
     this.bg = new Bg(this.lib)
     this.add(this.bg)
-
-    hey.on("WEBGL_LOADED", this.onLoad)
   }
 
   onLoad = () => {
@@ -64,7 +70,7 @@ export class Slide extends SliderGroup {
       this.bg.view = 1
     } else {
       this.#visible = false
-      this.bg.view = 0.45
+      this.bg.view = 0
     }
 
     if (this.food) {

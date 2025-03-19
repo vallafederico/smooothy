@@ -19,13 +19,15 @@ void main() {
   vec3 pos = position;
 
   
-  pos.x += cos(pos.y * 3.14) * .06 * u_a_speed;
+  pos.x += cos(pos.y * 3.14) * .09 * u_a_speed;
 
   // // * scale to size
   float startAt = distance(uv, vec2(0.5));
   float prog = smoothstep(startAt, 1., u_a_view);
   vec2 scale = vec2(1. + prog);
-  pos.xyz = mix(pos.xyz * .2, pos.xyz, prog);
+  pos.xyz = mix(pos.xyz * .9, pos.xyz * .8, prog);
+
+  pos.z += 1. * sin(pos.x * 4. + u_time * 4. + u_random.x) * u_a_speed * .03;
   
 
   gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);

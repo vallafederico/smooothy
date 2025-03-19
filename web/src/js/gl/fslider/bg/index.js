@@ -5,7 +5,7 @@ import gsap from "~/js/gsap"
 import vertexShader from "./vertex.vert"
 import fragmentShader from "./fragment.frag"
 
-const RESOLUTION = 32
+const RESOLUTION = 18
 
 export class Bg extends Mesh {
   geometry = new PlaneGeometry(1, 1, RESOLUTION, RESOLUTION * 1.3)
@@ -24,7 +24,7 @@ export class Bg extends Mesh {
     this.#a_view = gsap.to(this.material.uniforms.u_a_view, {
       value: val,
       duration: 1.4,
-      delay: val > 0.7 ? 0.13 : 0,
+      delay: val > 0.7 ? 0.23 : 0,
       ease: "expo.out",
     })
   }

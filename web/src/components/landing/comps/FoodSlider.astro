@@ -23,7 +23,7 @@ const SLIDES = Array.from({ length: 6 }, (_, i) => i)
           ]}
         >
           <div class="flex justify-between px-2">
-            <p data-module="alpha" data-delay=".08" class="tracking-wide">
+            <p data-module="text" data-type="chars" class="tracking-wide">
               {String(i).padStart(4, "0")}
             </p>
             <p
@@ -37,12 +37,13 @@ const SLIDES = Array.from({ length: 6 }, (_, i) => i)
           <div data-gl class="z-10 aspect-[4/5.5] w-[var(--slide-w)]" />
           <div class="flex justify-between px-2">
             <h2
-              data-module="alpha"
+              data-module="text"
+              data-type="chars"
               class="font-semibold tracking-tighter uppercase"
             >
               "{slide.copy.name}"
             </h2>
-            <p data-module="alpha" data-delay=".1">
+            <p data-module="text" data-type="chars" data-delay=".2">
               {slide.copy.description}
             </p>
           </div>

@@ -37,7 +37,6 @@ export class Food extends Group {
       if (child.isSkinnedMesh) {
         child.skeleton.bones.forEach(bone => {
           if (!bone.parent.isBone && !this._root) {
-            // console.log(bone)
             this._root = bone
           } else {
             const wiggleBone = new WiggleBone(bone, {
@@ -82,36 +81,19 @@ export class Food extends Group {
     } else {
       if (this.#anim) this.#anim.kill()
       this.#anim = gsap.to(this.a, {
-        scale: 0.2,
+        scale: 0.5,
       })
     }
   }
 }
 
 // //////////////////////////////////
+
 function setMaterial(child) {
   if (child.isMesh) {
     const map = child.material.map
     child.material = new MeshBasicMaterial({
       map,
-      // metalness: 0,
-      // roughness: 1,
     })
   }
 }
-
-// function getWiggle(child, root, bones) {
-//   if (child.isSkinnedMesh) {
-//     child.skeleton.bones.forEach(bone => {
-//       if (!bone.parent.isBone && !root) {
-//         console.log(bone)
-//         root = bone
-//       } else {
-//         const wiggleBone = new WiggleBone(bone, {
-//           velocity: 0.6,
-//         })
-//         bones.push(wiggleBone)
-//       }
-//     })
-//   }
-// }

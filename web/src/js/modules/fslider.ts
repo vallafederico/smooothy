@@ -88,6 +88,7 @@ export class FSlider extends Core {
   }
 
   onSettled = index => {
+    // console.log("onSettled", index)
     this.items[this.#current].classList.remove("active")
     this.items[index].classList.add("active")
     this.#buttons[this.#current].classList.remove("active")
