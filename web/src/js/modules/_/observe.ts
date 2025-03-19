@@ -1,3 +1,7 @@
+import { hey } from "../../hey"
+
+// (*) try and merge the observers into one if they are similar in size/params
+
 interface ObserveConfig {
   root?: HTMLElement | null
   rootMargin?: string
@@ -39,7 +43,7 @@ export class Observe {
       root: null,
       rootMargin: "0px",
       threshold: 0.1,
-      autoStart: true,
+      autoStart: false,
       once: false,
       callback: null,
     }
@@ -53,6 +57,8 @@ export class Observe {
     this.#create()
 
     if (config.autoStart ?? true) this.start()
+
+    hey.on("START", () => this.start())
   }
 
   #create() {

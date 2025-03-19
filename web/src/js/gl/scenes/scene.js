@@ -16,15 +16,15 @@ export class Scene extends THREE_Scene {
     this.assets = await loadAssets()
     console.log("(ms):::", performance.now() - t, this.assets)
 
-    // this.assets.model.children.forEach(child => {
-    //   console.log(child.name)
-    // })
-
     this.environment = this.assets.hdr_world
     this.environmentIntensity = 1
     this.environmentRotation.set(0, 0.5, 1)
 
     hey.WEBGL_LOADED = true
+
+    setTimeout(() => {
+      hey.START = true
+    }, 800)
   }
 
   async create() {
