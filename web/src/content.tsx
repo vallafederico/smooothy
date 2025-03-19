@@ -52,16 +52,6 @@ export const SLIDER_FOOD = [
     bg: [0xbf965a, 0x993b8b, 0xb26c52],
   },
   {
-    name: "hotdog-a",
-    rot: [0, 0, 0],
-    wiggle: 0.65,
-    copy: {
-      name: "Hotdog",
-      description: "33.23¥",
-    },
-    bg: [0xcbc06d, 0xad6090, 0xb05f5a],
-  },
-  {
     name: "fish-a",
     rot: [0, 0, 0],
     wiggle: 0.4,
@@ -70,6 +60,16 @@ export const SLIDER_FOOD = [
       description: "33.23¥",
     },
     bg: [0x8daaaf, 0x152a42, 0xc49a62],
+  },
+  {
+    name: "hotdog-a",
+    rot: [0, 0, 0],
+    wiggle: 0.65,
+    copy: {
+      name: "Hotdog",
+      description: "33.23¥",
+    },
+    bg: [0xcbc06d, 0xad6090, 0xb05f5a],
   },
   {
     name: "ramen-a",
