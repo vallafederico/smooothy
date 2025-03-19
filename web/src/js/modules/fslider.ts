@@ -1,5 +1,5 @@
 import Core from "smooothy"
-import gsap from "../gsap"
+// import gsap from "../gsap"
 import { Raf } from "../utils/subscribable"
 import { Gl } from "../gl/gl"
 import { symmetricMod } from "../utils/math"
@@ -25,7 +25,7 @@ export class FSlider extends Core {
   constructor(element: HTMLElement) {
     super(element.querySelector('[data-slider="wrapper"]'), {
       lerpFactor: 0.27,
-      dragSensitivity: 0.003,
+      // dragSensitivity: 0.003,
       // infinite: false,
     })
 

@@ -1,3 +1,4 @@
+precision mediump float;
 #include '../../glsl/constants.glsl'
 
 attribute vec3 position;
@@ -20,18 +21,11 @@ void main() {
   
   pos.x += cos(pos.y * 3.14) * .06 * u_a_speed;
 
-  // scale to size
+  // // * scale to size
   float startAt = distance(uv, vec2(0.5));
   float prog = smoothstep(startAt, 1., u_a_view);
   vec2 scale = vec2(1. + prog);
-  pos.xy = mix(pos.xy * .1, pos.xy, prog);
-
-  
-  // float startAt = uv.x * .5;
-  // float prog = smoothstep(startAt, 1., u_a_view);
-  // vec2 scale = vec2(1. + prog);
-  // pos.xy = mix(pos.xy * scale * .1, pos.xy, prog);
-
+  pos.xyz = mix(pos.xyz * .2, pos.xyz, prog);
   
 
   gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
@@ -44,7 +38,7 @@ void main() {
   ));
 
   ns = perlin3d(vec4(
-    vec4(ns + u_time + u_random.x * 10.)
+    vec4(ns + u_time + u_random.x * 10. + u_a_speed * .02)
   ));
 
   v_normal = normal;

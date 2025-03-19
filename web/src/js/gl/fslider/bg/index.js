@@ -1,4 +1,4 @@
-import { Mesh, PlaneGeometry } from "three"
+import { Mesh, PlaneGeometry, Color } from "three"
 import { RawShaderMaterial, DoubleSide } from "three"
 import gsap from "~/js/gsap"
 
@@ -11,11 +11,13 @@ export class Bg extends Mesh {
   geometry = new PlaneGeometry(1, 1, RESOLUTION, RESOLUTION * 1.3)
   material = new Material()
 
-  constructor() {
+  constructor(lib) {
     super()
+    this.setBackground(lib)
   }
 
   #a_view = null
+
   set view(val) {
     if (this.#a_view) this.#a_view.kill()
 
@@ -25,6 +27,12 @@ export class Bg extends Mesh {
       delay: val > 0.7 ? 0.05 : 0,
       ease: "expo.out",
     })
+  }
+
+  setBackground(lib) {
+    this.material.uniforms.COL_1.value = new Color(lib.bg[0])
+    this.material.uniforms.COL_2.value = new Color(lib.bg[1])
+    this.material.uniforms.COL_3.value = new Color(lib.bg[2])
   }
 
   set speed(val) {
@@ -49,6 +57,9 @@ class Material extends RawShaderMaterial {
         },
         u_a_view: { value: 0 },
         u_a_speed: { value: 0 },
+        COL_1: { value: [0, 0, 0] },
+        COL_2: { value: [0, 0, 0] },
+        COL_3: { value: [0, 0, 0] },
       },
       side: DoubleSide,
       // wireframe: true,

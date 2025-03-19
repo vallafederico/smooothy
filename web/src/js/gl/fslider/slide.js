@@ -1,6 +1,5 @@
-import { BoxGeometry, SphereGeometry, MeshNormalMaterial, Mesh } from "three"
 import { SliderGroup } from "../dom/group"
-import gsap from "../../gsap"
+// import gsap from "../../gsap"
 
 import { hey } from "../../hey"
 import { Gl } from "../gl"
@@ -8,6 +7,8 @@ import { Raf } from "../../utils/subscribable"
 import { Observe } from "../../modules/_/observe"
 import { Bg } from "./bg/"
 import { Food } from "./food"
+
+import { SLIDER_FOOD } from "../../../content"
 
 export class Slide extends SliderGroup {
   #visible = true
@@ -24,15 +25,20 @@ export class Slide extends SliderGroup {
     super(element, { index })
     this.element = element
     this.index = index
+    this.lib = SLIDER_FOOD[index]
 
-    this.bg = new Bg()
+    this.bg = new Bg(this.lib)
     this.add(this.bg)
 
     hey.on("WEBGL_LOADED", this.onLoad)
   }
 
   onLoad = () => {
-    this.food = new Food(Gl.scene.assets.model.children[0], this.index)
+    const model = Gl.scene.assets.model.children.filter(
+      child => child.name === this.lib.name
+    )[0]
+
+    this.food = new Food(model, this.index, this.lib)
     this.add(this.food)
   }
 

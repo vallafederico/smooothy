@@ -22,12 +22,13 @@ export class Food extends Group {
     },
   }
 
-  constructor(model, index) {
+  constructor(model, index, lib) {
     super()
     this.model = model
     this.index = index
+    this.lib = lib
 
-    this.lib = SLIDER_FOOD.filter(item => item.name === model.name)[0]
+    // this.lib = SLIDER_FOOD.filter(item => item.name === model.name)[0]
 
     this.a.randoms.forEach((_, i) => (this.a.randoms[i] = rand(this.index)))
 
@@ -64,7 +65,7 @@ export class Food extends Group {
 
       this._bones.forEach(bone => bone.update(Raf.deltaTime))
       this._root.position.z = Math.sin(loop) * 0.8
-      this._root.position.x = Math.cos(loop) * 0.04
+      this._root.position.x = Math.sin(loop) * 0.04
       // this._root.position.y = Math.sin(time + this.index) * 0.05
 
       const speed = hey.FSLIDER.lspeed
