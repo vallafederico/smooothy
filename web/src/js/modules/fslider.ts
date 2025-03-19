@@ -84,17 +84,17 @@ export class FSlider extends Core {
       const lastIndex = this.#queue[this.#queue.length - 1]
       this.#queue = []
       this.onSettled(lastIndex)
-    }, 250)
+    }, 350)
   }
 
   onSettled = index => {
-    // console.log("onSettled", index)
     this.items[this.#current].classList.remove("active")
     this.items[index].classList.add("active")
     this.#buttons[this.#current].classList.remove("active")
     this.#buttons[index].classList.add("active")
 
     hey.FSLIDE_CHANGE = [index, this.#current]
+
     this.#current = index
   }
 }

@@ -17,14 +17,24 @@ export class Bg extends Mesh {
   }
 
   #a_view = null
-
   set view(val) {
     if (this.#a_view) this.#a_view.kill()
 
     this.#a_view = gsap.to(this.material.uniforms.u_a_view, {
       value: val,
       duration: 1.4,
-      delay: val > 0.7 ? 0.23 : 0,
+      delay: val > 0.7 ? 0.17 + Math.random() * 0.18 : 0,
+      ease: "expo.out",
+    })
+  }
+
+  #a_center = null
+  set center(val) {
+    if (this.#a_center) this.#a_center.kill()
+
+    this.#a_center = gsap.to(this.material.uniforms.u_a_center, {
+      value: val,
+      duration: 1.4,
       ease: "expo.out",
     })
   }
@@ -55,11 +65,14 @@ class Material extends RawShaderMaterial {
         u_random: {
           value: [Math.random() * 3, Math.random() * 3, Math.random() * 4],
         },
-        u_a_view: { value: 0 },
-        u_a_speed: { value: 0 },
+        // gradient
         COL_1: { value: [0, 0, 0] },
         COL_2: { value: [0, 0, 0] },
         COL_3: { value: [0, 0, 0] },
+        // animation
+        u_a_view: { value: 0 },
+        u_a_speed: { value: 0 },
+        u_a_center: { value: 0 },
       },
       side: DoubleSide,
       // wireframe: true,
