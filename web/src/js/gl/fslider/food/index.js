@@ -4,8 +4,6 @@ import { Raf } from "../../../utils/subscribable"
 import { hey } from "../../../hey"
 import gsap from "../../../gsap"
 
-import { SLIDER_FOOD } from "../../../../content"
-
 const rand = (ind = 0) =>
   ind % 2 === 0 ? Math.random() + 0.5 : -Math.random() - 0.5
 
@@ -27,8 +25,6 @@ export class Food extends Group {
     this.model = model
     this.index = index
     this.lib = lib
-
-    // this.lib = SLIDER_FOOD.filter(item => item.name === model.name)[0]
 
     this.a.randoms.forEach((_, i) => (this.a.randoms[i] = rand(this.index)))
 
@@ -63,10 +59,9 @@ export class Food extends Group {
 
       const loop = Math.sin(time + this.index) * 0.8
 
-      this._bones.forEach(bone => bone.update(Raf.deltaTime))
+      this._bones.forEach(bone => bone.update(Raf.deltaTime * 1000))
       this._root.position.z = Math.sin(loop) * 0.8
       this._root.position.x = Math.sin(loop) * 0.04
-      // this._root.position.y = Math.sin(time + this.index) * 0.05
 
       const speed = hey.FSLIDER.lspeed
       this._root.rotation.y = this.a.randoms[0] * speed * 0.2

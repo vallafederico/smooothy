@@ -39,7 +39,7 @@ void main() {
         v_ns
     );
 
-    // col = saturate(col);
+    col = saturate(col);
 
 
     gl_FragColor.rgb = col;

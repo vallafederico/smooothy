@@ -47,9 +47,9 @@ export const SLIDER_FOOD = [
     wiggle: 0.4,
     copy: {
       name: "Toast",
-      description: "Toast",
+      description: "33.23¥",
     },
-    bg: [0xd3d74d, 0xdb8493, 0xdd9d79],
+    bg: [0xbf965a, 0x993b8b, 0xb26c52],
   },
   {
     name: "hotdog-a",
@@ -57,58 +57,48 @@ export const SLIDER_FOOD = [
     wiggle: 0.65,
     copy: {
       name: "Hotdog",
-      description: "Hotdog",
+      description: "33.23¥",
     },
-    bg: [0xa45a79, 0xa9a5c8, 0xb5d989],
+    bg: [0xcbc06d, 0xad6090, 0xb05f5a],
   },
   {
     name: "fish-a",
     rot: [0, 0, 0],
     wiggle: 0.4,
     copy: {
-      name: "Fish",
-      description: "Fish",
+      name: "Fish but no Head",
+      description: "33.23¥",
     },
-    bg: [0xac4195, 0xd7cb39, 0xc3a33b],
+    bg: [0x8daaaf, 0x152a42, 0xc49a62],
   },
-  // {
-  //   name: "veggie-a",
-  //   rot: [0, 0, 0],
-  //   wiggle: 0.7,
-  //   copy: {
-  //     name: "Veggie",
-  //     description: "Veggie",
-  //   },
-  //   bg: [0xfd0000, 0xff00a3, 0xff9100],
-  // },
-  // {
-  //   name: "icecream-a",
-  //   rot: [0, 0, 0],
-  //   wiggle: 0.9,
-  //   copy: {
-  //     name: "Ice Cream",
-  //     description: "Ice Cream",
-  //   },
-  //   bg: [0x515db2, 0x9ac690, 0xc4f7e1],
-  // },
   {
     name: "ramen-a",
     rot: [0, 0, 0],
-    wiggle: 0.6,
+    wiggle: 0.8,
     copy: {
       name: "Ramen Bowl",
-      description: "33.23¥¥¥",
+      description: "33.23¥",
     },
-    bg: [0x515db2, 0x9ac690, 0xc4f7e1],
+    bg: [0xbc995b, 0xa23a1e, 0x504934],
   },
   {
     name: "fungus-a",
     rot: [0, 0, 0],
-    wiggle: 0.65,
+    wiggle: 0.7,
     copy: {
-      name: "Fungus",
-      description: "Fungus",
+      name: "Just a Fungus",
+      description: "33.23¥",
     },
-    bg: [0xac4195, 0xd7cb39, 0xc3a33b],
+    bg: [0xae7498, 0x6c537f, 0x72329f],
+  },
+  {
+    name: "lcake-a",
+    rot: [0, 0, 0],
+    wiggle: 0.7,
+    copy: {
+      name: "Cake Slice",
+      description: "33.23¥",
+    },
+    bg: [0xc17d5c, 0xb69e4c, 0xc2b9a7],
   },
 ]

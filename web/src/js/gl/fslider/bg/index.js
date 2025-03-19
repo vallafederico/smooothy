@@ -24,7 +24,7 @@ export class Bg extends Mesh {
     this.#a_view = gsap.to(this.material.uniforms.u_a_view, {
       value: val,
       duration: 1.4,
-      delay: val > 0.7 ? 0.05 : 0,
+      delay: val > 0.7 ? 0.13 : 0,
       ease: "expo.out",
     })
   }
