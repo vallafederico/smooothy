@@ -1,0 +1,21 @@
+---
+import Svgg from "./svg/Svgg.astro"
+import { LINKS } from "~/content"
+
+const { link } = Astro.props
+---
+
+<a
+  href={LINKS.docs + link}
+  data-hover="opacity"
+  class="flex items-center gap-2"
+  target="_blank"
+>
+  <span class="inline-block w-[2em]">
+    <Svgg name="github" />
+  </span>
+  <span class="font-mono text-sm tracking-widest uppercase"> Github </span>
+  <!-- <span class="block size-[.5em] outline">
+    <Svgg name="arrow-r" />
+  </span> -->
+</a>
