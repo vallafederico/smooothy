@@ -1,4 +1,3 @@
-// import { Vector2 } from "three";
 import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js"
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js"
 
@@ -43,7 +42,7 @@ export class Post extends EffectComposer {
     gsap.to(this.base.uniforms.u_a_in, {
       value: 1,
       duration: 1.3,
-      delay: 0.4,
+      delay: 0.5,
       ease: "slow.out",
     })
   }

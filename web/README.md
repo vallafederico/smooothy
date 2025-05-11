@@ -1,15 +1,4 @@
 # Todos
 
-## global
-
-- [ ] finish website sections
-
-## animation
-
-## svgs
-
-- [ ] bubbly titles
-- [ ] footer
-
-fdggh
-adfgh
+- [ ] webgl inbetween scene
+- [ ] resize sometimes breaks on hero
