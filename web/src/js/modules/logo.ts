@@ -1,7 +1,5 @@
 import gsap from "../gsap"
 
-// (*) IDEA save state in localstorage
-
 export class Logo {
   element: HTMLElement
   svg: SVGElement[]

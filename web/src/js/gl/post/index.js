@@ -42,9 +42,9 @@ export class Post extends EffectComposer {
 
     gsap.to(this.base.uniforms.u_a_in, {
       value: 1,
-      duration: 1,
-      delay: 0.3,
-      ease: "expo.out",
+      duration: 1.3,
+      delay: 0.4,
+      ease: "slow.out",
     })
   }
 }
