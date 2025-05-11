@@ -70,19 +70,11 @@ const SLIDES = Array.from({ length: 6 }, (_, i) => i)
           ))
         }
       </ul>
-
-      <!-- sliding thingy -->
-      <!-- <div class="relative flex">
-        <div class="absolute h-[1px] w-[1px] transition-all duration-[50ms]">
-          <div class="absolute h-[1px] w-[3rem] -translate-x-1/2 bg-white">
-          </div>
-        </div>
-      </div> -->
     </div>
 
     <ul
       data-slider="arrows"
-      class="bg-red px-gx pointer-events-none absolute inset-0 z-10 flex items-center justify-end gap-12"
+      class="bg-red px-gx pointer-events-none absolute inset-0 z-10 flex items-center justify-between gap-12 md:justify-end"
     >
       <li data-module="alpha" data-delay=".5">
         <button class="pointer-events-auto" aria-label="previous slide">
