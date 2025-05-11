@@ -1,8 +1,11 @@
 ---
 import FoodSlider from "@c/landing/comps/FoodSlider.astro"
+import Loader from "@c/landing/Loader.astro"
 ---
 
-<header class="py-sm flex min-h-[100svh] flex-col items-center justify-between">
+<header
+  class="py-sm relative flex min-h-[100svh] flex-col items-center justify-between"
+>
   <div class="px-gx w-full pt-2">
     <div class="px-grid-3">
       <h1
@@ -17,4 +20,5 @@ import FoodSlider from "@c/landing/comps/FoodSlider.astro"
   </div>
 
   <FoodSlider />
+  <Loader />
 </header>
