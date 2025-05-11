@@ -11,7 +11,6 @@ export class Loader {
     this.element = element
     this.circle = window.app.loader.circle
     this.svg = this.circle.parentElement
-    this.squares = [...this.element.querySelectorAll("[data-square]")]
   }
 
   animateIn = () => {
@@ -25,13 +24,6 @@ export class Loader {
       scale: 0,
       duration: 0.8,
       delay: 0.6,
-      ease: "power2.inOut",
-    })
-
-    gsap.to(this.squares, {
-      scale: 0,
-      duration: 1.3,
-      delay: 0.3,
       ease: "power2.inOut",
     })
 
