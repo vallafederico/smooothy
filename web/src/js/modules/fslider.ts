@@ -1,5 +1,4 @@
 import Core from "smooothy"
-// import gsap from "../gsap"
 import { Raf } from "../utils/subscribable"
 import { Gl } from "../gl/gl"
 import { symmetricMod } from "../utils/math"
@@ -16,6 +15,8 @@ export class FSlider extends Core {
   #queue = []
   #current = 0
   #raf = Raf.subscribe(this.update.bind(this), 11)
+  // #onStart = hey.on("START", () => this.animateIn())
+
   lspeed = 0
 
   #buttons: HTMLUListElement[]
@@ -37,15 +38,15 @@ export class FSlider extends Core {
   createInterface(element: HTMLElement) {
     this.#buttons = [
       ...element.querySelector('[data-slider="controls"]').children[0].children,
-    ]
+    ] as HTMLUListElement[]
 
     this.#progress = element.querySelector(
       '[data-slider="controls"]'
-    ).children[1]
+    ) as HTMLDivElement
 
-    this.#arrows = [...element.querySelector('[data-slider="arrows"]').children]
-
-    // console.log(this.#arrows)
+    this.#arrows = [
+      ...element.querySelector('[data-slider="arrows"]').children,
+    ] as HTMLButtonElement[]
 
     this.#buttons.forEach((button, i) => {
       button.onclick = () => this.goToIndex(i)
@@ -84,7 +85,7 @@ export class FSlider extends Core {
       const lastIndex = this.#queue[this.#queue.length - 1]
       this.#queue = []
       this.onSettled(lastIndex)
-    }, 250)
+    }, 350)
   }
 
   onSettled = index => {
@@ -94,6 +95,11 @@ export class FSlider extends Core {
     this.#buttons[index].classList.add("active")
 
     hey.FSLIDE_CHANGE = [index, this.#current]
+
     this.#current = index
   }
+
+  // animateIn = () => {
+  //   console.log("animateIn")
+  // }
 }

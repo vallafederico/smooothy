@@ -19,6 +19,10 @@ class SimpleEmitter<T extends Record<string, any>> {
       this.events[event] = []
     }
     this.events[event].push(handler as (data: any) => void)
+
+    // (*) TODO: make events unbindable with symol
+    // (*) TODO: make this return the off function
+    // return () => this.off(event, handler)
   }
 
   /**

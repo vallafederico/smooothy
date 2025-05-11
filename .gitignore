@@ -26,3 +26,6 @@ pnpm-debug.log*
 
 .npmrc
 __progress
+__assets
+
+.DS_Store

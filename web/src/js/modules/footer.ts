@@ -1,55 +1,40 @@
-import { Track } from "./_/track"
+import { Observe } from "./_/observe"
 import gsap from "../gsap"
 
-export class Footer extends Track {
+export class Footer extends Observe {
   svg: SVGElement[]
   lerped: number = 0
   tl: any
 
   constructor(element: HTMLElement) {
-    super(element, {
-      top: "bottom",
-      bottom: "bottom",
-      bounds: [0, 1],
-    })
+    super(element)
     this.element = element
     this.svg = [...element.querySelector("svg").children].map(
       child => child as SVGElement
     )
-
-    this.tl = this._tl
   }
 
-  get _tl() {
-    const tl = gsap
-      .timeline({
-        paused: true,
-        ease: "none",
-      })
-      .fromTo(
-        this.svg,
-        {
-          yPercent: 50,
-          // scale: 0.2,
-          // rotate: () => Math.random() * 120 - 60,
-        },
-        {
-          yPercent: 0,
-          rotate: 0,
-          scale: 1,
-          ease: "linear",
-          stagger: {
-            each: 0.05,
-            from: "random",
-          },
-        }
-      )
-    // console.log(tl)
-
-    return { tl, duration: tl.duration() }
+  #aIn = null
+  isIn = () => {
+    this.#aIn = gsap.to(this.svg, {
+      yPercent: 0,
+      xPercent: 0,
+      rotate: 0,
+      duration: 1,
+      stagger: {
+        each: 0.02,
+        from: "random",
+      },
+      ease: "expo.out",
+    })
   }
 
-  handleScroll = () => {
-    this.tl.tl.seek(this.value * this.tl.duration)
+  isOut = () => {
+    if (this.#aIn) this.#aIn.kill()
+    gsap.set(this.svg, {
+      yPercent: 100,
+      rotate: () => Math.random() * 120 - 60,
+      xPercent: () => Math.random() * 100 - 50,
+    })
   }
 }

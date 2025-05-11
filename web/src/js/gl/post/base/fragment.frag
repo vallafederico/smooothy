@@ -12,18 +12,18 @@ vec3 ACESFilm(vec3 color) {
 }
 
 
+uniform float u_a_in;
 
 
 void main() {
-    vec4 tx = texture2D( tDiffuse, vUv );
-    gl_FragColor.rgb = tx.rgb;
+    vec4 tx = texture2D(tDiffuse, vUv);
+
+    vec3 color = tx.rgb;
+    color = mix(vec3(0.), color, u_a_in);
+
+    gl_FragColor.rgb = color;
     gl_FragColor.a = tx.a;
 
-    // beauty pass
     gl_FragColor = linearToOutputTexel(gl_FragColor);
     gl_FragColor.rgb = ACESFilm(gl_FragColor.rgb);
 }
-
-
-/** post */
-// gl_FragColor.a = 1.;

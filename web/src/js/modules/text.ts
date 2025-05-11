@@ -42,6 +42,7 @@ export class Text extends Observe {
 
     this.split = split(this.element).result
     computeParams(this.element, this.a)
+    this.element.style.visibility = "visible"
   }
 
   isIn = () => {

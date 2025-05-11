@@ -1,4 +1,5 @@
-import { Scene as THREE_Scene, DataTexture, Vector3 } from "three"
+import * as SkeletonUtils from "three/addons/utils/SkeletonUtils.js"
+import { Scene as THREE_Scene } from "three"
 import { FSlider } from "../fslider"
 import { loadAssets } from "../utils/loader"
 import { hey } from "../../hey"
@@ -14,17 +15,18 @@ export class Scene extends THREE_Scene {
   async load() {
     let t = performance.now()
     this.assets = await loadAssets()
+    this.assets.bonus = SkeletonUtils.clone(this.assets.model.children[0])
     console.log("(ms):::", performance.now() - t, this.assets)
-
-    // this.assets.model.children.forEach(child => {
-    //   console.log(child.name)
-    // })
 
     this.environment = this.assets.hdr_world
     this.environmentIntensity = 1
     this.environmentRotation.set(0, 0.5, 1)
 
     hey.WEBGL_LOADED = true
+
+    setTimeout(() => {
+      hey.START = true
+    }, 0)
   }
 
   async create() {

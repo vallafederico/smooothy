@@ -1,0 +1,49 @@
+---
+import Section from "@c/Section.astro"
+import BouncySvg from "./BouncySvg.astro"
+import TitleText from "./comps/TitleText.astro"
+import Svgg from "../svg/Svgg.astro"
+import GithubLink from "../GithubLink.astro"
+
+const WEBGL = {
+  title: "WebGL utilities.",
+  description:
+    "Kinda tested it around in all major frameworks/plaforms, and made some hooks.",
+}
+---
+
+<Section>
+  <div class="flex flex-col py-[8rem]">
+    <div class="md:w-grids-11 flex">
+      <div class="px-gx md:w-grids-3 w-full py-8 pt-[10rem]">
+        <div class="md:pl-grid-1">
+          <div data-module="draw" class="flex flex-col gap-24">
+            <div class="w-[80%]">
+              <Svgg name="food_toast" class="size-full" />
+            </div>
+            <TitleText title={WEBGL.title} description={WEBGL.description} />
+
+            <div data-module="alpha" data-delay=".8">
+              <GithubLink link={"webgl.md"} />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="">
+        <BouncySvg name="webgl" />
+      </div>
+    </div>
+
+    <div class="px-gx h-[40svh]">
+      <div class="ml-grid-3 w-grids-7 relative flex h-full items-end">
+        <div class="absolute size-full h-[70svh] outline outline-red-500/20">
+        </div>
+      </div>
+    </div>
+
+    <div class="w-grids-8 ml-grids-2">
+      <BouncySvg name="ready" />
+    </div>
+  </div>
+</Section>
