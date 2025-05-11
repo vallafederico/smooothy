@@ -58,7 +58,11 @@ const SLIDES = Array.from({ length: 6 }, (_, i) => i)
       <ul class="flex gap-[1rem]">
         {
           SLIDES.map((slide, i) => (
-            <li class:list={i === 0 && "active"}>
+            <li
+              data-module="alpha"
+              data-delay={1 + i * 0.2}
+              class:list={i === 0 && "active"}
+            >
               <button aria-label={`slide number ${slide}`}>
                 <div class="aspect-square size-[.4rem] w-full rounded-full outline outline-white" />
               </button>
@@ -68,26 +72,26 @@ const SLIDES = Array.from({ length: 6 }, (_, i) => i)
       </ul>
 
       <!-- sliding thingy -->
-      <div class="relative flex">
+      <!-- <div class="relative flex">
         <div class="absolute h-[1px] w-[1px] transition-all duration-[50ms]">
           <div class="absolute h-[1px] w-[3rem] -translate-x-1/2 bg-white">
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
 
     <ul
       data-slider="arrows"
       class="bg-red px-gx pointer-events-none absolute inset-0 z-10 flex items-center justify-end gap-12"
     >
-      <li>
+      <li data-module="alpha" data-delay=".5">
         <button class="pointer-events-auto" aria-label="previous slide">
           <div class="rotate-180">
             <Svgg name="arrow-r" />
           </div>
         </button>
       </li>
-      <li>
+      <li data-module="alpha" data-delay=".7">
         <button class="pointer-events-auto" aria-label="next slide">
           <Svgg name="arrow-r" />
         </button>

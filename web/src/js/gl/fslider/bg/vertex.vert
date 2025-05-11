@@ -17,10 +17,10 @@ uniform float u_a_speed;
 uniform float u_a_center;
 
 
+
 void main() {
   vec3 pos = position;
-
-  
+ 
   pos.x += cos(pos.y * 3.14) * .09 * u_a_speed;
 
   // * scale to size
@@ -32,6 +32,8 @@ void main() {
     pos.xyz * .8, 
     prog
   );
+
+  
 
   // pos.xy *= 1. + vec2(u_a_center) * .2;
 

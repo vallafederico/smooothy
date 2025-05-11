@@ -29,6 +29,7 @@ export class Bg extends Mesh {
   }
 
   #a_center = null
+
   set center(val) {
     if (this.#a_center) this.#a_center.kill()
 

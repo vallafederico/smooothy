@@ -1,5 +1,5 @@
 import { SliderGroup } from "../dom/group"
-// import gsap from "../../gsap"
+import gsap from "../../gsap"
 
 import { hey } from "../../hey"
 import { Gl } from "../gl"
@@ -28,6 +28,8 @@ export class Slide extends SliderGroup {
   #onLoad = hey.on("WEBGL_LOADED", () => {
     this.onLoad()
   })
+
+  #onStart = hey.on("START", () => this.animateIn())
 
   constructor(element, { index }) {
     super(element, { index })
@@ -79,7 +81,6 @@ export class Slide extends SliderGroup {
   }
 
   onSettle = (current, old) => {
-    // console.log("onSettle", current, old)
     if (current === old) return
 
     if (this.index === current) {
@@ -87,5 +88,17 @@ export class Slide extends SliderGroup {
     } else if (this.index === old) {
       this.bg.center = 0
     }
+  }
+
+  animateIn = () => {
+    // console.log("animateIn")
+
+    gsap.to(this.food.a, {
+      rotation: 0,
+      startY: 0,
+      duration: 2.2,
+      ease: "elastic.out(1,0.7)",
+      delay: 0.2 + Math.random() * 0.6,
+    })
   }
 }

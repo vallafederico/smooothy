@@ -24,7 +24,7 @@ export class Scene extends THREE_Scene {
 
     setTimeout(() => {
       hey.START = true
-    }, 800)
+    }, 0)
   }
 
   async create() {

@@ -1,4 +1,4 @@
-import { Group, MeshPhysicalMaterial, MeshBasicMaterial } from "three"
+import { Group, MeshBasicMaterial } from "three"
 import { WiggleBone } from "wiggle"
 import { Raf } from "../../../utils/subscribable"
 import { hey } from "../../../hey"
@@ -13,7 +13,10 @@ export class Food extends Group {
   _root = null
 
   a = {
-    scale: 1.3,
+    scale: 0,
+    rotation: Math.random() < 0.5 ? 5 : -6,
+    startY: 0,
+    y: 0,
     randoms: [0, 0, 0],
     base: {
       rot: [rand(), rand(), rand()],
@@ -27,7 +30,7 @@ export class Food extends Group {
     this.lib = lib
 
     this.a.randoms.forEach((_, i) => (this.a.randoms[i] = rand(this.index)))
-
+    this.a.startY = this.index % 2 === 0 ? 3 : -3
     this.onLoad()
   }
 
@@ -40,7 +43,7 @@ export class Food extends Group {
             this._root = bone
           } else {
             const wiggleBone = new WiggleBone(bone, {
-              velocity: this.lib.wiggle,
+              velocity: this.lib.wiggle * 1.3,
             })
             this._bones.push(wiggleBone)
           }
@@ -58,13 +61,15 @@ export class Food extends Group {
 
       const loop = Math.sin(time + this.index) * 0.8
 
+      this.position.y = this.a.startY
+
       this._bones.forEach(bone => bone.update(Raf.deltaTime * 1000))
       this._root.position.z = Math.sin(loop) * 0.8
       this._root.position.x = Math.sin(loop) * 0.04
 
       const speed = hey.FSLIDER.lspeed
-      this._root.rotation.y = this.a.randoms[0] * speed * 0.2
-      this._root.rotation.z = speed * 0.4 + loop * 0.2
+      this._root.rotation.y = this.a.randoms[0] * speed * 0.2 + this.a.rotation
+      this._root.rotation.z = speed * 0.4 + loop * 0.2 + this.a.rotation
     }
   }
 
