@@ -38,7 +38,5 @@ export async function loadAssets(opt = null) {
     return acc
   }, {})
 
-  // console.timeEnd("assets::");
-
   return result
 }
