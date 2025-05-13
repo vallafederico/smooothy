@@ -10,17 +10,16 @@ import { Observe } from "~/js/modules/_/observe"
 import gsap from "~/js/gsap"
 
 export class Item extends Group {
+  #isIn = false
   #onLoad = hey.on("WEBGL_LOADED", () => this.onLoad())
   #raf = Raf.subscribe(t => this.raf(t))
   #observe = new Observe(this.element, {
     callback: ({ isIn }) => {
-      //   if (isIn) {
-      //     gsap.to(this.a, {
-      //       rx: "+=6.28",
-      //       duration: 1.3,
-      //       ease: "expo.out",
-      //     })
-      //   }
+      if (isIn) {
+        this.#isIn = true
+      } else {
+        this.#isIn = false
+      }
     },
   })
 
