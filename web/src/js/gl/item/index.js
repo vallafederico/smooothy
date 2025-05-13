@@ -38,7 +38,6 @@ export class Item extends Group {
   }
 
   onLoad() {
-    console.log(Gl.scene.assets.bonus.INFO)
     Gl.scene.assets.bonus.traverse(child => {
       setMaterial(child)
       if (child.isSkinnedMesh) {
@@ -71,6 +70,7 @@ export class Item extends Group {
 
   resize() {
     // console.log(this.bounds)
-    this.scale.set(this.bounds.height, this.bounds.height, this.bounds.height)
+    const scale = this.bounds.height * 1.6
+    this.scale.set(scale, scale, scale)
   }
 }
