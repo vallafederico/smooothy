@@ -86,7 +86,7 @@ export class Food extends Group {
     } else {
       if (this.#anim) this.#anim.kill()
       this.#anim = gsap.to(this.a, {
-        scale: 0.5,
+        scale: 0.8,
       })
     }
   }
