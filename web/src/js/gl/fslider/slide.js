@@ -96,7 +96,7 @@ export class Slide extends SliderGroup {
     gsap.to(this.food.a, {
       rotation: 0,
       startY: 0,
-      duration: 2.2,
+      duration: 2.4,
       ease: "elastic.out(1,0.7)",
       delay: 0.2 + Math.random() * 0.6,
     })

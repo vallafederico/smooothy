@@ -3,7 +3,6 @@ import { clientRectGl } from "../../utils/client-rect"
 import { Resize } from "../../utils/subscribable"
 import { Scroll } from "../../scroll"
 import { Gl } from "../gl"
-// import { Observe } from "../../modules/_/observe"
 
 export class Group extends G {
   #isIn = false
@@ -12,10 +11,10 @@ export class Group extends G {
 
   x = 0
 
-  constructor(element, { index }) {
+  constructor(element, { index } = {}) {
     super()
     this.element = element
-    // this.index = index
+    this.index = index
 
     // this.#observe = new Observe(this.element, {
     //   callback: ({ isIn }) => {

@@ -1,8 +1,11 @@
 import * as SkeletonUtils from "three/addons/utils/SkeletonUtils.js"
 import { Scene as THREE_Scene } from "three"
 import { FSlider } from "../fslider"
+import { Item } from "../item"
 import { loadAssets } from "../utils/loader"
 import { hey } from "../../hey"
+
+import { SLIDER_FOOD } from "../../../content"
 
 export class Scene extends THREE_Scene {
   isOn = true
@@ -15,7 +18,12 @@ export class Scene extends THREE_Scene {
   async load() {
     let t = performance.now()
     this.assets = await loadAssets()
-    this.assets.bonus = SkeletonUtils.clone(this.assets.model.children[0])
+
+    // const item = Math.floor(Math.random() * this.assets.model.children.length)
+    const item = 0
+
+    this.assets.bonus = SkeletonUtils.clone(this.assets.model.children[item])
+    this.assets.bonus.INFO = SLIDER_FOOD[item]
     console.log("(ms):::", performance.now() - t, this.assets)
 
     this.environment = this.assets.hdr_world
@@ -35,6 +43,13 @@ export class Scene extends THREE_Scene {
     if (slider) {
       this.fslider = new FSlider(slider)
       this.add(this.fslider)
+    }
+
+    const item = document.querySelector('[data-gl="item"]')
+    if (item) {
+      console.log("item", item)
+      this.item = new Item(item)
+      this.add(this.item)
     }
 
     await this.load()

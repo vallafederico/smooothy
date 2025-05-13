@@ -94,7 +94,7 @@ export class Food extends Group {
 
 // //////////////////////////////////
 
-function setMaterial(child) {
+export function setMaterial(child) {
   if (child.isMesh) {
     const map = child.material.map
     child.material = new MeshBasicMaterial({

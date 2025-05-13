@@ -29,6 +29,7 @@ export class Loader {
 
     gsap.to(this.element, {
       autoAlpha: 0,
+      scale: 0,
       duration: 0.2,
       delay: 0.8,
       ease: "expo.out",
