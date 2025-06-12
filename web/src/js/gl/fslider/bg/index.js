@@ -23,7 +23,7 @@ export class Bg extends Mesh {
     this.#a_view = gsap.to(this.material.uniforms.u_a_view, {
       value: val,
       duration: 1.4,
-      delay: val > 0.7 ? 0.17 + Math.random() * 0.18 : 0,
+      delay: val > 0.7 ? 0.07 + Math.random() * 0.08 : 0,
       ease: "expo.out",
     })
   }
@@ -74,6 +74,7 @@ class Material extends RawShaderMaterial {
         u_a_view: { value: 0 },
         u_a_speed: { value: 0 },
         u_a_center: { value: 0 },
+        u_a_in: { value: 0 },
       },
       side: DoubleSide,
       // wireframe: true,

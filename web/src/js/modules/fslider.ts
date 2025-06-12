@@ -98,8 +98,4 @@ export class FSlider extends Core {
 
     this.#current = index
   }
-
-  // animateIn = () => {
-  //   console.log("animateIn")
-  // }
 }

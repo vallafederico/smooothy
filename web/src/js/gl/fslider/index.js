@@ -7,6 +7,8 @@ export class FSlider extends G {
   slides = []
   frustumCulled = false
 
+  #settledTimer = null
+
   constructor(wrapper) {
     super()
     this.wrapper = wrapper
@@ -23,6 +25,10 @@ export class FSlider extends G {
 
     this.add(...this.slides)
     hey.on("FSLIDE_CHANGE", this.onSlideChange)
+
+    setTimeout(() => {
+      this.onSlideChange([0, 0])
+    }, 3000)
   }
 
   onSlide(x) {
@@ -33,9 +39,27 @@ export class FSlider extends G {
   }
 
   onSlideChange = ([current, prev]) => {
-    // console.log(current, prev)
-    // this.slides[index].onSlideChange()
-    // this.slides[prev].bg.view = 0.9
-    // this.slides[current].bg.view = 1
+    const baseDuration = 4.2
+
+    this.slides[prev].invalidate()
+
+    this.slides[current].animateCentral(baseDuration)
+
+    if (this.#settledTimer) {
+      clearTimeout(this.#settledTimer)
+      this.#settledTimer = null
+    }
+
+    const scheduleNextAnimation = () => {
+      const randomDelay = Math.random() * 600 + baseDuration * 1000 * 2
+
+      this.#settledTimer = setTimeout(() => {
+        this.slides[current].animateCentral(baseDuration)
+
+        scheduleNextAnimation()
+      }, randomDelay)
+    }
+
+    scheduleNextAnimation()
   }
 }
