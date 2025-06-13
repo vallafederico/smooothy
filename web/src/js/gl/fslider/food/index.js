@@ -15,8 +15,11 @@ export class Food extends Group {
   a = {
     scale: 0,
     rotation: Math.random() < 0.5 ? 5 : -6,
+    ry: 0,
+    rz: 0,
     startY: 0,
     y: 0,
+    z: 0,
     randoms: [0, 0, 0],
     base: {
       rot: [rand(), rand(), rand()],
@@ -64,12 +67,14 @@ export class Food extends Group {
       this.position.y = this.a.startY
 
       this._bones.forEach(bone => bone.update(Raf.deltaTime * 1000))
-      this._root.position.z = Math.sin(loop) * 0.8
+      this._root.position.z = Math.sin(loop) * 0.8 + this.a.z
       this._root.position.x = Math.sin(loop) * 0.04
 
       const speed = hey.FSLIDER.lspeed
-      this._root.rotation.y = this.a.randoms[0] * speed * 0.2 + this.a.rotation
-      this._root.rotation.z = speed * 0.4 + loop * 0.2 + this.a.rotation
+      this._root.rotation.y =
+        this.a.randoms[0] * speed * 0.2 + this.a.rotation + this.a.ry
+      this._root.rotation.z =
+        speed * 0.4 + loop * 0.2 + this.a.rotation + this.a.rz
     }
   }
 
@@ -86,7 +91,7 @@ export class Food extends Group {
     } else {
       if (this.#anim) this.#anim.kill()
       this.#anim = gsap.to(this.a, {
-        scale: 0.5,
+        scale: 0.8,
       })
     }
   }

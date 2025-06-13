@@ -15,7 +15,6 @@ export class FSlider extends Core {
   #queue = []
   #current = 0
   #raf = Raf.subscribe(this.update.bind(this), 11)
-  // #onStart = hey.on("START", () => this.animateIn())
 
   lspeed = 0
 
@@ -26,8 +25,6 @@ export class FSlider extends Core {
   constructor(element: HTMLElement) {
     super(element.querySelector('[data-slider="wrapper"]'), {
       lerpFactor: 0.27,
-      // dragSensitivity: 0.003,
-      // infinite: false,
     })
 
     hey.FSLIDER = this
@@ -98,8 +95,4 @@ export class FSlider extends Core {
 
     this.#current = index
   }
-
-  // animateIn = () => {
-  //   console.log("animateIn")
-  // }
 }

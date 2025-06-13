@@ -47,7 +47,6 @@ export class Scene extends THREE_Scene {
 
     const item = document.querySelector('[data-gl="item"]')
     if (item) {
-      console.log("item", item)
       this.item = new Item(item)
       this.add(this.item)
     }

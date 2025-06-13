@@ -52,16 +52,22 @@ export class SliderGroup extends G {
   }
 
   #resize() {
-    queueMicrotask(() => {
+    this.bounds = clientRectGl(this.element)
+    this.bounds.centerx -= this.x
+
+    this.position.x = this.bounds.centerx
+    this.position.y = this.bounds.centery
+
+    this.#scroll()
+    this.resize?.()
+
+    setTimeout(() => {
       this.bounds = clientRectGl(this.element)
       this.bounds.centerx -= this.x
 
       this.position.x = this.bounds.centerx
       this.position.y = this.bounds.centery
-
-      this.#scroll()
-      this.resize?.()
-    })
+    }, 100)
   }
 
   #scroll() {

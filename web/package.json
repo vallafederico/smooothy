@@ -11,9 +11,9 @@
   "dependencies": {
     "@activetheory/split-text": "^1.1.2",
     "@astrojs/prism": "^3.2.0",
-    "@astrojs/react": "^4.2.1",
-    "@astrojs/solid-js": "^5.0.5",
-    "@astrojs/vue": "^5.0.7",
+    "@astrojs/react": "^4.2.7",
+    "@astrojs/solid-js": "^5.0.10",
+    "@astrojs/vue": "^5.0.13",
     "@tailwindcss/vite": "^4.0.9",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
@@ -31,7 +31,7 @@
     "wiggle": "^0.0.17"
   },
   "devDependencies": {
-    "astro": "^5.4.2",
+    "astro": "^5.7.12",
     "prettier": "^3.5.3",
     "prettier-plugin-astro": "^0.14.1",
     "prettier-plugin-tailwindcss": "^0.6.11",

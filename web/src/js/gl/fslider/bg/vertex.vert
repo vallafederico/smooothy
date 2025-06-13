@@ -15,6 +15,7 @@ uniform vec3 u_random;
 uniform float u_a_view;
 uniform float u_a_speed;
 uniform float u_a_center;
+uniform float u_a_in;
 
 
 
@@ -22,6 +23,10 @@ void main() {
   vec3 pos = position;
  
   pos.x += cos(pos.y * 3.14) * .09 * u_a_speed;
+
+  pos.y -=.5;
+  pos.y *= u_a_in;
+  pos.y +=.5;
 
   // * scale to size
   float startAt = distance(uv, vec2(0.5));
@@ -33,13 +38,13 @@ void main() {
     prog
   );
 
-  
 
-  // pos.xy *= 1. + vec2(u_a_center) * .2;
+
+  // pos.xy *= 1. - vec2(u_a_in) * .2;
+  
 
   // * wave on move
-  pos.z += 1. * sin(pos.x * 4. + pos.y * .2 + u_time * 4. + u_random.x) * (u_a_speed + u_random.z * .2) * .03;
-  
+  pos.z += 1. * sin(pos.x * 4. + pos.y * .2 + u_time * 4. + u_random.x) * (u_a_speed + u_random.z * .2) * .03;  
 
   gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
   v_uv = uv;
@@ -50,9 +55,6 @@ void main() {
     u_time + pos.x * 0.1
   ));
 
-  // ns = perlin3d(vec4(
-  //   vec4(ns + u_time + u_random.x * 10. + u_a_speed * .02)
-  // ));
 
   v_normal = normal;
   v_ns = ns;

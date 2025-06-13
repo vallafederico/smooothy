@@ -14,22 +14,18 @@ export class Slide extends SliderGroup {
   #visible = true
   #raf = Raf.subscribe(t => this.raf(t))
   #observe = new Observe(this.element, {
-    threshold: 0.05,
-    // rootMargin: "0% 20% 0% -20%",
+    // threshold: 0.05,
+    // rootMargin: "0px -0px 0px -0px",
     callback: ({ isIn }) => {
       this.handleInView(isIn)
     },
   })
 
-  #onSlideSettle = hey.on("FSLIDE_CHANGE", ([current, old]) => {
-    this.onSettle(current, old)
-  })
-
-  #onLoad = hey.on("WEBGL_LOADED", () => {
-    this.onLoad()
-  })
-
+  #onLoad = hey.on("WEBGL_LOADED", () => this.onLoad())
   #onStart = hey.on("START", () => this.animateIn())
+  #onSlideSettle = hey.on("FSLIDE_CHANGE", ([current, old]) =>
+    this.onSettle(current, old)
+  )
 
   constructor(element, { index }) {
     super(element, { index })
@@ -55,7 +51,7 @@ export class Slide extends SliderGroup {
   }
 
   raf = ({ time }) => {
-    if (!this.#visible) return
+    // if (!this.#visible) return
 
     this.bg.speed = hey.FSLIDER.lspeed
     this.bg.time = time * 0.4
@@ -73,6 +69,11 @@ export class Slide extends SliderGroup {
     } else {
       this.#visible = false
       this.bg.view = 0
+      if (this.#funkytl) {
+        this.#funkytl.kill()
+        this.food.a.ry = 0
+        this.food.a.rz = 0
+      }
     }
 
     if (this.food) {
@@ -91,14 +92,55 @@ export class Slide extends SliderGroup {
   }
 
   animateIn = () => {
-    // console.log("animateIn")
-
     gsap.to(this.food.a, {
       rotation: 0,
       startY: 0,
-      duration: 2.4,
+      duration: 2.9,
       ease: "elastic.out(1,0.7)",
-      delay: 0.2 + Math.random() * 0.6,
+      delay: () => 0.4 + [0, 1, 2, 3, 4][this.index] * 0.2,
     })
+
+    gsap.to(this.bg.material.uniforms.u_a_in, {
+      value: 1,
+      duration: 1.4,
+      ease: "expo.out",
+      delay: () => 0.6 + [0, 1, 2, 3, 4][this.index] * 0.1,
+    })
+  }
+
+  #funkytl = null
+  animateCentral = (baseDuration = 2.2) => {
+    this.#funkytl = gsap.timeline({
+      yoyo: true,
+      repeat: 1,
+    })
+
+    this.#funkytl.to(this.food.a, {
+      rz: this.food.a.rz + Math.PI * 2 * (Math.random() > 0.5 ? -1 : 1),
+      duration: baseDuration,
+      ease: "elastic.inOut(1,.5)",
+    })
+
+    this.#funkytl.to(
+      this.food.a,
+      {
+        ry: Math.random() - 0.5,
+        duration: baseDuration,
+        ease: "elastic.inOut(1,.5)",
+      },
+      "<"
+    )
+  }
+
+  invalidate = () => {
+    if (this.#funkytl) {
+      this.#funkytl.kill()
+      gsap.to(this.food.a, {
+        ry: 0,
+        rz: 0,
+        duration: 1.3,
+        ease: "expo.out",
+      })
+    }
   }
 }
