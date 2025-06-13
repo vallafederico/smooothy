@@ -17,6 +17,7 @@ export class GSlider extends Core {
   settleTimeout: NodeJS.Timeout
   #resizeTimeout: NodeJS.Timeout
   #debounceDelay = 250 // 250ms delay
+  parallaxValuesText: HTMLSpanElement[]
 
   constructor(element: HTMLElement) {
     const slider = element.querySelector('[data-slider="wrapper"]')
@@ -25,7 +26,13 @@ export class GSlider extends Core {
       infinite: true,
     })
 
-    this.letters = [...element.querySelectorAll('[data-a="letter"]')]
+    this.parallaxValuesText = [
+      ...element.querySelectorAll("[data-slide-parallax]"),
+    ] as HTMLSpanElement[]
+
+    this.letters = [
+      ...element.querySelectorAll('[data-a="letter"]'),
+    ] as HTMLElement[]
 
     this.#addKeyboardEvents()
     this.initInterface(element)
@@ -40,6 +47,8 @@ export class GSlider extends Core {
         translateY(${Math.sin(parallaxValues[i] * 1) * 20 + this.#lspeed * 4}%)
         scale(${Math.sin(Math.abs(parallaxValues[i]) * 0.5 + 2) + speed})
         `
+
+        this.parallaxValuesText[i].textContent = parallaxValues[i].toFixed(3)
       })
     }
     this.updateInterface()

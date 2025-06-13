@@ -6,3 +6,12 @@
 [data-hover="opacity"]:hover {
   opacity: 0.5;
 }
+
+/* inital states */
+[data-module="alpha"] {
+  visibility: hidden;
+}
+
+[data-module="text"] {
+  visibility: hidden;
+}

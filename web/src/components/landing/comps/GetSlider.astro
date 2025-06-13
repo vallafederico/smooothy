@@ -169,7 +169,7 @@ const SLIDES = Array.from({ length: letters.length }, (_, i) => i)
           <ul
             data-events
             data-css="progressive-fade"
-            class="flex h-[7ch] flex-col-reverse justify-start overflow-x-clip [&>li]:shrink-0"
+            class="flex h-[7ch] flex-col-reverse justify-start overflow-y-clip [&>li]:shrink-0"
           >
             <li>[SLIDE] SETTLED #0</li>
             <li>[SLIDER] IN VIEW</li>
@@ -204,14 +204,14 @@ const SLIDES = Array.from({ length: letters.length }, (_, i) => i)
           <ul class="flex flex-col font-mono text-[.8em] tracking-wider">
             <li data-module="alpha" data-delay={0.04}>
               <p>
-                PARALLAX <span>0.000</span>
+                PARALLAX <span data-slide-parallax>0.000</span>
               </p>
             </li>
-            <li data-module="alpha" data-delay={0.08}>
+            {/* <li data-module="alpha" data-delay={0.08}>
               <p>
                 SPEED <span>0.000</span>
               </p>
-            </li>
+            </li> */}
           </ul>
         </li>
       ))

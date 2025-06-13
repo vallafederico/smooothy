@@ -1,6 +1,6 @@
 ---
 const { index = 1, class: className, ...rest } = Astro.props
-const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
+const slides = Array.from({ length: 5 }, (_, i) => i)
 ---
 
 <!-- controls -->
@@ -62,7 +62,9 @@ const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
       <div class="flex aspect-[3/4] w-[80vw] shrink-0 items-center justify-center p-1 md:w-[30vw]">
         <div class="relative h-full w-full p-8 outline outline-gray-600">
           <p class="absolute top-2 left-2 z-10">{i}</p>
-          <div data-parallax class="h-full w-full outline outline-gray-800" />
+          <div data-parallax class="h-full w-full outline outline-gray-800">
+            <p>0</p>
+          </div>
         </div>
       </div>
     ))
@@ -89,9 +91,22 @@ const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
 
     /** Callbacks */
     let easedProgress = 0
+
+    const parallaxes = [...s1.querySelectorAll("[data-parallax]")]
+    const pValues = parallaxes.map(p => p.children[0])
+
     const onUpdate = slider => {
-      const { speed, progress } = slider
+      const { speed, progress, parallaxValues } = slider
       speedbar.style.transform = `translateX(${speed * 500}%)`
+
+      parallaxes.forEach((parallax, i) => {
+        // if (i === 0) {
+        //   console.log(parallaxValues[i])
+        // }
+
+        parallax.style.transform = `translateX(${parallaxValues[i] * 30}%)`
+        pValues[i].textContent = parallaxValues[i].toFixed(2)
+      })
 
       easedProgress = lerp(easedProgress, progress, 0.1)
 

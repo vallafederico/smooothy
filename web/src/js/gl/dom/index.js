@@ -29,16 +29,6 @@ export class Dom extends Mesh {
     super()
     this.element = element
     this.index = index
-
-    // this.#observe = new Observe(this.element, {
-    //   callback: ({ isIn }) => {
-    //     this.#isIn = isIn
-    //   },
-    // })
-
-    // setTimeout(() => {
-    //   this.#resize()
-    // }, 40)
   }
 
   #resize() {
@@ -56,12 +46,6 @@ export class Dom extends Mesh {
     this.position.y = this.bounds.centery + Scroll.y * Gl.vp.px
     this.scroll?.()
   }
-
-  // onSlide(slider, value) {
-  //   this.x = value
-  //   // console.log(this.x)
-  //   this.position.x = this.bounds.centerx + this.x
-  // }
 }
 
 export class NoScrollDom extends Mesh {
@@ -72,7 +56,7 @@ export class NoScrollDom extends Mesh {
   #isIn = false
   x = 0
 
-  #resizer = Resize.subscribe(this.#resize.bind(this))
+  #resizer = Resize.subscribe(this.#resize.bind(this), 0)
 
   constructor(element) {
     super()
@@ -83,10 +67,6 @@ export class NoScrollDom extends Mesh {
     this.bounds = clientRectGl(this.element)
     this.scale.set(this.bounds.width, this.bounds.height, 1)
 
-    // this.position.x = this.bounds.centerx
-    // this.position.y = this.bounds.centery
-
-    // this.#scroll()
     this.resize?.()
   }
 }

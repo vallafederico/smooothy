@@ -1,0 +1,16 @@
+---
+const { title, description } = Astro.props
+---
+
+<div class="md:w-grids-3 flex flex-col gap-2">
+  <h2
+    data-module="text"
+    data-type="chars"
+    class="tr-s text-[1.6rem] leading-[1em] font-semibold text-balance"
+  >
+    {title}
+  </h2>
+  <p data-module="text" data-type="words" class="ml-grid-1 max-w-[80%] md:ml-0">
+    {description}
+  </p>
+</div>

@@ -1,9 +1,9 @@
-import { WebGLRenderer, PerspectiveCamera } from "three"
+import { WebGLRenderer, PerspectiveCamera, ACESFilmicToneMapping } from "three"
 import { OrbitControls } from "three/addons/controls/OrbitControls.js"
 import { Raf, Resize } from "../utils/subscribable.js"
 import { Post } from "./post/index.js"
 
-import Scene from "./scenes/scene.js"
+import { Scene } from "./scenes/scene.js"
 
 export const config = {
   // guiHidden: import.meta.env.PROD,
@@ -39,6 +39,7 @@ export class Gl {
       // antialias: true,
       alpha: config.alpha,
       canvas: this.vp.container,
+      // toneMapping: ACESFilmicToneMapping,
     })
 
     this.renderer.setPixelRatio(this.vp.dpr())
@@ -80,7 +81,7 @@ export class Gl {
     this.time += 0.05
     this.controls?.update()
 
-    this.scene?.render(this.time)
+    this.scene?.render?.(this.time)
     this.post.renderPost()
   }
 

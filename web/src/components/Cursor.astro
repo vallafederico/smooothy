@@ -6,12 +6,9 @@
   aria-hidden="true"
   class="pointer-events-none fixed inset-0 z-50 hidden md:block"
 >
-  <div
-    data-module="cursor"
-    class="size-[.6rem] -translate-x-1/2 -translate-y-1/2"
-  >
+  <div data-module="cursor" class="size-[.6rem]">
     <div class="absolute flex size-[1px] items-center justify-center">
-      <div cursor-main class="absolute size-[.6rem] bg-white"></div>
+      <div cursor-main class="absolute size-[.4rem] bg-white"></div>
     </div>
 
     <div
@@ -24,4 +21,76 @@
   </div>
 </div>
 
-<style></style>
+<style>
+  /** -- CURSOR */
+
+  /* (*) REMOVE FROM MOBILE */
+
+  /* remove on links and shit */
+  body:has(nav:hover) [data-module="cursor"] > div {
+    transform: scale(0.2);
+    transition: transform 0.4s;
+  }
+
+  body:has(a:hover) [data-module="cursor"] [cursor-main],
+  body:has(button:hover) [data-module="cursor"] [cursor-main],
+  body:has([data-no-cursor]:hover) [data-module="cursor"] [cursor-main] {
+    transform: scale(0);
+    transition: transform 0.4s;
+  }
+
+  body:has(a:hover) [data-module="cursor"] [cursor-circle],
+  body:has(button:hover) [data-module="cursor"] [cursor-circle],
+  body:has([data-no-cursor]:hover) [data-module="cursor"] [cursor-circle] {
+    transform: scale(0);
+    transition: transform 0.4s;
+  }
+
+  /* out/in */
+  [data-module="cursor"] {
+    transition: opacity 0.2s;
+  }
+
+  .mouse-out [data-module="cursor"] {
+    opacity: 0;
+  }
+
+  [data-module="cursor"] [cursor-main] {
+    transition:
+      transform 0.4s,
+      border-radius 0.4s;
+    transform: scale(1);
+  }
+
+  /* down/up */
+  .mouse-down [data-module="cursor"] [cursor-main] {
+    transform: scale(0.8);
+    border-radius: 100%;
+  }
+
+  [cursor-circle-w] {
+    transition: transform 0.8s;
+
+    transform: scale(0);
+    transition-delay: 0.3s;
+  }
+
+  body:not(:has([data-module="fslider"]:hover)) [cursor-circle-w] {
+    transform: scale(0);
+    transition: transform 0.2s;
+  }
+
+  body:has([data-module="fslider"]:hover) [cursor-circle-w] {
+    transform: scale(1);
+    transition: transform 0.2s;
+  }
+
+  [cursor-circle] {
+    transition: transform 0.4s;
+    transform: scale(1);
+  }
+
+  .mouse-down [cursor-circle] {
+    transform: scale(1.2);
+  }
+</style>

@@ -1,0 +1,77 @@
+---
+
+---
+
+<div
+  data-module="loader"
+  class="absolute inset-0 z-50 flex items-center justify-center"
+>
+  <div class="absolute inset-0 flex items-center justify-center">
+    <svg data-percentage viewBox="0 0 100 100" class="absolute w-[3em]">
+      <circle
+        cx="50"
+        cy="50"
+        r="45"
+        fill="none"
+        stroke="currentColor"
+        class="opacity-30"
+        stroke-width="2"></circle>
+      <circle
+        data-circle
+        cx="50"
+        cy="50"
+        r="45"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"></circle>
+    </svg>
+  </div>
+</div>
+
+<style>
+  [data-module="loader"] {
+    --anim: 2s;
+
+    pointer-events: none;
+    /* circle percentage */
+    [data-percentage] > circle:nth-child(2) {
+      stroke-dasharray: 282.7433388230814;
+      stroke-dashoffset: calc(282.7433388230814 * 1);
+      transition: stroke-dashoffset 1.2s ease-in-out 0.5s;
+    }
+
+    /* squares */
+  }
+</style>
+
+<script>
+  window.app = {
+    loader: {
+      circle: null,
+      timeouts: [],
+    },
+  }
+
+  const circ = 282.7433388230814
+  const loader = document.querySelector("[data-module='loader']")
+  window.app.loader.circle = loader.querySelectorAll("circle")[1]
+  loader.classList.add("init")
+
+  const advanceLoader = () => {
+    let progress = 1
+
+    const updateProgress = () => {
+      const remaining = progress
+      progress -= remaining * 0.12 * (Math.random() + 0.05)
+      window.app.loader.circle.style.strokeDashoffset = `${circ * progress}px`
+      window.app.loader.timeouts.push(setTimeout(updateProgress, 1800))
+    }
+
+    // Start the progress
+    window.app.loader.timeouts.push(
+      setTimeout(updateProgress, 900 + Math.random() * 100)
+    )
+  }
+
+  advanceLoader()
+</script>

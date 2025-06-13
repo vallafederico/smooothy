@@ -363,7 +363,7 @@ export class Core {
       const translateX = x * this.viewport.itemWidth
       item.style.transform = `translateX(${translateX}px)`
 
-      return symmetricMod(unitPos, this.items.length / 2)
+      return symmetricMod(unitPos, this.items.length)
     })
   }
 

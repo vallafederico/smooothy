@@ -24,7 +24,7 @@ pnpm-debug.log*
 .idea/
 
 .npmrc
-
-
 __progress
 __assets
+
+.DS_Store
