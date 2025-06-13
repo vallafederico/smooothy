@@ -3,6 +3,7 @@ import { WiggleBone } from "wiggle"
 import { Raf } from "../../../utils/subscribable"
 import { hey } from "../../../hey"
 import gsap from "../../../gsap"
+import { Mouse } from "../../../mouse"
 
 const rand = (ind = 0) =>
   ind % 2 === 0 ? Math.random() + 0.5 : -Math.random() - 0.5
@@ -31,6 +32,8 @@ export class Food extends Group {
     this.model = model
     this.index = index
     this.lib = lib
+
+    this.globDirection = this.index % 2 === 0 ? 1 : -1
 
     this.a.randoms.forEach((_, i) => (this.a.randoms[i] = rand(this.index)))
     this.a.startY = this.index % 2 === 0 ? 3 : -3
@@ -72,9 +75,15 @@ export class Food extends Group {
 
       const speed = hey.FSLIDER.lspeed
       this._root.rotation.y =
-        this.a.randoms[0] * speed * 0.2 + this.a.rotation + this.a.ry
+        this.a.randoms[0] * speed * 0.2 +
+        this.a.rotation +
+        this.a.ry +
+        Mouse.sex * this.globDirection * 0.2
+
       this._root.rotation.z =
         speed * 0.4 + loop * 0.2 + this.a.rotation + this.a.rz
+
+      this._root.rotation.x = Mouse.sey * 0.3 * this.globDirection
     }
   }
 

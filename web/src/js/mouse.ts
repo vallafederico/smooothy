@@ -36,7 +36,7 @@ type Config = {
 
 // Configuration
 const CONFIG: Config = {
-  damp: 8,
+  damp: 4,
   dampFunc: damp,
   dampDecay: 1.2,
   events: [
