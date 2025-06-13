@@ -124,7 +124,7 @@ export class Slide extends SliderGroup {
     this.#funkytl.to(
       this.food.a,
       {
-        ry: Math.random() * 8 - 4,
+        ry: Math.random() - 0.5,
         duration: baseDuration,
         ease: "elastic.inOut(1,.5)",
       },
