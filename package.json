@@ -37,7 +37,7 @@
     "dev": "pnpm run -w --parallel /^dev:.*/",
     "dev:web": "cd web && pnpm dev",
     "dev:package": "bun run bin/dev.js",
-    "pub": "pnpm run build:package && npm publish",
+    "pub": "npm version patch && pnpm run build:package && npm publish",
     "release:patch": "npm version patch && pnpm run build:package && npm publish",
     "release:minor": "npm version minor && pnpm run build:package && npm publish",
     "release:major": "npm version major && pnpm run build:package && npm publish"

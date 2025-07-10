@@ -1,5 +1,17 @@
 {
   "name": "smooothy",
   "type": "module",
-  "unpkg": "dist/smooothy.min.js"
+  "main": "./dist/cjs/cjs.js",
+  "module": "./dist/esm/esm.js",
+  "unpkg": "./dist/smooothy.min.js",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/esm.js",
+      "require": "./dist/cjs/cjs.js",
+      "default": "./dist/esm/esm.js"
+    }
+  },
+  "files": [
+    "dist"
+  ]
 }
