@@ -6,10 +6,12 @@
   "type": "module",
   "main": "index.js",
   "types": "./dist/index.d.ts",
+  "unpkg": "./dist/smooothy.min.js",
   "exports": {
     "types": "./dist/index.d.ts",
     "import": "./dist/esm.js",
-    "require": "./dist/cjs.js"
+    "require": "./dist/cjs.js",
+    "unpkg": "./dist/smooothy.min.js"
   },
   "repository": {
     "type": "git",
