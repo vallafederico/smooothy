@@ -23,7 +23,7 @@ export class Loader {
     gsap.to(this.svg, {
       scale: 0,
       duration: 0.8,
-      delay: 0.6,
+      delay: 0.2,
       ease: "power2.inOut",
     })
 
@@ -31,7 +31,7 @@ export class Loader {
       autoAlpha: 0,
       scale: 0,
       duration: 0.2,
-      delay: 0.8,
+      delay: 0.4,
       ease: "expo.out",
       onComplete: () => {
         this.element.remove()

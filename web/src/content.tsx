@@ -28,13 +28,6 @@ export const IN_USE = {
       by_url: "https://federic.ooo",
       url: "https://siena.film",
     },
-    {
-      title: "Some Title",
-      year: "2025",
-      by: "Federico",
-      by_url: "https://federic.ooo",
-      url: "https://example.com",
-    },
   ],
 }
 

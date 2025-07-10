@@ -67,6 +67,7 @@ export class SliderGroup extends G {
 
       this.position.x = this.bounds.centerx
       this.position.y = this.bounds.centery
+      this.#scroll()
     }, 100)
   }
 

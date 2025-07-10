@@ -26,3 +26,9 @@
 ## Website
 
 - [ ] check homepage links for docs
+
+## Launch
+
+- [ ] webflow cloneable and example
+- [ ] check all links on homepage
+- [ ] sitemap and robots txt
