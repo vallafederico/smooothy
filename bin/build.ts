@@ -34,12 +34,10 @@ async function run() {
         format: "iife",
         outdir: "./dist",
         naming: "smooothy.min.js",
-        globalName: "Smooothy",
-        // global: {
-        //   smooothy: "Smooothy",
-        // },
+        globalName: "Smooothy", // (*) DOESNT WORK
+        target: "browser",
         minify: true,
-        sourcemap: "none", // No sourcemap for CDN bundle
+        sourcemap: "none",
       }),
     ])
   } catch (error) {
