@@ -31,12 +31,13 @@ async function run() {
       // Unpkg bundle - UMD format for browser usage
       build({
         ...option,
-        format: "esm",
+        format: "iife",
         outdir: "./dist",
         naming: "smooothy.min.js",
-        global: {
-          smooothy: "Smooothy",
-        },
+        globalName: "Smooothy",
+        // global: {
+        //   smooothy: "Smooothy",
+        // },
         minify: true,
         sourcemap: "none", // No sourcemap for CDN bundle
       }),
