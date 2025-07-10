@@ -14,11 +14,15 @@ const WEBGL = {
 
 <Section>
   <div class="flex flex-col py-[8rem]">
-    <div class="md:w-grids-11 flex">
-      <div class="px-gx md:w-grids-3 w-full py-8 pt-[10rem]">
-        <div class="md:pl-grid-1">
-          <div data-module="draw" class="flex flex-col gap-24">
-            <div class="w-[80%]">
+    <div class="md:w-grids-11 flex flex-col md:flex-row">
+      <div class="block md:hidden">
+        <BouncySvg name="webgl" />
+      </div>
+
+      <div class="px-gx md:w-grids-3 w-full md:py-8 md:pt-[10rem]">
+        <div class="md:pl-grid-1 w-full">
+          <div data-module="draw" class="flex w-full flex-col gap-4 md:gap-24">
+            <div class="w-[30%] md:w-[80%]">
               <Svgg name="food_toast" class="size-full" />
             </div>
             <TitleText title={WEBGL.title} description={WEBGL.description} />
@@ -30,22 +34,24 @@ const WEBGL = {
         </div>
       </div>
 
-      <div class="">
+      <div class="hidden md:block">
         <BouncySvg name="webgl" />
       </div>
     </div>
 
-    <div class="px-gx h-[40svh]">
-      <div class="ml-grid-3 w-grids-7 relative flex h-full items-end">
+    <div class="px-gx h-[40svh] py-24">
+      <div
+        class="md:ml-grid-3 md:w-grids-7 relative flex h-full w-full items-center py-24 md:items-end"
+      >
         <div
           data-gl="item"
-          class="absolute size-full h-[50svh] outline outline-red-500/0"
+          class="z-[500] size-full h-[30svh] md:absolute md:h-[50svh]"
         >
         </div>
       </div>
     </div>
 
-    <div class="w-grids-8 ml-grids-2">
+    <div class="md:w-grids-8 md:ml-grids-2 w-full">
       <BouncySvg name="ready" />
     </div>
   </div>
