@@ -20,6 +20,11 @@ import Core from "smooothy"
 import Core, { damp } from "smooothy"
 ```
 
+```html
+<!-- from CDN -->
+<script src="https://unpkg.com/smooothy"></script>
+```
+
 <details>
 <summary><strong>TLDR</strong></summary>
 
