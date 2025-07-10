@@ -1,4 +1,5 @@
 {
   "name": "smooothy",
-  "type": "module"
+  "type": "module",
+  "unpkg": "dist/smooothy.min.js"
 }

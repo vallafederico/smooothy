@@ -17,7 +17,7 @@ const option: BuildConfig = {
 
 async function run() {
   try {
-    Promise.all([
+    await Promise.all([
       build({
         ...option,
         format: "esm",
@@ -27,6 +27,18 @@ async function run() {
         ...option,
         format: "cjs",
         naming: "[dir]/cjs.js",
+      }),
+      // Unpkg bundle - UMD format for browser usage
+      build({
+        ...option,
+        format: "iife",
+        outdir: "./dist",
+        naming: "smooothy.min.js",
+        global: {
+          smooothy: "Smooothy",
+        },
+        minify: true,
+        sourcemap: "none", // No sourcemap for CDN bundle
       }),
     ])
   } catch (error) {
