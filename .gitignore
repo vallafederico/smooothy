@@ -28,3 +28,6 @@ __progress
 __assets
 
 .DS_Store
+
+
+.vercel/
