@@ -27,7 +27,7 @@ const SLIDES = Array.from({ length: letters.length }, (_, i) => i)
   <!-- interface -->
   <div class="px-gx">
     <div class="gap-gutter pb-xl mb-xl md:pl-grid-2 flex flex-col md:flex-row">
-      <div class="w-grids-3">
+      <div class="md:w-grids-3 w-full">
         <h3
           data-module="text"
           data-type="chars"
@@ -66,7 +66,7 @@ const SLIDES = Array.from({ length: letters.length }, (_, i) => i)
           </li>
         </ul>
       </div>
-      <div class="w-grids-3">
+      <div class="md:w-grids-3 w-full">
         <h3
           data-module="text"
           data-type="chars"
@@ -77,7 +77,9 @@ const SLIDES = Array.from({ length: letters.length }, (_, i) => i)
         <figure class="py-xl" data-module="draw">
           <Svgg name="read" />
         </figure>
-        <div class="flex font-mono text-sm tracking-widest">
+        <div
+          class="mf:flex-row flex flex-col gap-6 font-mono text-sm tracking-widest md:gap-0"
+        >
           <div
             data-module="alpha"
             data-delay={0.2}
@@ -150,7 +152,7 @@ const SLIDES = Array.from({ length: letters.length }, (_, i) => i)
           </ul>
         </div>
       </div>
-      <div class="w-grids-3 ml-grid-1">
+      <div class="md:w-grids-3 md:ml-grid-1 w-full">
         <h3
           data-module="text"
           data-type="chars"

@@ -2,8 +2,6 @@
 
 **Tiny real smooth fast cool all events and evenn more responsive _bring your own tooling slider._ Framework agnostic but it's a you problem.**
 
-![alt text](/docs/img/github-brand-short.svg)
-
 # Docs (Core)
 
 The Core class is a flexible and performant slider/carousel implementation that supports infinite scrolling, snapping, touch interactions, and parallax effects.

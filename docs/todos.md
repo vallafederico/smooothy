@@ -32,3 +32,4 @@
 - [ ] webflow cloneable and example
 - [ ] check all links on homepage
 - [ ] sitemap and robots txt
+- [ ] FOOTER: credits
