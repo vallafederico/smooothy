@@ -31,7 +31,7 @@ async function run() {
       // Unpkg bundle - UMD format for browser usage
       build({
         ...option,
-        format: "umd",
+        format: "esm",
         outdir: "./dist",
         naming: "smooothy.min.js",
         global: {
