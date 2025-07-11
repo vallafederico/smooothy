@@ -1,7 +1,8 @@
 ---
-
+const production = import.meta.env.PROD
 ---
 
+{!production && (
 <div
   data-grid
   class="px-gx pointer-events-none fixed inset-0 hidden gap-[var(--gutter)]"
@@ -55,3 +56,5 @@
   const initialDisplay = localStorage.getItem("gridDisplay") || "flex"
   grid.style.display = initialDisplay
 </script>
+
+)}
