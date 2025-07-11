@@ -11,3 +11,10 @@ Init
 _04/03/2025_
 
 Types
+
+## 0.0.25
+
+_04/03/2025_
+
+Ready for alpha release
+Added unpkg support
