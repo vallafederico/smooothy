@@ -19,8 +19,21 @@ export class Scene extends THREE_Scene {
     let t = performance.now()
     this.assets = await loadAssets()
 
+    console.log(this.assets.model)
+
     // const item = Math.floor(Math.random() * this.assets.model.children.length)
-    const item = 0
+    /*
+    0 - toast !
+    1 - hotdog 
+    2 - fish
+    3 - mushroom !
+    4 - ramen !
+    5 - cake !         
+    */
+
+    const item = [0, 3, 4, 5][Math.floor(Math.random() * 4)]
+
+    // const item = 0
 
     this.assets.bonus = SkeletonUtils.clone(this.assets.model.children[item])
     this.assets.bonus.INFO = SLIDER_FOOD[item]
