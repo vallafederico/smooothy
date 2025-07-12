@@ -29,7 +29,7 @@
 
 ## Launch
 
-- [ ] webflow cloneable and example
-- [ ] check all links on homepage
-- [ ] sitemap and robots txt
+- [x] webflow cloneable and example
+- [x] check all links on homepage
+- [x] sitemap and robots txt
 - [ ] FOOTER: credits
