@@ -12,6 +12,7 @@
     "@activetheory/split-text": "^1.1.2",
     "@astrojs/prism": "^3.2.0",
     "@astrojs/react": "^4.2.7",
+    "@astrojs/sitemap": "^3.4.1",
     "@astrojs/solid-js": "^5.0.10",
     "@astrojs/vue": "^5.0.13",
     "@tailwindcss/vite": "^4.0.9",

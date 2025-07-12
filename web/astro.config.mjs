@@ -7,6 +7,8 @@ import tailwindcss from "@tailwindcss/vite"
 import react from "@astrojs/react"
 import vue from "@astrojs/vue"
 
+import sitemap from "@astrojs/sitemap"
+
 export default defineConfig({
   vite: {
     plugins: [
@@ -34,5 +36,6 @@ export default defineConfig({
   devToolbar: {
     enabled: false,
   },
-  integrations: [react(), vue()],
+  site: "https://smooothy.federic.ooo",
+  integrations: [react(), vue(), sitemap({})],
 })
