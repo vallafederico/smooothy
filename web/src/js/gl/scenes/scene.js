@@ -19,7 +19,7 @@ export class Scene extends THREE_Scene {
     let t = performance.now()
     this.assets = await loadAssets()
 
-    console.log(this.assets.model)
+    // console.log(this.assets.model)
 
     // const item = Math.floor(Math.random() * this.assets.model.children.length)
     /*
