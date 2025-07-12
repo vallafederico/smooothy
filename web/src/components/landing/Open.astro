@@ -2,17 +2,19 @@
 import Section from "@c/Section.astro"
 import BouncySvg from "./BouncySvg.astro"
 
+import { GITHUB } from "~/content"
+
 const CONTENT = {
   title: "AKA fix it yourself.",
   text: "Doesn't work? Feel free to PR. Or just tell me and I swear I'll do my best.",
   links: [
     {
       title: "Contribute",
-      url: "https://github.com",
+      url: GITHUB.pull_requests,
     },
     {
       title: "Issues",
-      url: "https://github.com",
+      url: GITHUB.issues,
     },
   ],
 }
@@ -39,7 +41,7 @@ const CONTENT = {
         {
           CONTENT.links.map(link => (
             <li data-hover="opacity">
-              <a href={link.url}>
+              <a href={link.url} target="_blank">
                 <p data-module="text" data-type="chars">
                   {link.title}
                 </p>
