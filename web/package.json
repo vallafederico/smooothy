@@ -23,7 +23,7 @@
     "prettier-plugin-glsl": "^0.2.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "smooothy": "0.0.18",
+    "smooothy": "0.0.26",
     "solid-js": "^1.9.5",
     "tailwindcss": "^4.0.9",
     "three": "^0.174.0",

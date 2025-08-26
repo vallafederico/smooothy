@@ -70,8 +70,8 @@ importers:
         specifier: ^19.0.0
         version: 19.0.0(react@19.0.0)
       smooothy:
-        specifier: 0.0.18
-        version: 0.0.18
+        specifier: 0.0.26
+        version: 0.0.26
       solid-js:
         specifier: ^1.9.5
         version: 1.9.5
@@ -2245,8 +2245,8 @@ packages:
     resolution: {integrity: sha512-tEYNll18pPKHroYSmLLrksq233j021G0giwW7P3D24jC54pQ5W5BXMsQ/Mvw1OJCmEYDgY+lrzT+3nNUtoNfXQ==}
     engines: {node: '>= 18'}
 
-  smooothy@0.0.18:
-    resolution: {integrity: sha512-WthoGgdLyX5GlA4PxZ452JcREeBdeBp7KtlR+RDttGnqrVAbT9E/ZeOwSjdz7s+lZYB+N8vOSb998WPihQB4AA==}
+  smooothy@0.0.26:
+    resolution: {integrity: sha512-z69ofeUGCT+Q3qTFeCrstFkOMzYUIWIRHPYZvrnw34lrNrTUeEoBYwoNDLtx+d/k0EnmckgmhmBH6ha0Cqww6Q==}
 
   solid-js@1.9.5:
     resolution: {integrity: sha512-ogI3DaFcyn6UhYhrgcyRAMbu/buBJitYQASZz5WzfQVPP10RD2AbCoRZ517psnezrasyCbWzIxZ6kVqet768xw==}
@@ -5163,7 +5163,7 @@ snapshots:
 
   smol-toml@1.3.1: {}
 
-  smooothy@0.0.18:
+  smooothy@0.0.26:
     dependencies:
       virtual-scroll: 2.2.1
 
