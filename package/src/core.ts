@@ -87,6 +87,7 @@ export class Core {
   observer?: IntersectionObserver
   touchStartY?: number
   touchStartX?: number
+  touchPreviousX?: number
   scrollDirection?: "horizontal" | "vertical"
   parallaxValues?: number[]
   webglValue: number = 0 // (*) ADD WEBGL VALUE TO SLIDER (better name)
@@ -180,6 +181,7 @@ export class Core {
       const touch = e.touches[0]
       this.touchStartY = touch.clientY
       this.touchStartX = touch.clientX
+      this.touchPreviousX = touch.clientX
       this.scrollDirection = undefined
       this.#handleDragStart(touch)
     }
@@ -199,11 +201,13 @@ export class Core {
       if (this.scrollDirection === "horizontal") {
         e.preventDefault()
         this.#handleDragMove(touch)
+        this.touchPreviousX = touch.clientX
       }
     }
 
     const handleTouchEnd = () => {
       this.scrollDirection = undefined
+      this.touchPreviousX = undefined
       this.#handleDragEnd()
     }
 
@@ -287,8 +291,17 @@ export class Core {
     let newTarget = this.dragStartTarget + deltaX * this.config.dragSensitivity
 
     this.target = this.#calculateBounds(newTarget)
+
+    // Calculate movement for both mouse and touch events
     if ("movementX" in event) {
+      // Mouse event - use movementX property
       this.speed += event.movementX * 0.01
+    } else {
+      // Touch event - calculate movement using tracked previous position
+      const currentX = event.clientX
+      const previousX = this.touchPreviousX || currentX
+      const movementX = currentX - previousX
+      this.speed += movementX * 0.01
     }
   }
 
@@ -459,6 +472,7 @@ export class Core {
     this.target = 0
     this.speed = 0
     this.#lspeed = 0
+    this.touchPreviousX = undefined
   }
 
   init(): void {
