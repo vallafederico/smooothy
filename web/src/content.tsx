@@ -28,6 +28,13 @@ export const IN_USE = {
       by_url: "https://federic.ooo",
       url: "https://siena.film",
     },
+    {
+      title: "More Nutrition",
+      year: "2025",
+      by: "Eduard Bodak",
+      by_url: "https://eduardbodak.com",
+      url: "https://more-nutrition.webflow.io/",
+    },
   ],
 }
 
