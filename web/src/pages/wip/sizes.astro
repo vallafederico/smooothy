@@ -1,0 +1,24 @@
+---
+import Layout from "~/layouts/Layout.astro"
+import Section from "@c/Section.astro"
+
+// sliders
+// import VanillaInfinite from "@c/vanilla/VanillaInfinite.astro"
+// import VanillaFinite from "@c/vanilla/VanillaFinite.astro"
+
+import VanillaDifferentSizes from "@c/vanilla/VanillaDifferentSizes.astro"
+---
+
+<Layout>
+  <Section class="flex h-screen flex-col justify-center px-0">
+    <VanillaDifferentSizes />
+  </Section>
+  <div class="h-[50svh] w-full"></div>
+
+  <!-- <Section class="flex h-screen flex-col justify-center px-0">
+    <div class="px-gx py-gy">
+      <p class="font-mono tracking-wider uppercase">FINITE</p>
+    </div>
+    <VanillaFinite />
+  </Section> -->
+</Layout>
