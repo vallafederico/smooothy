@@ -1,4 +1,3 @@
-import VirtualScroll from "virtual-scroll"
 import Core, { damp } from "../../../../package/index.ts"
 import gsap from "../../js/gsap.ts"
 

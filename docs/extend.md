@@ -272,19 +272,11 @@ export class VariableWidthSlider extends Core {
   constructor(wrapper, config = {}) {
     super(wrapper, {
       ...config,
-      infinite: false,
-      snap: true,
       variableWidth: true,
-      scrollInput: true,
     })
 
     gsap.ticker.add(this.update.bind(this))
   }
-}
-
-const slider = document.querySelector("[data-slider]")
-if (slider) {
-  new VariableWidthSlider(slider)
 }
 ```
 
