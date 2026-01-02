@@ -8,13 +8,7 @@ const slides = Array.from({ length: 10 }, (_, i) => i)
 <SliderWrapper
   exampleName="variable-width"
   useDefaultSliderClasses={false}
-  sliderClasses={[
-    "py-sm",
-    "outline outline-gray-700",
-    "h-[60svh]",
-    "px-[3rem]",
-    className,
-  ]}
+  sliderClasses={["py-sm", "h-[60svh]", "px-[3rem]", className]}
   sliderAttributes={{
     ...rest,
     "data-slider": "variable-width",
