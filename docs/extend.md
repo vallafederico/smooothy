@@ -286,6 +286,97 @@ export class VariableWidthSlider extends Core {
 - Slides snap to center based on their individual widths
 - The first slide is automatically centered on initialization
 
+### Auto-scroll
+
+A slider that continuously scrolls at a constant speed. The auto-scroll pauses when the user hovers over the slider or interacts with it (touch/drag), and resumes automatically after interaction ends.
+
+```js
+import Core from "smooothy"
+import gsap from "gsap"
+
+class AutoScrollSlider extends Core {
+  #isPaused = false
+  #scrollSpeed = 0.15 // units per second (adjust for faster/slower)
+  #wasDragging = false
+
+  constructor(container: HTMLElement, config = {}) {
+    super(container.querySelector("[data-slider]"), {
+      ...config,
+      infinite: true,
+      snap: false, // Disable snap for smooth continuous scrolling
+    })
+
+    gsap.ticker.add(this.update.bind(this))
+
+    // Override update to add continuous scrolling
+    const originalUpdate = this.update.bind(this)
+    this.update = () => {
+      // Apply continuous auto-scroll before the original update
+      if (!this.#isPaused && this.isVisible && !this.isDragging) {
+        // Continuously move target forward
+        this.target -= this.#scrollSpeed * this.deltaTime
+      }
+
+      originalUpdate()
+      this.#checkDragging()
+    }
+
+    this.#setupPauseOnInteraction()
+  }
+
+  #checkDragging() {
+    if (this.isDragging && !this.#wasDragging) {
+      // Started dragging
+      this.#isPaused = true
+      this.#wasDragging = true
+    } else if (!this.isDragging && this.#wasDragging) {
+      // Stopped dragging - resume after delay
+      this.#wasDragging = false
+      setTimeout(() => {
+        this.#isPaused = false
+      }, 2000)
+    }
+  }
+
+  #setupPauseOnInteraction() {
+    const slider = this.wrapper
+
+    // Pause on hover
+    slider.addEventListener("mouseenter", () => {
+      this.#isPaused = true
+    })
+
+    slider.addEventListener("mouseleave", () => {
+      this.#isPaused = false
+    })
+
+    // Pause on touch start
+    slider.addEventListener("touchstart", () => {
+      this.#isPaused = true
+    })
+
+    slider.addEventListener("touchend", () => {
+      // Resume after a delay when touch ends
+      setTimeout(() => {
+        this.#isPaused = false
+      }, 2000)
+    })
+  }
+
+  destroy() {
+    super.destroy?.()
+  }
+}
+```
+
+**Key points:**
+- Continuously scrolls by updating `target` position using `deltaTime` for frame-rate independence
+- Pauses on hover, touch, and drag interactions
+- Only scrolls when `isVisible` is true (slider is in viewport)
+- Set `snap: false` for smooth continuous motion (or keep snap enabled for subtle snapping effect)
+- Adjust `#scrollSpeed` to change the scrolling speed (higher = faster)
+- Works best with `infinite: true` for seamless looping
+
 ### Wip
 
 ```html

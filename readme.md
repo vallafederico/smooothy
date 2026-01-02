@@ -128,6 +128,7 @@ The slider accepts the following configuration options:
 |--------|------|---------|-------------|
 | `infinite` | boolean | `true` | Enables infinite looping of slides |
 | `snap` | boolean | `true` | Enables snapping to slide positions |
+| `variableWidth` | boolean | `false` | Allows slides with different widths that snap to center |
 | `dragSensitivity` | number | `0.005` | Multiplier for drag movement sensitivity |
 | `lerpFactor` | number | `0.3` | Controls the smoothness of animations (lower = smoother) |
 | `scrollSensitivity` | number | `1` | Multiplier for scroll wheel sensitivity |
@@ -292,6 +293,39 @@ class ParallaxSlider extends Core {
   }
 }
 ```
+
+### Variable Width
+
+The slider supports slides with different widths when `variableWidth: true` is set in the config. Each slide's width is calculated automatically, and slides snap to center based on their individual widths. Perfect for mixed content layouts where some slides need more space than others.
+
+```javascript
+const slider = new Core(wrapper, {
+  variableWidth: true,
+  infinite: true,
+  snap: true,
+})
+```
+
+```html
+<div data-slider class="flex overflow-x-hidden">
+  <div class="w-[80vw] md:w-[30vw] shrink-0">
+    <!-- Normal width slide -->
+  </div>
+  <div class="w-[110vw] md:w-[50vw] shrink-0">
+    <!-- Wide slide -->
+  </div>
+  <div class="w-[80vw] md:w-[30vw] shrink-0">
+    <!-- Normal width slide -->
+  </div>
+</div>
+```
+
+**Key points:**
+- Set `variableWidth: true` in the config
+- Each slide's width is calculated automatically from CSS
+- Slides snap to center based on their individual widths
+- The first slide is automatically centered on initialization
+- Works with both `infinite: true` and `infinite: false`
 
 ## Event Callbacks
 

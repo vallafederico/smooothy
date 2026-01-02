@@ -10,6 +10,7 @@ import KeyboardControls from "~/components/vanilla/KeyboardControls.astro"
 import ParallaxSpeedSlider from "~/components/vanilla/ParallaxSpeed.astro"
 import LinkSlider from "~/components/vanilla/LinkSlider.astro"
 import VariableWidthSlider from "~/components/vanilla/VariableWidthSlider.astro"
+import AutoScrollSlider from "~/components/vanilla/AutoScrollSlider.astro"
 
 import ExamplePageHead from "~/components/ExamplePageHead.astro"
 ---
@@ -76,4 +77,14 @@ import ExamplePageHead from "~/components/ExamplePageHead.astro"
     link={"extend.md#variable-width"}
   />
   <VariableWidthSlider />
+</Section>
+
+<Section id={"auto-scroll"} class="min-h-[80svh] pt-[10svh]">
+  <ExampleHead
+    title={"Auto-scrolling slider."}
+    description={"Continuously scrolls at a constant speed. Pauses on hover or interaction, resumes automatically."}
+    features={["Infinite", "Auto-scroll"]}
+    link={"extend.md#auto-scroll"}
+  />
+  <AutoScrollSlider />
 </Section>

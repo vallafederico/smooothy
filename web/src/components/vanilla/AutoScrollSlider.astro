@@ -1,0 +1,139 @@
+---
+import SliderWrapper from "./SliderWrapper.astro"
+
+const { index = 1, class: className, ...rest } = Astro.props
+const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
+---
+
+<SliderWrapper
+  exampleName="auto-scroll"
+  sliderClasses={className}
+  sliderAttributes={{ ...rest }}
+>
+  {
+    slides.map((slide, i) => (
+      <div class="flex aspect-[3/4] w-[80vw] shrink-0 items-center justify-center p-1 md:w-[30vw]">
+        <div class="relative h-full w-full p-8 outline outline-gray-800">
+          <div data-p class="h-full w-full outline outline-gray-600" />
+          <p class="absolute top-2 left-2 z-10">{i}</p>
+        </div>
+      </div>
+    ))
+  }
+</SliderWrapper>
+
+<script>
+  import Core from "smooothy"
+  import gsap from "~/js/gsap"
+
+  class AutoScrollSlider extends Core {
+    #isPaused = false
+    #scrollSpeed = 0.3 // units per second (adjust for faster/slower)
+    #wasDragging = false
+    parallaxy?: HTMLElement[]
+
+    constructor(container: HTMLElement, config = {}) {
+      super(container.querySelector("[data-slider]"), {
+        ...config,
+        infinite: true,
+        snap: false, // Disable snap for smooth continuous scrolling
+      })
+
+      this.parallaxy = [
+        ...container.querySelectorAll("[data-p]"),
+      ] as HTMLElement[]
+
+      // Override update to add continuous scrolling
+      const originalUpdate = this.update.bind(this)
+      this.update = () => {
+        // Call original update first to calculate deltaTime and update state
+        originalUpdate()
+
+        // Apply continuous auto-scroll after update runs (affects next frame)
+        if (
+          !this.#isPaused &&
+          this.isVisible &&
+          !this.isDragging &&
+          this.deltaTime > 0
+        ) {
+          // Continuously move target forward for the next frame
+          this.target -= this.#scrollSpeed * this.deltaTime
+        }
+
+        // Check dragging state
+        this.#checkDragging()
+      }
+
+      gsap.ticker.add(this.update.bind(this))
+
+      this.#setupPauseOnInteraction()
+
+      this.onSlideChange(0, 0)
+    }
+
+    #checkDragging() {
+      if (this.isDragging && !this.#wasDragging) {
+        // Started dragging
+        this.#isPaused = true
+        this.#wasDragging = true
+      } else if (!this.isDragging && this.#wasDragging) {
+        // Stopped dragging - resume after delay
+        this.#wasDragging = false
+        setTimeout(() => {
+          this.#isPaused = false
+        }, 2000)
+      }
+    }
+
+    #setupPauseOnInteraction() {
+      const slider = this.wrapper
+
+      // Pause on hover
+      slider.addEventListener("mouseenter", () => {
+        this.#isPaused = true
+      })
+
+      slider.addEventListener("mouseleave", () => {
+        this.#isPaused = false
+      })
+
+      // Pause on touch start
+      slider.addEventListener("touchstart", () => {
+        this.#isPaused = true
+      })
+
+      slider.addEventListener("touchend", () => {
+        // Resume after a delay when touch ends
+        setTimeout(() => {
+          this.#isPaused = false
+        }, 2000)
+      })
+    }
+
+    onSlideChange = (current, previous) => {
+      this.items[previous]?.children[0]?.children[0]?.classList.remove("active")
+      this.items[current]?.children[0]?.children[0]?.classList.add("active")
+    }
+
+    destroy() {
+      super.destroy?.()
+    }
+  }
+
+  new AutoScrollSlider(
+    document.querySelector("[data-example='auto-scroll']") as HTMLElement
+  )
+</script>
+
+<style>
+  [data-slider] > * {
+    transition: opacity 0.5s ease-in-out;
+    transition-delay: 0.15s;
+  }
+
+  .active {
+    outline-color: white;
+    transition: outline-color 0.5s ease-in-out;
+    transition-delay: 0.15s;
+  }
+</style>
