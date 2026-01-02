@@ -579,7 +579,8 @@ export class Core {
     let rawTarget = -(center - wrapperCenter)
 
     if (this.config.infinite) {
-      const k = Math.round((this.target - rawTarget) / total)
+      // Use current position to find shortest path
+      const k = Math.round((this.current - rawTarget) / total)
       rawTarget += k * total
     } else {
       rawTarget = Math.min(0, Math.max(this.maxScroll, rawTarget))
@@ -712,9 +713,26 @@ export class Core {
       const clamped = this.config.infinite
         ? ((index % this.items.length) + this.items.length) % this.items.length
         : Math.min(Math.max(index, 0), this.items.length - 1)
+      // #getSnapTargetForIndex now uses shortest path based on current position
       this.target = this.#getSnapTargetForIndex(clamped)
     } else {
-      this.target = -index
+      if (this.config.infinite) {
+        // Shortest path in terms of slide steps around the loop
+        const length = this.items.length
+        const targetIndex = ((index % length) + length) % length
+        const currentIndex = this.currentSlide
+
+        let diff = targetIndex - currentIndex
+        if (diff > length / 2) diff -= length
+        if (diff < -length / 2) diff += length
+
+        // Moving one slide forward means target-- (more negative), so subtract diff
+        this.target = Math.round(this.target - diff)
+      } else {
+        // For finite sliders, clamp index and set target directly
+        const clamped = Math.min(Math.max(index, 0), this.items.length - 1)
+        this.target = -clamped
+      }
     }
   }
 
