@@ -6,24 +6,23 @@ const slides = Array.from({ length: 10 }, (_, i) => i)
 <div
   {...rest}
   tabindex="0"
-  data-slider="vanilla-different-sizes"
+  data-slider="variable-width"
   class:list={[
     "py-sm flex w-screen overflow-x-hidden outline outline-gray-700",
     "h-[60svh]",
     className,
     "px-[3rem]",
-    // "px-[calc(50%-40vw)] md:px-[calc(50%-15vw)]",
     "focus:outline-none",
   ]}
 >
   {
     slides.map((slide, i) => {
-      const isWide = i === 2 || i === 4
+      const isWide = i === 1 || i === 4 || i === 7
 
       return (
         <div
           class:list={[
-            "flex aspect-[3/4] w-[30vw] shrink-0 items-center justify-center p-1 md:h-[40svh]",
+            "flex aspect-[3/4] shrink-0 items-center justify-center p-1 md:h-[40svh]",
             isWide && "w-[110vw] md:w-[50vw]",
             !isWide && "w-[80vw] md:w-[30vw]",
           ]}
@@ -42,10 +41,26 @@ const slides = Array.from({ length: 10 }, (_, i) => i)
 </div>
 
 <script>
-  import { Slider } from "~/wip/slider/sizes"
-  const s1 = document.querySelector("[data-slider='vanilla-different-sizes']")
+  import Core from "smooothy"
+  import gsap from "~/js/gsap"
 
-  console.log(s1)
+  class VariableWidthSlider extends Core {
+    constructor(wrapper, config = {}) {
+      super(wrapper, {
+        ...config,
+        infinite: false,
+        snap: true,
+        variableWidth: true,
+        scrollInput: true,
+      })
 
-  if (s1) new Slider(s1)
+      gsap.ticker.add(this.update.bind(this))
+    }
+  }
+
+  const slider = document.querySelector("[data-slider='variable-width']")
+  if (slider) {
+    new VariableWidthSlider(slider)
+  }
 </script>
+

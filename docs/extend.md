@@ -246,7 +246,55 @@ export class LinkSlider extends Core {
 }
 ```
 
-### Settled Queue
+### Variable Width
+
+Slides with different widths that snap to center. Perfect for mixed content layouts where some slides need more space than others. The slider automatically calculates the center position for each slide based on its width.
+
+```html
+<div data-slider class="flex overflow-x-hidden">
+  <div class="w-[80vw] md:w-[30vw] shrink-0">
+    <!-- Normal width slide -->
+  </div>
+  <div class="w-[110vw] md:w-[50vw] shrink-0">
+    <!-- Wide slide -->
+  </div>
+  <div class="w-[80vw] md:w-[30vw] shrink-0">
+    <!-- Normal width slide -->
+  </div>
+</div>
+```
+
+```js
+import Core from "smooothy"
+import gsap from "gsap"
+
+export class VariableWidthSlider extends Core {
+  constructor(wrapper, config = {}) {
+    super(wrapper, {
+      ...config,
+      infinite: false,
+      snap: true,
+      variableWidth: true,
+      scrollInput: true,
+    })
+
+    gsap.ticker.add(this.update.bind(this))
+  }
+}
+
+const slider = document.querySelector("[data-slider]")
+if (slider) {
+  new VariableWidthSlider(slider)
+}
+```
+
+**Key points:**
+- Set `variableWidth: true` in the config
+- Each slide's width is calculated automatically
+- Slides snap to center based on their individual widths
+- The first slide is automatically centered on initialization
+
+### Wip
 
 ```html
 <!-- ... -->
