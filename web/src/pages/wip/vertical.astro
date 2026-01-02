@@ -1,0 +1,54 @@
+---
+import Layout from "~/layouts/Layout.astro"
+import Section from "@c/Section.astro"
+
+const slides = Array.from({ length: 5 }, (_, i) => i)
+---
+
+<Layout>
+  <Section class="flex h-screen flex-col justify-center px-0">
+    <div class="px-gx py-gy">
+      <p class="font-mono tracking-wider uppercase">Vertical Slider</p>
+    </div>
+    
+    <!-- slider -->
+    <div
+      tabindex="0"
+      data-slider="vertical"
+      class="py-sm flex h-[80vh] w-screen flex-col overflow-y-hidden px-[calc(50%-40vw)] md:px-[calc(50%-15vw)] focus:outline-none"
+    >
+      {
+        slides.map((slide, i) => (
+          <div class="flex aspect-[3/4] h-[80vh] w-full shrink-0 items-center justify-center p-1 md:w-[30vw]">
+            <div class="relative h-full w-full p-8 outline outline-gray-600">
+              <p class="absolute top-2 left-2 z-10">{i}</p>
+              <div data-parallax class="h-full w-full outline outline-gray-800">
+                <p>0</p>
+              </div>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </Section>
+</Layout>
+
+<script>
+  import { Slider } from "~/wip/slider"
+  
+  const sliderElement = document.querySelector("[data-slider='vertical']")
+  
+  if (sliderElement) {
+    const slider = new Slider(sliderElement, {
+      infinite: true,
+      snap: true,
+    })
+  }
+</script>
+
+<style>
+  [data-slider="vertical"] {
+    /* Vertical slider specific styles */
+  }
+</style>
+
