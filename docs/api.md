@@ -25,6 +25,7 @@ interface CoreConfig {
   infinite: boolean           // Enable infinite scrolling (default: true)
   snap: boolean              // Enable snap to slides (default: true)
   variableWidth: boolean     // Enable variable width slides (default: false)
+  vertical: boolean          // Enable vertical scrolling (default: false)
 
   // Sensitivity and animation
   dragSensitivity: number    // Mouse/touch drag sensitivity (default: 0.005)
@@ -182,9 +183,18 @@ const normalized = symmetricMod(5, 3) // Returns -1
 
 ```js
 interface Viewport {
+  // Horizontal dimensions
   itemWidth: number    // Width of a single item
   wrapperWidth: number // Width of the wrapper
   totalWidth: number   // Total width of all items
+  
+  // Vertical dimensions
+  itemHeight: number   // Height of a single item
+  wrapperHeight: number // Height of the wrapper
+  totalHeight: number  // Total height of all items
+  
+  // Orientation
+  vertical: boolean    // Whether slider is in vertical mode
 }
 ```
 

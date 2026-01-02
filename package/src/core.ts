@@ -13,12 +13,17 @@ interface Viewport {
   itemWidth: number
   wrapperWidth: number
   totalWidth: number
+  itemHeight: number
+  wrapperHeight: number
+  totalHeight: number
+  vertical: boolean
 }
 
 interface CoreConfig {
   infinite: boolean
   snap: boolean
   variableWidth: boolean
+  vertical: boolean
   dragSensitivity: number
   lerpFactor: number
   scrollSensitivity: number
@@ -39,6 +44,7 @@ const DEFAULT_CONFIG: CoreConfig = {
   infinite: true,
   snap: true,
   variableWidth: false,
+  vertical: false,
   dragSensitivity: 0.005,
   lerpFactor: 0.3,
   scrollSensitivity: 1,
@@ -52,7 +58,8 @@ const DEFAULT_CONFIG: CoreConfig = {
     useKeyboard: false,
     passive: true,
   },
-  setOffset: ({ itemWidth, wrapperWidth }) => itemWidth,
+  setOffset: ({ itemWidth, wrapperWidth, itemHeight, wrapperHeight, vertical }) =>
+    vertical ? itemHeight : itemWidth,
 
   /** Functionality */
   scrollInput: false,
@@ -79,6 +86,8 @@ export class Core {
   viewport!: Viewport
   itemWidths: number[] = []
   itemOffsets: number[] = []
+  itemHeights: number[] = []
+  itemHeightOffsets: number[] = []
   isDragging: boolean = false
   dragStart: number = 0
   dragStartTarget: number = 0
@@ -92,6 +101,7 @@ export class Core {
   touchStartY?: number
   touchStartX?: number
   touchPreviousX?: number
+  touchPreviousY?: number
   scrollDirection?: "horizontal" | "vertical"
   parallaxValues?: number[]
   webglValue: number = 0 // (*) ADD WEBGL VALUE TO SLIDER (better name)
@@ -170,8 +180,13 @@ export class Core {
     const itemWidths = this.items.map(
       item => item.getBoundingClientRect().width
     )
+    const itemHeights = this.items.map(
+      item => item.getBoundingClientRect().height
+    )
     const wrapperWidth = this.wrapper.clientWidth
+    const wrapperHeight = this.wrapper.clientHeight
     const totalWidth = itemWidths.reduce((sum, width) => sum + width, 0)
+    const totalHeight = itemHeights.reduce((sum, height) => sum + height, 0)
 
     let runningOffset = 0
     this.itemOffsets = itemWidths.map(width => {
@@ -181,19 +196,40 @@ export class Core {
     })
     this.itemWidths = itemWidths
 
+    let runningHeightOffset = 0
+    this.itemHeightOffsets = itemHeights.map(height => {
+      const start = runningHeightOffset
+      runningHeightOffset += height
+      return start
+    })
+    this.itemHeights = itemHeights
+
     this.viewport = {
       itemWidth: itemWidths[0] ?? 0,
       wrapperWidth,
       totalWidth,
+      itemHeight: itemHeights[0] ?? 0,
+      wrapperHeight,
+      totalHeight,
+      vertical: this.config.vertical,
     }
 
     this.#offset = this.config.setOffset(this.viewport)
 
     if (this.config.variableWidth) {
-      this.maxScroll = -(this.viewport.totalWidth - this.#offset)
+      if (this.config.vertical) {
+        this.maxScroll = -(this.viewport.totalHeight - this.#offset)
+      } else {
+        this.maxScroll = -(this.viewport.totalWidth - this.#offset)
+      }
     } else {
-      const denominator = this.viewport.itemWidth || 1
-      this.maxScroll = -(this.viewport.totalWidth - this.#offset) / denominator
+      const denominator = this.config.vertical
+        ? (this.viewport.itemHeight || 1)
+        : (this.viewport.itemWidth || 1)
+      const total = this.config.vertical
+        ? this.viewport.totalHeight
+        : this.viewport.totalWidth
+      this.maxScroll = -(total - this.#offset) / denominator
     }
 
     queueMicrotask(() => {
@@ -217,6 +253,7 @@ export class Core {
       this.touchStartY = touch.clientY
       this.touchStartX = touch.clientX
       this.touchPreviousX = touch.clientX
+      this.touchPreviousY = touch.clientY
       this.scrollDirection = undefined
       this.#handleDragStart(touch)
     }
@@ -233,16 +270,27 @@ export class Core {
         this.scrollDirection = deltaX > deltaY ? "horizontal" : "vertical"
       }
 
-      if (this.scrollDirection === "horizontal") {
+      // For vertical slider, always allow vertical scrolling
+      // For horizontal slider, only allow horizontal scrolling
+      const shouldHandle = this.config.vertical
+        ? this.scrollDirection === "vertical"
+        : this.scrollDirection === "horizontal"
+
+      if (shouldHandle) {
         e.preventDefault()
         this.#handleDragMove(touch)
-        this.touchPreviousX = touch.clientX
+        if (this.config.vertical) {
+          this.touchPreviousY = touch.clientY
+        } else {
+          this.touchPreviousX = touch.clientX
+        }
       }
     }
 
     const handleTouchEnd = () => {
       this.scrollDirection = undefined
       this.touchPreviousX = undefined
+      this.touchPreviousY = undefined
       this.#handleDragEnd()
     }
 
@@ -261,9 +309,12 @@ export class Core {
 
   #calculateBounds(newTarget: number): number {
     if (!this.config.infinite) {
+      const itemSize = this.config.vertical
+        ? this.viewport.itemHeight
+        : this.viewport.itemWidth
       const bounce =
-        this.config.variableWidth && this.viewport.itemWidth
-          ? this.config.bounceLimit * this.viewport.itemWidth
+        this.config.variableWidth && itemSize
+          ? this.config.bounceLimit * itemSize
           : this.config.bounceLimit
 
       if (newTarget > bounce) {
@@ -290,20 +341,31 @@ export class Core {
           const deltaX = Math.abs(event.deltaX)
 
           if (deltaY < SCROLL_THRESHOLD && deltaX < SCROLL_THRESHOLD) return
-          if (deltaY > deltaX) return
+          // For vertical slider, allow vertical scrolling; for horizontal, only horizontal
+          if (this.config.vertical) {
+            if (deltaX > deltaY) return
+          } else {
+            if (deltaY > deltaX) return
+          }
         }
 
-        const delta = !this.config.scrollInput
-          ? event.deltaX
-          : Math.abs(event.deltaX) > Math.abs(event.deltaY)
-            ? event.deltaX
-            : event.deltaY
+        const delta = this.config.vertical
+          ? (!this.config.scrollInput
+              ? event.deltaY
+              : Math.abs(event.deltaY) > Math.abs(event.deltaX)
+                ? event.deltaY
+                : event.deltaX)
+          : (!this.config.scrollInput
+              ? event.deltaX
+              : Math.abs(event.deltaX) > Math.abs(event.deltaY)
+                ? event.deltaX
+                : event.deltaY)
 
         const deltaFactor = this.config.variableWidth
           ? this.config.scrollSensitivity
           : this.config.scrollSensitivity * 0.001
-        const deltaX = delta * deltaFactor
-        let newTarget = this.target + deltaX
+        const deltaValue = delta * deltaFactor
+        let newTarget = this.target + deltaValue
 
         if (!this.config.infinite) {
           if (newTarget > 0) {
@@ -314,7 +376,7 @@ export class Core {
         }
 
         this.target = this.#calculateBounds(newTarget)
-        this.speed = -deltaX * (this.config.variableWidth ? 0.1 : 10)
+        this.speed = -deltaValue * (this.config.variableWidth ? 0.1 : 10)
       }
     })
   }
@@ -322,7 +384,7 @@ export class Core {
   #handleDragStart(event: MouseEvent | Touch): void {
     if (this.#isPaused) return
     this.isDragging = true
-    this.dragStart = event.clientX
+    this.dragStart = this.config.vertical ? event.clientY : event.clientX
     this.dragStartTarget = this.target
     this.wrapper.style.cursor = "grabbing"
   }
@@ -330,24 +392,31 @@ export class Core {
   #handleDragMove(event: MouseEvent | Touch): void {
     if (!this.isDragging || this.#isPaused) return
 
-    const deltaX = event.clientX - this.dragStart
+    const delta = this.config.vertical
+      ? event.clientY - this.dragStart
+      : event.clientX - this.dragStart
     const sensitivity = this.config.variableWidth
       ? 1
       : this.config.dragSensitivity
-    let newTarget = this.dragStartTarget + deltaX * sensitivity
+    let newTarget = this.dragStartTarget + delta * sensitivity
 
     this.target = this.#calculateBounds(newTarget)
 
     // Calculate movement for both mouse and touch events
     if ("movementX" in event) {
-      // Mouse event - use movementX property
-      this.speed += event.movementX * 0.01
+      // Mouse event - use movementX/movementY property
+      const movement = this.config.vertical
+        ? (event as MouseEvent).movementY
+        : (event as MouseEvent).movementX
+      this.speed += movement * 0.01
     } else {
       // Touch event - calculate movement using tracked previous position
-      const currentX = event.clientX
-      const previousX = this.touchPreviousX || currentX
-      const movementX = currentX - previousX
-      this.speed += movementX * 0.01
+      const current = this.config.vertical ? event.clientY : event.clientX
+      const previous = this.config.vertical
+        ? (this.touchPreviousY || current)
+        : (this.touchPreviousX || current)
+      const movement = current - previous
+      this.speed += movement * 0.01
     }
   }
 
@@ -412,8 +481,11 @@ export class Core {
 
     if (this.config.infinite) {
       if (this.config.variableWidth) {
+        const wrapperCenter = this.config.vertical
+          ? this.viewport.wrapperHeight / 2
+          : this.viewport.wrapperWidth / 2
         const centerPos = this.#normalizePosition(
-          -this.current + this.viewport.wrapperWidth / 2
+          -this.current + wrapperCenter
         )
         const nearestIndex = this.#findNearestSlide(centerPos)
         this.#updateCurrentSlide(nearestIndex)
@@ -427,11 +499,17 @@ export class Core {
       }
     } else {
       if (this.config.variableWidth) {
+        const wrapperCenter = this.config.vertical
+          ? this.viewport.wrapperHeight / 2
+          : this.viewport.wrapperWidth / 2
+        const total = this.config.vertical
+          ? this.viewport.totalHeight
+          : this.viewport.totalWidth
         const normalized = Math.max(
           0,
           Math.min(
-            -this.current + this.viewport.wrapperWidth / 2,
-            this.viewport.totalWidth
+            -this.current + wrapperCenter,
+            total
           )
         )
         this.#updateCurrentSlide(this.#findNearestSlide(normalized))
@@ -448,10 +526,15 @@ export class Core {
 
   #updateFinite(): void {
     this.parallaxValues = this.items.map((item, i) => {
-      const translateX = this.current * this.viewport.itemWidth
-      item.style.transform = `translateX(${translateX}px)`
+      const translate = this.config.vertical
+        ? this.current * this.viewport.itemHeight
+        : this.current * this.viewport.itemWidth
+      const transform = this.config.vertical
+        ? `translateY(${translate}px)`
+        : `translateX(${translate}px)`
+      item.style.transform = transform
 
-      return translateX
+      return translate
     })
   }
 
@@ -460,22 +543,38 @@ export class Core {
       const unitPos = this.current + i
       const x = symmetricMod(unitPos, this.items.length) - i
 
-      const translateX = x * this.viewport.itemWidth
-      item.style.transform = `translateX(${translateX}px)`
+      const itemSize = this.config.vertical
+        ? this.viewport.itemHeight
+        : this.viewport.itemWidth
+      const translate = x * itemSize
+      const transform = this.config.vertical
+        ? `translateY(${translate}px)`
+        : `translateX(${translate}px)`
+      item.style.transform = transform
 
       return symmetricMod(unitPos, this.items.length)
     })
   }
 
   #getSlideCenter(index: number): number {
-    const width = this.itemWidths[index] ?? this.viewport.itemWidth ?? 0
-    const offset = this.itemOffsets[index] ?? 0
-    return offset + width / 2
+    if (this.config.vertical) {
+      const height = this.itemHeights[index] ?? this.viewport.itemHeight ?? 0
+      const offset = this.itemHeightOffsets[index] ?? 0
+      return offset + height / 2
+    } else {
+      const width = this.itemWidths[index] ?? this.viewport.itemWidth ?? 0
+      const offset = this.itemOffsets[index] ?? 0
+      return offset + width / 2
+    }
   }
 
   #getSnapTargetForIndex(index: number): number {
-    const total = this.viewport.totalWidth || 1
-    const wrapperCenter = this.viewport.wrapperWidth / 2
+    const total = this.config.vertical
+      ? (this.viewport.totalHeight || 1)
+      : (this.viewport.totalWidth || 1)
+    const wrapperCenter = this.config.vertical
+      ? this.viewport.wrapperHeight / 2
+      : this.viewport.wrapperWidth / 2
     const center = this.#getSlideCenter(index)
     let rawTarget = -(center - wrapperCenter)
 
@@ -490,14 +589,19 @@ export class Core {
   }
 
   #normalizePosition(value: number): number {
-    const total = this.viewport.totalWidth || 1
+    const total = this.config.vertical
+      ? (this.viewport.totalHeight || 1)
+      : (this.viewport.totalWidth || 1)
     return ((value % total) + total) % total
   }
 
   #findNearestSlide(position: number): number {
-    if (!this.itemOffsets.length) return 0
+    const offsets = this.config.vertical ? this.itemHeightOffsets : this.itemOffsets
+    if (!offsets.length) return 0
 
-    const total = this.viewport.totalWidth || 1
+    const total = this.config.vertical
+      ? (this.viewport.totalHeight || 1)
+      : (this.viewport.totalWidth || 1)
     const normalized = this.config.infinite
       ? this.#normalizePosition(position)
       : Math.max(0, Math.min(position, total))
@@ -505,7 +609,7 @@ export class Core {
     let nearestIndex = 0
     let minDistance = Number.POSITIVE_INFINITY
 
-    this.itemOffsets.forEach((offset, index) => {
+    offsets.forEach((offset, index) => {
       const center = this.#getSlideCenter(index)
       const distance = Math.abs(normalized - center)
       if (distance < minDistance) {
@@ -518,10 +622,15 @@ export class Core {
   }
 
   #snapToNearest(target: number): number {
-    if (!this.itemOffsets.length) return target
+    const offsets = this.config.vertical ? this.itemHeightOffsets : this.itemOffsets
+    if (!offsets.length) return target
 
-    const total = this.viewport.totalWidth || 1
-    const wrapperCenter = this.viewport.wrapperWidth / 2
+    const total = this.config.vertical
+      ? (this.viewport.totalHeight || 1)
+      : (this.viewport.totalWidth || 1)
+    const wrapperCenter = this.config.vertical
+      ? this.viewport.wrapperHeight / 2
+      : this.viewport.wrapperWidth / 2
     const centerPosition = this.config.infinite
       ? this.#normalizePosition(-target + wrapperCenter)
       : Math.max(0, Math.min(-target + wrapperCenter, total))
@@ -532,18 +641,28 @@ export class Core {
 
   #updateFiniteVariableWidth(): void {
     this.parallaxValues = this.items.map((item, i) => {
-      const translateX = this.current
-      item.style.transform = `translateX(${translateX}px)`
-      return translateX + this.itemOffsets[i]
+      const translate = this.current
+      const offsets = this.config.vertical ? this.itemHeightOffsets : this.itemOffsets
+      const transform = this.config.vertical
+        ? `translateY(${translate}px)`
+        : `translateX(${translate}px)`
+      item.style.transform = transform
+      return translate + offsets[i]
     })
   }
 
   #updateInfiniteVariableWidth(): void {
-    const total = this.viewport.totalWidth || 1
+    const total = this.config.vertical
+      ? (this.viewport.totalHeight || 1)
+      : (this.viewport.totalWidth || 1)
     this.parallaxValues = this.items.map((item, i) => {
-      const offset = this.itemOffsets[i] ?? 0
+      const offsets = this.config.vertical ? this.itemHeightOffsets : this.itemOffsets
+      const offset = offsets[i] ?? 0
       const x = symmetricMod(this.current + offset, total) - offset
-      item.style.transform = `translateX(${x}px)`
+      const transform = this.config.vertical
+        ? `translateY(${x}px)`
+        : `translateX(${x}px)`
+      item.style.transform = transform
       return symmetricMod(this.current + offset, total)
     })
   }
@@ -605,7 +724,9 @@ export class Core {
 
   getProgress(): number {
     if (this.config.variableWidth) {
-      const total = this.viewport.totalWidth || 1
+      const total = this.config.vertical
+        ? (this.viewport.totalHeight || 1)
+        : (this.viewport.totalWidth || 1)
       const position = ((-this.current % total) + total) % total
       return position / total
     }
@@ -668,6 +789,7 @@ export class Core {
     this.speed = 0
     this.#lspeed = 0
     this.touchPreviousX = undefined
+    this.touchPreviousY = undefined
   }
 
   init(): void {
@@ -685,7 +807,9 @@ export class Core {
 
   get progress(): number {
     if (this.config.variableWidth) {
-      const total = this.viewport.totalWidth || 1
+      const total = this.config.vertical
+        ? (this.viewport.totalHeight || 1)
+        : (this.viewport.totalWidth || 1)
       const position = -this.target
 
       if (this.config.infinite) {

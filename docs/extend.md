@@ -163,7 +163,96 @@ export class KeyboardSlider extends Core {
 }
 ```
 
+### Vertical Slider
 
+The slider supports vertical scrolling when `vertical: true` is set in the config. All the same functionality works in both horizontal and vertical orientations. Keyboard navigation automatically adapts to use ArrowUp/ArrowDown for vertical sliders.
+
+```html
+<div data-slider class="flex flex-col overflow-y-hidden h-[80vh]">
+  <div class="h-[30vh] shrink-0">
+    <!-- Slide 1 -->
+  </div>
+  <div class="h-[30vh] shrink-0">
+    <!-- Slide 2 -->
+  </div>
+  <div class="h-[30vh] shrink-0">
+    <!-- Slide 3 -->
+  </div>
+</div>
+```
+
+```js
+import Core from "smooothy"
+import gsap from "gsap"
+
+export class VerticalSlider extends Core {
+  constructor(wrapper, config) {
+    super(wrapper, {
+      ...config,
+      vertical: true,
+      infinite: true,
+      snap: true,
+    })
+
+    gsap.ticker.add(this.update.bind(this))
+    this.#addKeyboardEvents()
+  }
+
+  #handleKeydown = e => {
+    if (!this.isVisible) return
+
+    if (/^[0-9]$/.test(e.key)) {
+      const slideIndex = parseInt(e.key)
+      if (this.config.infinite) {
+        this.goToIndex(slideIndex)
+      } else {
+        if (slideIndex > this.items.length - 1) return
+        this.goToIndex(slideIndex)
+      }
+      return
+    }
+
+    // Use ArrowUp/ArrowDown for vertical, ArrowLeft/ArrowRight for horizontal
+    switch (e.key) {
+      case "ArrowLeft":
+        if (!this.config.vertical) {
+          this.goToPrev()
+        }
+        break
+      case "ArrowRight":
+        if (!this.config.vertical) {
+          this.goToNext()
+        }
+        break
+      case "ArrowUp":
+        if (this.config.vertical) {
+          this.goToPrev()
+        }
+        break
+      case "ArrowDown":
+        if (this.config.vertical) {
+          this.goToNext()
+        }
+        break
+      case " ":
+        this.goToNext()
+        break
+    }
+  }
+
+  #addKeyboardEvents() {
+    window.addEventListener("keydown", this.#handleKeydown)
+  }
+}
+```
+
+**Key points:**
+- Set `vertical: true` in the config
+- Use `flex-col` and `overflow-y-hidden` in CSS for vertical layout
+- Use `height` instead of `width` for slide dimensions
+- Keyboard navigation uses ArrowUp/ArrowDown instead of ArrowLeft/ArrowRight
+- All features (infinite, snap, variable width, etc.) work in vertical mode
+- The viewport provides both `itemWidth`/`itemHeight` and `wrapperWidth`/`wrapperHeight` dimensions
 
 ### Base parallax
 

@@ -129,6 +129,7 @@ The slider accepts the following configuration options:
 | `infinite` | boolean | `true` | Enables infinite looping of slides |
 | `snap` | boolean | `true` | Enables snapping to slide positions |
 | `variableWidth` | boolean | `false` | Allows slides with different widths that snap to center |
+| `vertical` | boolean | `false` | Enables vertical scrolling instead of horizontal |
 | `dragSensitivity` | number | `0.005` | Multiplier for drag movement sensitivity |
 | `lerpFactor` | number | `0.3` | Controls the smoothness of animations (lower = smoother) |
 | `scrollSensitivity` | number | `1` | Multiplier for scroll wheel sensitivity |
@@ -136,7 +137,7 @@ The slider accepts the following configuration options:
 | `speedDecay` | number | `0.85` | How quickly the sliding speed decays |
 | `bounceLimit` | number | `1` | Maximum overscroll amount when infinite is false |
 | `scrollInput` | boolean | `false` | Enables mouse wheel/trackpad scrolling |
-| `setOffset` | function | `({itemWidth, wrapperWidth}) => itemWidth` | Custom function to set slide end offset |
+| `setOffset` | function | `({itemWidth, wrapperWidth, itemHeight, wrapperHeight, vertical}) => vertical ? itemHeight : itemWidth` | Custom function to set slide end offset |
 | `virtualScroll` | object | See below | Configuration for virtual scroll behavior |
 | `onSlideChange` | function | `null` | Callback when active slide changes |
 | `onResize` | function | `null` | Callback when slider is resized |
@@ -195,9 +196,13 @@ slider.target // Get target position / Set slider target
 slider.current // Get current position / Set slider current
 slider.deltaTime // Get time elapsed since last update (in seconds)
 slider.viewport // Get viewport dimensions
-slider.viewport.itemWidth // Size of a single slide
-slider.viewport.wrapperWidth // Size of the wrapper
+slider.viewport.itemWidth // Size of a single slide (horizontal)
+slider.viewport.wrapperWidth // Size of the wrapper (horizontal)
 slider.viewport.totalWidth // Size of the scrollable width
+slider.viewport.itemHeight // Size of a single slide (vertical)
+slider.viewport.wrapperHeight // Size of the wrapper (vertical)
+slider.viewport.totalHeight // Size of the scrollable height
+slider.viewport.vertical // Boolean indicating if slider is vertical
 slider.isVisible // Boolean if the slider is in view or not
 ```
 
@@ -254,14 +259,31 @@ It's made to be styled/configured as much as possible from CSS directly. Positio
 
 Assuming the slider is marked with `[data-slider]`, you'll probably want at least the following css to be applied.
 
+**Horizontal (default):**
 ```css
 [data-slider] {
   display: flex;
+  overflow-x: hidden;
 }
 
 [data-slider] > * {
-  flex-shrink: 0
-  width: <number [unit]>
+  flex-shrink: 0;
+  width: <number [unit]>;
+}
+```
+
+**Vertical:**
+```css
+[data-slider] {
+  display: flex;
+  flex-direction: column;
+  overflow-y: hidden;
+  height: <number [unit]>;
+}
+
+[data-slider] > * {
+  flex-shrink: 0;
+  height: <number [unit]>;
 }
 ```
 
@@ -327,6 +349,39 @@ const slider = new Core(wrapper, {
 - The first slide is automatically centered on initialization
 - Works with both `infinite: true` and `infinite: false`
 
+### Vertical Slider
+
+The slider supports vertical scrolling when `vertical: true` is set in the config. All the same functionality works in both horizontal and vertical orientations.
+
+```javascript
+const slider = new Core(wrapper, {
+  vertical: true,
+  infinite: true,
+  snap: true,
+})
+```
+
+```html
+<div data-slider class="flex flex-col overflow-y-hidden h-[80vh]">
+  <div class="h-[30vh] shrink-0">
+    <!-- Slide 1 -->
+  </div>
+  <div class="h-[30vh] shrink-0">
+    <!-- Slide 2 -->
+  </div>
+  <div class="h-[30vh] shrink-0">
+    <!-- Slide 3 -->
+  </div>
+</div>
+```
+
+**Key points:**
+- Set `vertical: true` in the config
+- Use `flex-col` and `overflow-y-hidden` in CSS for vertical layout
+- Use `height` instead of `width` for slide dimensions
+- Keyboard navigation uses ArrowUp/ArrowDown instead of ArrowLeft/ArrowRight
+- All features (infinite, snap, variable width, etc.) work in vertical mode
+
 ## Event Callbacks
 
 ```javascript
@@ -349,11 +404,12 @@ This does the bare minimum, well, and provides ways to extend it and make it int
 
 The slider automatically handles:
 
-- Mouse drag interactions
+- Mouse drag interactions (horizontal or vertical based on `vertical` config)
 - Touch swipes with horizontal/vertical detection
 - Momentum-based sliding
 - Bounce effects (when `infinite: false`)
 - Snap behavior (when `snap: true`)
+- Keyboard navigation (ArrowLeft/ArrowRight for horizontal, ArrowUp/ArrowDown for vertical)
 
 ## Responsive Behavior
 
