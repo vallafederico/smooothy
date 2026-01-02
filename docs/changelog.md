@@ -21,10 +21,16 @@ Added unpkg support
 
 ## 0.0.28
 
+_04/03/2025_
+
+Added variable width support
+Different sizes
+
+## 0.0.29
+
 _Current_
 
 Added vertical slider support
-
 - New `vertical: boolean` config option for vertical scrolling
 - Extended Viewport interface with height dimensions (`itemHeight`, `wrapperHeight`, `totalHeight`)
 - Updated keyboard navigation to use ArrowUp/ArrowDown for vertical mode
