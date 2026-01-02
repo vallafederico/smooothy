@@ -11,6 +11,7 @@ import ParallaxSpeedSlider from "~/components/vanilla/ParallaxSpeed.astro"
 import LinkSlider from "~/components/vanilla/LinkSlider.astro"
 import VariableWidthSlider from "~/components/vanilla/VariableWidthSlider.astro"
 import AutoScrollSlider from "~/components/vanilla/AutoScrollSlider.astro"
+import VerticalSlider from "~/components/vanilla/VerticalSlider.astro"
 
 import ExamplePageHead from "~/components/ExamplePageHead.astro"
 ---
@@ -87,4 +88,14 @@ import ExamplePageHead from "~/components/ExamplePageHead.astro"
     link={"extend.md#auto-scroll"}
   />
   <AutoScrollSlider />
+</Section>
+
+<Section id={"vertical"} class="min-h-[80svh] pt-[10svh]">
+  <ExampleHead
+    title={"Vertical slider."}
+    description={"Same functionality as horizontal, but scrolling vertically. Use ArrowUp/ArrowDown keys to navigate."}
+    features={["Vertical", "Infinite", "Snap"]}
+    link={"extend.md#vertical-slider"}
+  />
+  <VerticalSlider />
 </Section>

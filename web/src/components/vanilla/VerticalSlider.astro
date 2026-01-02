@@ -1,0 +1,63 @@
+---
+const { index = 1, class: className, ...rest } = Astro.props
+const slides = Array.from({ length: 5 }, (_, i) => i)
+---
+
+<!-- slider -->
+<div
+  {...rest}
+  tabindex="0"
+  data-slider="vertical"
+  class:list={[
+    "py-sm flex h-[80vh] w-screen flex-col overflow-y-hidden",
+    className,
+    "px-[calc(50%-40vw)] md:px-[calc(50%-15vw)]",
+    "focus:outline-none",
+  ]}
+>
+  {
+    slides.map((slide, i) => (
+      <div class="flex aspect-[3/4] h-[30vh] w-full shrink-0 items-center justify-center p-1 md:w-[30vw]">
+        <div class="relative h-full w-full p-8 outline outline-gray-600">
+          <p class="absolute top-2 left-2 z-10">{i}</p>
+          <div class="h-full w-full outline outline-gray-800" />
+        </div>
+      </div>
+    ))
+  }
+</div>
+
+<script>
+  import { Slider } from "~/wip/slider"
+
+  const sliderElement = document.querySelector("[data-slider='vertical']")
+
+  if (sliderElement) {
+    new Slider(sliderElement, {
+      infinite: true,
+      snap: true,
+      vertical: true,
+    })
+  }
+</script>
+
+<style>
+  [data-slider="vertical"] {
+    position: relative;
+    mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(0, 0, 0, 1) 10%,
+      rgba(0, 0, 0, 1) 90%,
+      transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(0, 0, 0, 1) 10%,
+      rgba(0, 0, 0, 1) 90%,
+      transparent 100%
+    );
+  }
+</style>
+

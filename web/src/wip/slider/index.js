@@ -25,10 +25,24 @@ export class Slider extends Core {
 
     switch (e.key) {
       case "ArrowLeft":
-        this.goToPrev()
+        if (!this.config.vertical) {
+          this.goToPrev()
+        }
         break
       case "ArrowRight":
-        this.goToNext()
+        if (!this.config.vertical) {
+          this.goToNext()
+        }
+        break
+      case "ArrowUp":
+        if (this.config.vertical) {
+          this.goToPrev()
+        }
+        break
+      case "ArrowDown":
+        if (this.config.vertical) {
+          this.goToNext()
+        }
         break
       case " ":
         this.goToNext()
