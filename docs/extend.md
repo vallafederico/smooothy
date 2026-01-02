@@ -267,23 +267,110 @@ export class VerticalSlider extends Core {
 
 ### Base parallax
 
+Simple parallax effect using `parallaxValues` from the `onUpdate` callback. Each slide's parallax value represents its position relative to the viewport center.
+
 ```html
-<!-- ... -->
+<div data-slider class="flex overflow-x-hidden">
+  <div class="w-[80vw] md:w-[30vw] shrink-0">
+    <div class="relative h-full w-full">
+      <div data-p class="h-full w-full">
+        <!-- Parallax element -->
+      </div>
+    </div>
+  </div>
+  <div class="w-[80vw] md:w-[30vw] shrink-0">
+    <div class="relative h-full w-full">
+      <div data-p class="h-full w-full">
+        <!-- Parallax element -->
+      </div>
+    </div>
+  </div>
+</div>
 ```
 
 ```js
-// 
+import Core from "smooothy"
+import gsap from "gsap"
+
+export class ParallaxSlider extends Core {
+  constructor(wrapper, config = {}) {
+    super(wrapper, config)
+
+    this.parallaxElements = [...wrapper.querySelectorAll("[data-p]")]
+    gsap.ticker.add(this.update.bind(this))
+  }
+
+  onUpdate = ({ parallaxValues }) => {
+    this.parallaxElements.forEach((element, i) => {
+      // parallaxValues provides normalized position values for each slide
+      // Multiply by a factor to control the parallax strength
+      const offset = parallaxValues[i] * 20 // Adjust multiplier for stronger/weaker effect
+      element.style.transform = `translateX(${offset}%)`
+    })
+  }
+}
 ```
 
 ### Parallax and Speed
 
+Combines parallax effects with speed-based animations. The speed value is dampened using the `damp` utility function for smooth, frame-rate independent animations. This creates a dynamic effect where parallax movement is influenced by how fast the slider is scrolling.
+
 ```html
-<!-- ... -->
+<div data-slider class="flex overflow-x-hidden">
+  <div class="w-[80vw] md:w-[30vw] shrink-0">
+    <div class="relative h-full w-full">
+      <div data-p class="h-full w-full">
+        <!-- Parallax element -->
+      </div>
+    </div>
+  </div>
+  <div class="w-[80vw] md:w-[30vw] shrink-0">
+    <div class="relative h-full w-full">
+      <div data-p class="h-full w-full">
+        <!-- Parallax element -->
+      </div>
+    </div>
+  </div>
+</div>
 ```
 
 ```js
-// 
+import Core, { damp } from "smooothy"
+import gsap from "gsap"
+
+export class ParallaxSpeedSlider extends Core {
+  lspeed = 0 // Lerped (smoothed) speed value
+
+  constructor(wrapper, config = {}) {
+    super(wrapper, {
+      ...config,
+      speedDecay: 0.9, // Speed decay factor for smoother speed calculation
+    })
+
+    this.parallaxElements = [...wrapper.querySelectorAll("[data-p]")]
+    gsap.ticker.add(this.update.bind(this))
+  }
+
+  onUpdate = ({ parallaxValues, speed, deltaTime }) => {
+    // Smooth out the speed using damp for frame-rate independent animation
+    this.lspeed = damp(this.lspeed, speed, 5, deltaTime)
+
+    // Apply parallax based on both position and smoothed speed
+    this.parallaxElements.forEach((element, i) => {
+      const offset = parallaxValues[i] * Math.abs(this.lspeed) * 20
+      element.style.transform = `translateX(${offset}%)`
+    })
+  }
+}
 ```
+
+**Key points:**
+- Import `damp` from `smooothy` for smooth speed interpolation
+- Use `deltaTime` from `onUpdate` for frame-rate independent animations
+- `speed` represents the current scroll velocity
+- `Math.abs(this.lspeed)` ensures the effect works in both directions
+- Adjust the multiplier (`20`) to control the parallax strength
+- `speedDecay` in config affects how quickly speed changes (lower = smoother)
 
 ### Capture Link Clicks
 
