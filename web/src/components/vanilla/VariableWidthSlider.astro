@@ -1,19 +1,24 @@
 ---
+import SliderWrapper from "./SliderWrapper.astro"
+
 const { index = 1, class: className, ...rest } = Astro.props
 const slides = Array.from({ length: 10 }, (_, i) => i)
 ---
 
-<div
-  {...rest}
-  tabindex="0"
-  data-slider="variable-width"
-  class:list={[
-    "py-sm flex w-screen overflow-x-hidden outline outline-gray-700",
+<SliderWrapper
+  exampleName="variable-width"
+  useDefaultSliderClasses={false}
+  sliderClasses={[
+    "py-sm",
+    "outline outline-gray-700",
     "h-[60svh]",
-    className,
     "px-[3rem]",
-    "focus:outline-none",
+    className,
   ]}
+  sliderAttributes={{
+    ...rest,
+    "data-slider": "variable-width",
+  }}
 >
   {
     slides.map((slide, i) => {
@@ -38,7 +43,7 @@ const slides = Array.from({ length: 10 }, (_, i) => i)
       )
     })
   }
-</div>
+</SliderWrapper>
 
 <script>
   import Core from "smooothy"
@@ -52,15 +57,15 @@ const slides = Array.from({ length: 10 }, (_, i) => i)
         snap: true,
         variableWidth: true,
         scrollInput: true,
-      })
+      } as any)
 
       gsap.ticker.add(this.update.bind(this))
     }
   }
 
-  const slider = document.querySelector("[data-slider='variable-width']")
-  if (slider) {
-    new VariableWidthSlider(slider)
+  const container = document.querySelector('[data-example="variable-width"]')
+  if (container) {
+    const slider = container.querySelector("[data-slider='variable-width']")
+    if (slider) new VariableWidthSlider(slider)
   }
 </script>
-

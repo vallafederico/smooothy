@@ -137,7 +137,11 @@ export class Core {
     this.#setupVirtualScroll()
 
     // Center first slide for variable width non-infinite sliders
-    if (this.config.variableWidth && !this.config.infinite && this.items.length > 0) {
+    if (
+      this.config.variableWidth &&
+      !this.config.infinite &&
+      this.items.length > 0
+    ) {
       const initialTarget = this.#getSnapTargetForIndex(0)
       this.target = initialTarget
       this.current = initialTarget
@@ -710,7 +714,11 @@ export class Core {
     this.#setupViewport()
 
     // Re-center current slide for variable width non-infinite sliders
-    if (this.config.variableWidth && !this.config.infinite && this.items.length > 0) {
+    if (
+      this.config.variableWidth &&
+      !this.config.infinite &&
+      this.items.length > 0
+    ) {
       const currentIndex = this.currentSlide
       const snapTarget = this.#getSnapTargetForIndex(currentIndex)
       this.target = snapTarget
