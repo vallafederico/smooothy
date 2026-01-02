@@ -4,6 +4,17 @@
 
 While it works as just the Core, the idea is for the library to provide all the baseline functionality and a nice interface to extend it, keep it as light as it can be but as flexible as you want.
 
+## Examples
+
+- [Controls](#controls)
+- [Capture Link Clicks](#capture-link-clicks)
+- [Keyboard Controls](#keyboard-controls)
+- [Vertical Slider](#vertical-slider)
+- [Base parallax](#base-parallax)
+- [Parallax and Speed](#parallax-and-speed)
+- [Variable Width](#variable-width)
+- [Auto-scroll](#auto-scroll)
+- [Wip](#wip)
 
 ### Controls
 
