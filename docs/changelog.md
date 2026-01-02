@@ -31,6 +31,7 @@ Different sizes
 _Current_
 
 Added vertical slider support
+
 - New `vertical: boolean` config option for vertical scrolling
 - Extended Viewport interface with height dimensions (`itemHeight`, `wrapperHeight`, `totalHeight`)
 - Updated keyboard navigation to use ArrowUp/ArrowDown for vertical mode
