@@ -18,6 +18,7 @@ interface Viewport {
 interface CoreConfig {
   infinite: boolean
   snap: boolean
+  variableWidth: boolean
   dragSensitivity: number
   lerpFactor: number
   scrollSensitivity: number
@@ -37,6 +38,7 @@ const DEFAULT_CONFIG: CoreConfig = {
   /** Params */
   infinite: true,
   snap: true,
+  variableWidth: false,
   dragSensitivity: 0.005,
   lerpFactor: 0.3,
   scrollSensitivity: 1,
@@ -75,6 +77,8 @@ export class Core {
   wrapper: HTMLElement
   items: HTMLElement[]
   viewport!: Viewport
+  itemWidths: number[] = []
+  itemOffsets: number[] = []
   isDragging: boolean = false
   dragStart: number = 0
   dragStartTarget: number = 0
@@ -131,6 +135,19 @@ export class Core {
 
     this.#setupViewport()
     this.#setupVirtualScroll()
+
+    // Center first slide for variable width non-infinite sliders
+    if (
+      this.config.variableWidth &&
+      !this.config.infinite &&
+      this.items.length > 0
+    ) {
+      const initialTarget = this.#getSnapTargetForIndex(0)
+      this.target = initialTarget
+      this.current = initialTarget
+      // Immediately render the initial position
+      this.#updateFiniteVariableWidth()
+    }
   }
 
   #setupIntersectionObserver(): void {
@@ -150,16 +167,34 @@ export class Core {
   }
 
   #setupViewport(): void {
+    const itemWidths = this.items.map(
+      item => item.getBoundingClientRect().width
+    )
+    const wrapperWidth = this.wrapper.clientWidth
+    const totalWidth = itemWidths.reduce((sum, width) => sum + width, 0)
+
+    let runningOffset = 0
+    this.itemOffsets = itemWidths.map(width => {
+      const start = runningOffset
+      runningOffset += width
+      return start
+    })
+    this.itemWidths = itemWidths
+
     this.viewport = {
-      itemWidth: this.items[0].getBoundingClientRect().width,
-      wrapperWidth: this.wrapper.clientWidth,
-      totalWidth: this.items.reduce((sum, item) => sum + item.clientWidth, 0),
+      itemWidth: itemWidths[0] ?? 0,
+      wrapperWidth,
+      totalWidth,
     }
 
     this.#offset = this.config.setOffset(this.viewport)
 
-    this.maxScroll =
-      -(this.viewport.totalWidth - this.#offset) / this.viewport.itemWidth
+    if (this.config.variableWidth) {
+      this.maxScroll = -(this.viewport.totalWidth - this.#offset)
+    } else {
+      const denominator = this.viewport.itemWidth || 1
+      this.maxScroll = -(this.viewport.totalWidth - this.#offset) / denominator
+    }
 
     queueMicrotask(() => {
       this.onResize?.(this)
@@ -226,10 +261,15 @@ export class Core {
 
   #calculateBounds(newTarget: number): number {
     if (!this.config.infinite) {
-      if (newTarget > this.config.bounceLimit) {
-        return this.config.bounceLimit
-      } else if (newTarget < this.maxScroll - this.config.bounceLimit) {
-        return this.maxScroll - this.config.bounceLimit
+      const bounce =
+        this.config.variableWidth && this.viewport.itemWidth
+          ? this.config.bounceLimit * this.viewport.itemWidth
+          : this.config.bounceLimit
+
+      if (newTarget > bounce) {
+        return bounce
+      } else if (newTarget < this.maxScroll - bounce) {
+        return this.maxScroll - bounce
       }
     }
     return newTarget
@@ -259,7 +299,10 @@ export class Core {
             ? event.deltaX
             : event.deltaY
 
-        const deltaX = delta * this.config.scrollSensitivity * 0.001
+        const deltaFactor = this.config.variableWidth
+          ? this.config.scrollSensitivity
+          : this.config.scrollSensitivity * 0.001
+        const deltaX = delta * deltaFactor
         let newTarget = this.target + deltaX
 
         if (!this.config.infinite) {
@@ -271,7 +314,7 @@ export class Core {
         }
 
         this.target = this.#calculateBounds(newTarget)
-        this.speed = -deltaX * 10
+        this.speed = -deltaX * (this.config.variableWidth ? 0.1 : 10)
       }
     })
   }
@@ -288,7 +331,10 @@ export class Core {
     if (!this.isDragging || this.#isPaused) return
 
     const deltaX = event.clientX - this.dragStart
-    let newTarget = this.dragStartTarget + deltaX * this.config.dragSensitivity
+    const sensitivity = this.config.variableWidth
+      ? 1
+      : this.config.dragSensitivity
+    let newTarget = this.dragStartTarget + deltaX * sensitivity
 
     this.target = this.#calculateBounds(newTarget)
 
@@ -309,17 +355,31 @@ export class Core {
     this.isDragging = false
     this.wrapper.style.cursor = "grab"
 
-    if (!this.config.infinite) {
-      if (this.target > 0) {
-        this.target = 0
-      } else if (this.target < this.maxScroll) {
-        this.target = this.maxScroll
-      } else if (this.config.snap) {
-        const snapped = Math.round(this.target)
-        this.target = Math.min(0, Math.max(this.maxScroll, snapped))
+    if (this.config.variableWidth) {
+      if (!this.config.infinite) {
+        if (this.target > 0) {
+          this.target = 0
+        } else if (this.target < this.maxScroll) {
+          this.target = this.maxScroll
+        }
       }
-    } else if (this.config.snap) {
-      this.target = Math.round(this.target)
+
+      if (this.config.snap) {
+        this.target = this.#snapToNearest(this.target)
+      }
+    } else {
+      if (!this.config.infinite) {
+        if (this.target > 0) {
+          this.target = 0
+        } else if (this.target < this.maxScroll) {
+          this.target = this.maxScroll
+        } else if (this.config.snap) {
+          const snapped = Math.round(this.target)
+          this.target = Math.min(0, Math.max(this.maxScroll, snapped))
+        }
+      } else if (this.config.snap) {
+        this.target = Math.round(this.target)
+      }
     }
   }
 
@@ -332,9 +392,15 @@ export class Core {
     this.#previousTime = currentTime
 
     if (this.config.snap && !this.isDragging) {
-      const currentSnap = Math.round(this.target)
-      const diff = currentSnap - this.target
-      this.target += diff * this.config.snapStrength
+      if (this.config.variableWidth) {
+        const snapped = this.#snapToNearest(this.target)
+        const diff = snapped - this.target
+        this.target += diff * this.config.snapStrength
+      } else {
+        const currentSnap = Math.round(this.target)
+        const diff = currentSnap - this.target
+        this.target += diff * this.config.snapStrength
+      }
     }
 
     this.current = damp(
@@ -345,14 +411,35 @@ export class Core {
     )
 
     if (this.config.infinite) {
-      const rawIndex = Math.round(-this.current)
-      const length = this.items.length
-      const normalizedIndex = ((rawIndex % length) + length) % length
-      this.#updateCurrentSlide(normalizedIndex)
-      this.#updateInfinite()
+      if (this.config.variableWidth) {
+        const centerPos = this.#normalizePosition(
+          -this.current + this.viewport.wrapperWidth / 2
+        )
+        const nearestIndex = this.#findNearestSlide(centerPos)
+        this.#updateCurrentSlide(nearestIndex)
+        this.#updateInfiniteVariableWidth()
+      } else {
+        const rawIndex = Math.round(-this.current)
+        const length = this.items.length
+        const normalizedIndex = ((rawIndex % length) + length) % length
+        this.#updateCurrentSlide(normalizedIndex)
+        this.#updateInfinite()
+      }
     } else {
-      this.#updateCurrentSlide(Math.round(Math.abs(this.current)))
-      this.#updateFinite()
+      if (this.config.variableWidth) {
+        const normalized = Math.max(
+          0,
+          Math.min(
+            -this.current + this.viewport.wrapperWidth / 2,
+            this.viewport.totalWidth
+          )
+        )
+        this.#updateCurrentSlide(this.#findNearestSlide(normalized))
+        this.#updateFiniteVariableWidth()
+      } else {
+        this.#updateCurrentSlide(Math.round(Math.abs(this.current)))
+        this.#updateFinite()
+      }
     }
 
     this.#renderSpeed()
@@ -380,6 +467,87 @@ export class Core {
     })
   }
 
+  #getSlideCenter(index: number): number {
+    const width = this.itemWidths[index] ?? this.viewport.itemWidth ?? 0
+    const offset = this.itemOffsets[index] ?? 0
+    return offset + width / 2
+  }
+
+  #getSnapTargetForIndex(index: number): number {
+    const total = this.viewport.totalWidth || 1
+    const wrapperCenter = this.viewport.wrapperWidth / 2
+    const center = this.#getSlideCenter(index)
+    let rawTarget = -(center - wrapperCenter)
+
+    if (this.config.infinite) {
+      const k = Math.round((this.target - rawTarget) / total)
+      rawTarget += k * total
+    } else {
+      rawTarget = Math.min(0, Math.max(this.maxScroll, rawTarget))
+    }
+
+    return rawTarget
+  }
+
+  #normalizePosition(value: number): number {
+    const total = this.viewport.totalWidth || 1
+    return ((value % total) + total) % total
+  }
+
+  #findNearestSlide(position: number): number {
+    if (!this.itemOffsets.length) return 0
+
+    const total = this.viewport.totalWidth || 1
+    const normalized = this.config.infinite
+      ? this.#normalizePosition(position)
+      : Math.max(0, Math.min(position, total))
+
+    let nearestIndex = 0
+    let minDistance = Number.POSITIVE_INFINITY
+
+    this.itemOffsets.forEach((offset, index) => {
+      const center = this.#getSlideCenter(index)
+      const distance = Math.abs(normalized - center)
+      if (distance < minDistance) {
+        minDistance = distance
+        nearestIndex = index
+      }
+    })
+
+    return nearestIndex
+  }
+
+  #snapToNearest(target: number): number {
+    if (!this.itemOffsets.length) return target
+
+    const total = this.viewport.totalWidth || 1
+    const wrapperCenter = this.viewport.wrapperWidth / 2
+    const centerPosition = this.config.infinite
+      ? this.#normalizePosition(-target + wrapperCenter)
+      : Math.max(0, Math.min(-target + wrapperCenter, total))
+
+    const nearestIndex = this.#findNearestSlide(centerPosition)
+    return this.#getSnapTargetForIndex(nearestIndex)
+  }
+
+  #updateFiniteVariableWidth(): void {
+    this.parallaxValues = this.items.map((item, i) => {
+      const translateX = this.current
+      item.style.transform = `translateX(${translateX}px)`
+      return translateX + this.itemOffsets[i]
+    })
+  }
+
+  #updateInfiniteVariableWidth(): void {
+    const total = this.viewport.totalWidth || 1
+    this.parallaxValues = this.items.map((item, i) => {
+      const offset = this.itemOffsets[i] ?? 0
+      const x = symmetricMod(this.current + offset, total) - offset
+      item.style.transform = `translateX(${x}px)`
+      return symmetricMod(this.current + offset, total)
+    })
+  }
+
   #renderSpeed(): void {
     this.#lspeed = damp(
       this.#lspeed,
@@ -391,23 +559,44 @@ export class Core {
   }
 
   goToNext(): void {
-    if (!this.config.infinite) {
-      this.target = Math.max(this.maxScroll, Math.round(this.target - 1))
+    if (this.config.variableWidth) {
+      const nextIndex = this.config.infinite
+        ? (this.currentSlide + 1) % this.items.length
+        : Math.min(this.currentSlide + 1, this.items.length - 1)
+      this.target = this.#getSnapTargetForIndex(nextIndex)
     } else {
-      this.target = Math.round(this.target - 1)
+      if (!this.config.infinite) {
+        this.target = Math.max(this.maxScroll, Math.round(this.target - 1))
+      } else {
+        this.target = Math.round(this.target - 1)
+      }
     }
   }
 
   goToPrev(): void {
-    if (!this.config.infinite) {
-      this.target = Math.min(0, Math.round(this.target + 1))
+    if (this.config.variableWidth) {
+      const prevIndex = this.config.infinite
+        ? (this.currentSlide - 1 + this.items.length) % this.items.length
+        : Math.max(this.currentSlide - 1, 0)
+      this.target = this.#getSnapTargetForIndex(prevIndex)
     } else {
-      this.target = Math.round(this.target + 1)
+      if (!this.config.infinite) {
+        this.target = Math.min(0, Math.round(this.target + 1))
+      } else {
+        this.target = Math.round(this.target + 1)
+      }
     }
   }
 
   goToIndex(index: number): void {
-    this.target = -index
+    if (this.config.variableWidth) {
+      const clamped = this.config.infinite
+        ? ((index % this.items.length) + this.items.length) % this.items.length
+        : Math.min(Math.max(index, 0), this.items.length - 1)
+      this.target = this.#getSnapTargetForIndex(clamped)
+    } else {
+      this.target = -index
+    }
   }
 
   set snap(value: boolean) {
@@ -415,6 +604,12 @@ export class Core {
   }
 
   getProgress(): number {
+    if (this.config.variableWidth) {
+      const total = this.viewport.totalWidth || 1
+      const position = ((-this.current % total) + total) % total
+      return position / total
+    }
+
     const totalSlides = this.items.length
     const currentIndex = Math.abs(this.current) % totalSlides
     return currentIndex / totalSlides
@@ -489,21 +684,49 @@ export class Core {
   }
 
   get progress(): number {
-    if (this.config.infinite) {
+    if (this.config.variableWidth) {
+      const total = this.viewport.totalWidth || 1
       const position = -this.target
-      const total = this.items.length
-      const normalizedPos = ((position % total) + total) % total
 
-      return normalizedPos / (total - 1)
+      if (this.config.infinite) {
+        const normalized = ((position % total) + total) % total
+        return normalized / total
+      } else {
+        const clamped = Math.max(0, Math.min(position, total))
+        return clamped / total
+      }
     } else {
-      const current = Math.abs(this.current)
-      const total = Math.abs(this.maxScroll)
-      return Math.max(0, Math.min(1, current / total))
+      if (this.config.infinite) {
+        const position = -this.target
+        const total = this.items.length
+        const normalizedPos = ((position % total) + total) % total
+
+        return normalizedPos / (total - 1)
+      } else {
+        const current = Math.abs(this.current)
+        const total = Math.abs(this.maxScroll)
+        return Math.max(0, Math.min(1, current / total))
+      }
     }
   }
 
   resize(): void {
     this.#setupViewport()
+
+    // Re-center current slide for variable width non-infinite sliders
+    if (
+      this.config.variableWidth &&
+      !this.config.infinite &&
+      this.items.length > 0
+    ) {
+      const currentIndex = this.currentSlide
+      const snapTarget = this.#getSnapTargetForIndex(currentIndex)
+      this.target = snapTarget
+      // Only update current if we're already snapped (close to target)
+      if (Math.abs(this.current - this.target) < 1) {
+        this.current = snapTarget
+      }
+    }
 
     // Force a single update, bypassing visibility check
     const wasActive = this.#isActive

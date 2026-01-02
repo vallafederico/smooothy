@@ -1,39 +1,32 @@
 ---
+import SliderWrapper from "./SliderWrapper.astro"
+
 const { index = 1, class: className, ...rest } = Astro.props
 const slides = Array.from({ length: 10 + Math.random() * 10 }, (_, i) => i)
 ---
 
-<div data-example="parallax1" class="relative">
-  <!-- slider -->
-  <div
-    {...rest}
-    tabindex="0"
-    data-slider
-    class:list={[
-      "py-sm flex w-screen overflow-x-hidden",
-      className,
-      "px-[calc(50%-40vw)] md:px-[calc(50%-15vw)]",
-      "py-xl focus:outline-none",
-    ]}
-  >
-    {
-      slides.map((slide, i) => (
-        <div class="flex aspect-[3/4] w-[80vw] shrink-0 items-center justify-center p-1 md:w-[30vw]">
-          <div class="relative h-full w-full p-8 outline outline-gray-800">
-            <div
-              data-p
-              class="flex h-full w-full items-center justify-center outline outline-gray-600"
-            >
-              <div class="overflow-hidden">
-                <p class="">{i}</p>
-              </div>
+<SliderWrapper
+  exampleName="parallax1"
+  sliderClasses={className ? `py-xl ${className}` : "py-xl"}
+  sliderAttributes={{ ...rest }}
+>
+  {
+    slides.map((slide, i) => (
+      <div class="flex aspect-[3/4] w-[80vw] shrink-0 items-center justify-center p-1 md:w-[30vw]">
+        <div class="relative h-full w-full p-8 outline outline-gray-800">
+          <div
+            data-p
+            class="flex h-full w-full items-center justify-center outline outline-gray-600"
+          >
+            <div class="overflow-hidden">
+              <p class="">{i}</p>
             </div>
           </div>
         </div>
-      ))
-    }
-  </div>
-</div>
+      </div>
+    ))
+  }
+</SliderWrapper>
 
 <script>
   import Core from "~/wip/slider"

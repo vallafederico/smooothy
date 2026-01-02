@@ -1,0 +1,67 @@
+---
+interface Props {
+  exampleName: string
+  sliderClasses?: string | string[]
+  wrapperClasses?: string | string[]
+  sliderAttributes?: Record<string, any>
+  useDefaultSliderClasses?: boolean
+}
+
+const {
+  exampleName,
+  sliderClasses = [],
+  wrapperClasses = [],
+  sliderAttributes = {},
+  useDefaultSliderClasses = true,
+} = Astro.props
+
+const defaultSliderClasses = [
+  "py-sm flex w-screen overflow-x-hidden",
+  "px-[calc(50%-40vw)] md:px-[calc(50%-15vw)]",
+  "focus:outline-none",
+  "pb-xl",
+]
+
+const baseSliderClasses = [
+  "flex",
+  "w-screen",
+  "overflow-x-hidden",
+  "focus:outline-none",
+]
+
+const combinedSliderClasses = [
+  ...(useDefaultSliderClasses ? defaultSliderClasses : baseSliderClasses),
+  ...(Array.isArray(sliderClasses) ? sliderClasses : [sliderClasses]),
+].filter(Boolean)
+
+const combinedWrapperClasses = [
+  "relative",
+  ...(Array.isArray(wrapperClasses) ? wrapperClasses : [wrapperClasses]),
+].filter(Boolean)
+
+// Extract data-slider from sliderAttributes if provided
+const hasCustomDataSlider = "data-slider" in sliderAttributes
+const { "data-slider": dataSliderValue, ...otherSliderAttributes } =
+  sliderAttributes
+---
+
+<div data-example={exampleName} class:list={combinedWrapperClasses}>
+  <slot name="interface" />
+
+  <!-- slider -->
+  <div
+    tabindex="0"
+    class:list={combinedSliderClasses}
+    data-slider={hasCustomDataSlider ? dataSliderValue : true}
+    {...otherSliderAttributes}
+  >
+    <slot />
+  </div>
+</div>
+
+<style>
+  /* Shared common styles for all sliders */
+  [data-example] [data-slider] {
+    /* Common base styles can go here */
+  }
+</style>

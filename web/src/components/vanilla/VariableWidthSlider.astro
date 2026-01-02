@@ -1,0 +1,71 @@
+---
+import SliderWrapper from "./SliderWrapper.astro"
+
+const { index = 1, class: className, ...rest } = Astro.props
+const slides = Array.from({ length: 10 }, (_, i) => i)
+---
+
+<SliderWrapper
+  exampleName="variable-width"
+  useDefaultSliderClasses={false}
+  sliderClasses={[
+    "py-sm",
+    "outline outline-gray-700",
+    "h-[60svh]",
+    "px-[3rem]",
+    className,
+  ]}
+  sliderAttributes={{
+    ...rest,
+    "data-slider": "variable-width",
+  }}
+>
+  {
+    slides.map((slide, i) => {
+      const isWide = i === 1 || i === 4 || i === 7
+
+      return (
+        <div
+          class:list={[
+            "flex aspect-[3/4] shrink-0 items-center justify-center p-1 md:h-[40svh]",
+            isWide && "w-[110vw] md:w-[50vw]",
+            !isWide && "w-[80vw] md:w-[30vw]",
+          ]}
+        >
+          <div
+            class:list={[
+              "relative flex h-full w-full items-center justify-center p-8 outline outline-gray-600 transition-transform",
+            ]}
+          >
+            <p class="mono text-lg text-gray-200">Slide {i + 1}</p>
+          </div>
+        </div>
+      )
+    })
+  }
+</SliderWrapper>
+
+<script>
+  import Core from "smooothy"
+  import gsap from "~/js/gsap"
+
+  class VariableWidthSlider extends Core {
+    constructor(wrapper, config = {}) {
+      super(wrapper, {
+        ...config,
+        infinite: false,
+        snap: true,
+        variableWidth: true,
+        scrollInput: true,
+      } as any)
+
+      gsap.ticker.add(this.update.bind(this))
+    }
+  }
+
+  const container = document.querySelector('[data-example="variable-width"]')
+  if (container) {
+    const slider = container.querySelector("[data-slider='variable-width']")
+    if (slider) new VariableWidthSlider(slider)
+  }
+</script>

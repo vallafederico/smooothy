@@ -24,6 +24,7 @@ interface CoreConfig {
   // Basic behavior
   infinite: boolean           // Enable infinite scrolling (default: true)
   snap: boolean              // Enable snap to slides (default: true)
+  variableWidth: boolean     // Enable variable width slides (default: false)
 
   // Sensitivity and animation
   dragSensitivity: number    // Mouse/touch drag sensitivity (default: 0.005)
@@ -217,6 +218,20 @@ const slider = new Core(wrapper, {
     progressBar.style.transform = `scaleX(${core.progress * 100}%)`
   },
 })
+```
+
+### Variable Width
+
+```js
+const slider = new Core(wrapper, {
+  infinite: false,
+  snap: true,
+  variableWidth: true,
+  scrollInput: true,
+})
+
+// Each slide can have a different width
+// The slider automatically centers each slide based on its width
 ```
 
 ### State Control
