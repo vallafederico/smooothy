@@ -1,25 +1,16 @@
-import { Scroll } from "./scroll"
-
-import { Dom } from "./dom"
-import { Gl } from "./gl/gl"
-// import { Mouse } from "./mouse"
+// Main application entry point
+// Add your initialization code here
 
 export class App {
-  static scroll = Scroll
-  static dom = new Dom()
-  static gl = Gl
-
-  static {
+  static init() {
+    // Initialize your app here
     document.body.classList.add("started")
   }
 }
 
-// /////////////////
-
-// ;(() => {
-//   console.log(
-//     "%c%s",
-//     "font-size:10px; color:#fff; background:#000; padding: 10px 10px; margin: 20px 0px;",
-//     "CC HTTPS://FEDERIC.OOO 👀"
-//   )
-// })()
+// Initialize on load
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", () => App.init())
+} else {
+  App.init()
+}

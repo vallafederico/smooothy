@@ -1,13 +1,12 @@
 ---
 import Layout from "~/layouts/Layout.astro"
-import Section from "@c/Section.astro"
 
 const slides = Array.from({ length: 5 }, (_, i) => i)
 ---
 
 <Layout>
-  <Section class="flex h-screen flex-col justify-center px-0">
-    <div class="px-gx py-gy">
+  <div class="min-h-screen pt-16">
+    <div class="px-4 py-8">
       <p class="font-mono tracking-wider uppercase">Vertical Slider</p>
     </div>
 
@@ -15,7 +14,7 @@ const slides = Array.from({ length: 5 }, (_, i) => i)
     <div
       tabindex="0"
       data-slider="vertical"
-      class="py-sm flex h-[80vh] w-screen flex-col overflow-y-hidden px-[calc(50%-40vw)] focus:outline-none md:px-[calc(50%-15vw)]"
+      class="flex h-[80vh] w-screen flex-col overflow-y-hidden px-[calc(50%-40vw)] py-8 focus:outline-none md:px-[calc(50%-15vw)]"
     >
       {
         slides.map((slide, i) => (
@@ -28,7 +27,7 @@ const slides = Array.from({ length: 5 }, (_, i) => i)
         ))
       }
     </div>
-  </Section>
+  </div>
 </Layout>
 
 <script>

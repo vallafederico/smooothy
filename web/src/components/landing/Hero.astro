@@ -1,25 +1,57 @@
 ---
-import FoodSlider from "@c/landing/comps/FoodSlider.astro"
-import Loader from "@c/landing/Loader.astro"
-import Svgg from "../svg/Svgg.astro"
+// Simple hero section template
+// Customize this to showcase your package
+
+const codeExample = `import Core from 'your-package-name'
+
+const instance = new Core()
+
+function animate() {
+  instance.update()
+  requestAnimationFrame(animate)
+}
+
+animate()`
 ---
 
-<header
-  class="py-sm relative flex min-h-[100svh] flex-col items-center justify-between"
->
-  <div class="px-gx w-full pt-2">
-    <div class="md:px-grid-3 pt-[5rem] md:pt-0">
-      <h1
-        data-module="text"
-        data-type="chars"
-        class="md:w-grids-2 w-grids-4 text-xs leading-[1em]"
+<section class="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+  <div class="container mx-auto px-4 text-center">
+    <h1 class="text-6xl md:text-8xl font-bold text-white mb-6">
+      Your Package Name
+    </h1>
+    <p class="text-xl md:text-2xl text-slate-300 mb-8 max-w-2xl mx-auto">
+      A brief description of what your package does and why it's awesome.
+    </p>
+    <div class="flex gap-4 justify-center">
+      <a
+        href="#getting-started"
+        class="px-6 py-3 bg-white text-slate-900 rounded-lg font-semibold hover:bg-slate-100 transition"
       >
-        Configurable customisable extendable smooth bring your own whatever
-        slider API.
-      </h1>
+        Get Started
+      </a>
+      <a
+        href="https://github.com/yourusername/your-package"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="px-6 py-3 bg-slate-800 text-white rounded-lg font-semibold hover:bg-slate-700 transition"
+      >
+        View on GitHub
+      </a>
     </div>
   </div>
+</section>
 
-  <FoodSlider />
-  <Loader />
-</header>
+<section id="getting-started" class="py-20 bg-white">
+  <div class="container mx-auto px-4">
+    <h2 class="text-4xl font-bold text-center mb-12">Getting Started</h2>
+    <div class="max-w-3xl mx-auto">
+      <div class="bg-slate-900 rounded-lg p-6 mb-6">
+        <code class="text-green-400">npm install your-package-name</code>
+      </div>
+      <div class="bg-slate-50 rounded-lg p-6">
+        <h3 class="text-xl font-semibold mb-4">Basic Usage</h3>
+        <pre class="text-sm overflow-x-auto"><code set:html={codeExample}></code></pre>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,9 +1,9 @@
 {
-  "name": "smooothy",
+  "name": "your-package-name",
   "type": "module",
   "main": "./dist/cjs/cjs.js",
   "module": "./dist/esm/esm.js",
-  "unpkg": "./dist/smooothy.min.js",
+  "unpkg": "./dist/package.min.js",
   "exports": {
     ".": {
       "import": "./dist/esm/esm.js",
@@ -13,5 +13,6 @@
   },
   "files": [
     "dist"
-  ]
+  ],
+  "version": "0.0.1"
 }

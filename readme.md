@@ -1,465 +1,194 @@
-# Smooth Extensible Slider
+# Package Starter Template
 
-**Tiny real smooth fast cool all events _bring your own tooling slider._ Framework agnostic but it's a you problem.**
+A modern starter template for creating npm packages with beautiful Astro documentation and landing pages.
 
-# Docs (Core)
+## 🚀 Features
 
-The Core class is a flexible and performant slider/carousel implementation that supports infinite scrolling, snapping, touch interactions, and parallax effects.
+- **Package Development**: Clean TypeScript package structure with build scripts
+- **Documentation Site**: Astro-powered documentation and landing page
+- **Build System**: Bun-based build system with ESM, CJS, and UMD outputs
+- **TypeScript**: Full TypeScript support with type definitions
+- **Monorepo**: pnpm workspace setup for managing package and web app together
 
-## Installation
+## 📁 Project Structure
 
-```shell
-pnpm i smooothy
+```
+.
+├── package/          # Your npm package source code
+│   ├── src/         # Source files
+│   ├── index.ts     # Package entry point
+│   └── package.json # Package configuration
+├── web/             # Astro documentation site
+│   ├── src/         # Astro source files
+│   └── public/      # Static assets
+├── bin/             # Build scripts
+└── docs/            # Documentation files
 ```
 
-```js
-// core only
-import Core from "smooothy"
+## 🛠️ Getting Started
 
-// with utilities
-import Core, { damp } from "smooothy"
+### 1. Update Package Information
+
+**Easy way (recommended):** Update `package.config.json` with your package details, then run:
+
+```bash
+pnpm sync
 ```
 
-```html
-<!-- from CDN -->
-<script src="https://unpkg.com/smooothy"></script>
+This will automatically sync common fields (name, version, author, description, repository, etc.) across all `package.json` files.
+
+**Manual way:** Update the following files individually:
+
+- `package.json` - Package name, description, repository, etc.
+- `package/package.json` - Package-specific configuration
+- `web/package.json` - Web app configuration
+- `bin/build.ts` - Update global name and bundle name
+- `web/astro.config.mjs` - Update site URL
+
+### 2. Install Dependencies
+
+```bash
+pnpm install
 ```
 
-<details>
-<summary><strong>TLDR</strong></summary>
+### 3. Develop
 
-#### HTML
+Run both package and web app in development mode:
 
-```html
-<div class="slider-wrapper">
-  <div class="slide">Slide 1</div>
-  <div class="slide">Slide 2</div>
-  <div class="slide">Slide 3</div>
-</div>
+```bash
+pnpm dev
 ```
 
-#### CSS
+Or run them separately:
 
-```css
-[data-slider] {
-  display: flex;
-}
-
-[data-slider] > * {
-  flex-shrink: 0;
-  width: <number [unit]>;
-  padding-right: 1rem; /* If you want gaps */
-  padding-left: 1rem; /* If you want gaps */
-}
+```bash
+pnpm dev:package  # Watch package files
+pnpm dev:web      # Start Astro dev server
 ```
 
-#### Javascript
+### 4. Build
 
-```javascript
-// Create a new slider instance
-const slider = new Core(document.querySelector("[data-slider]"))
+Build both package and web app:
 
-// Update the slider (typically in an animation loop)
-function animate() {
-  slider.update()
-  requestAnimationFrame(animate)
-}
-
-animate()
-
-// Clean up when done
-// slider.destroy()
+```bash
+pnpm build
 ```
 
-</details>
+Or build separately:
 
-## Features
-
-### Really Really Really Basic Usage
-
-```javascript
-// Create a new slider instance
-const slider = new Core(wrapperElement, {
-  infinite: true,
-  snap: true,
-})
-
-// Update the slider (typically in an animation loop)
-function animate() {
-  slider.update()
-  requestAnimationFrame(animate)
-}
-animate()
-
-// Clean up when done
-slider.destroy()
+```bash
+pnpm build:package  # Build package
+pnpm build:web      # Build Astro site
 ```
 
-### Smarter Usage
+### 5. Publish
 
-Can be used as just the `Core`, but the idea and the way it's made is to be extended. Here's some [extending ideas/premade sliders](/docs/extend.md).
+When ready to publish your package:
 
-```js
-// import slider
-import Core from "smooothy"
-// or whatever just using GSAP for request animation frame
-import gsap from "../gsap"
-
-export class Slider extends Core {
-  constructor(wrapper, config) {
-    super({ wrapper, config })
-
-    // create your UI / do whatever
-    // ...
-  }
-
-  doSomething() {
-    // add your custom methods
-  }
-}
+```bash
+pnpm release:patch   # Patch version (0.0.1 -> 0.0.2)
+pnpm release:minor   # Minor version (0.0.1 -> 0.1.0)
+pnpm release:major   # Major version (0.0.1 -> 1.0.0)
 ```
 
-Most of those can be exported directly from the package, but if you want to combine functionality you might want to just look at source.
+## 📦 Package Development
 
-### Configuration Options
+### Package Structure
 
-The slider accepts the following configuration options:
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `infinite` | boolean | `true` | Enables infinite looping of slides |
-| `snap` | boolean | `true` | Enables snapping to slide positions |
-| `variableWidth` | boolean | `false` | Allows slides with different widths that snap to center |
-| `vertical` | boolean | `false` | Enables vertical scrolling instead of horizontal |
-| `dragSensitivity` | number | `0.005` | Multiplier for drag movement sensitivity |
-| `lerpFactor` | number | `0.3` | Controls the smoothness of animations (lower = smoother) |
-| `scrollSensitivity` | number | `1` | Multiplier for scroll wheel sensitivity |
-| `snapStrength` | number | `0.1` | How strongly the slider snaps to positions |
-| `speedDecay` | number | `0.85` | How quickly the sliding speed decays |
-| `bounceLimit` | number | `1` | Maximum overscroll amount when infinite is false |
-| `scrollInput` | boolean | `false` | Enables mouse wheel/trackpad scrolling |
-| `setOffset` | function | `({itemWidth, wrapperWidth, itemHeight, wrapperHeight, vertical}) => vertical ? itemHeight : itemWidth` | Custom function to set slide end offset |
-| `virtualScroll` | object | See below | Configuration for virtual scroll behavior |
-| `onSlideChange` | function | `null` | Callback when active slide changes |
-| `onResize` | function | `null` | Callback when slider is resized |
-| `onUpdate` | function | `null` | Callback on each update frame |
+Your package code lives in the `package/` directory:
 
-#### Virtual Scroll Configuration
+- `package/src/core.ts` - Main package implementation
+- `package/src/utils.ts` - Utility functions
+- `package/index.ts` - Package exports
 
-To handle scroll and trackpad events uses `virtualScroll` under the hood.
-The `virtualScroll` config option accepts an object with the following properties:
+### Build Outputs
 
-| Option              | Type    | Default | Description                             |
-| ------------------- | ------- | ------- | --------------------------------------- |
-| `mouseMultiplier`   | number  | `0.5`   | Multiplier for mouse wheel sensitivity  |
-| `touchMultiplier`   | number  | `2`     | Multiplier for touch scroll sensitivity |
-| `firefoxMultiplier` | number  | `30`    | Firefox-specific scroll multiplier      |
-| `useKeyboard`       | boolean | `false` | Enable keyboard scroll input            |
-| `passive`           | boolean | `true`  | Use passive event listeners             |
+The build process generates:
 
-```javascript
-const slider = new Core(wrapper, {
-  virtualScroll: {
-    mouseMultiplier: 0.75,
-    touchMultiplier: 1.5,
-  },
-})
+- `dist/esm.js` - ES Module format
+- `dist/cjs.js` - CommonJS format
+- `dist/package.min.js` - UMD bundle for browsers
+- `dist/index.d.ts` - TypeScript definitions
+
+### Customizing the Build
+
+Edit `bin/build.ts` to customize the build process. Update the global name and bundle name for browser builds:
+
+```typescript
+globalName: "YourPackageName",
+naming: "your-package.min.js",
 ```
 
-## Methods
+## 🌐 Documentation Site
 
-### Navigation
+The `web/` directory contains an Astro site for your documentation and landing page.
 
-```javascript
-slider.goToNext() // Go to next slide
-slider.goToPrev() // Go to previous slide
-slider.goToIndex(n) // Go to specific slide index
+### Customizing the Landing Page
+
+Edit `web/src/pages/index.astro` and `web/src/components/landing/Hero.astro` to customize your landing page.
+
+### Adding Documentation Pages
+
+Create new pages in `web/src/pages/`:
+
+```astro
+---
+import Layout from "~/layouts/Layout.astro"
+---
+
+<Layout>
+  <h1>Documentation Page</h1>
+  <!-- Your content here -->
+</Layout>
 ```
 
-### State Control
+### Styling
 
-```javascript
-slider.init() // Initialize the slider
-slider.kill() // Temporarily disable the slider
-slider.destroy() // Clean up event listeners and remove slider
-slider.paused = true // Pause slider interactions
-slider.paused = false // Unpause slider interactions
-slider.snap = true // Snaps slide in place
-slider.snap = false // Allows free scroll
+The site uses Tailwind CSS. Customize styles in `web/src/styles/` or add Tailwind classes directly.
+
+## 📝 Documentation
+
+Add your documentation files to the `docs/` directory. You can reference them in your Astro pages or link to them from your landing page.
+
+## 🔧 Configuration
+
+### Syncing Package Metadata
+
+To keep all `package.json` files in sync, update `package.config.json` with your package information and run:
+
+```bash
+pnpm sync
 ```
 
-### State Queries / Setters
+This syncs the following fields across all package.json files:
 
-```javascript
-slider.currentSlide // Get current slide index
-slider.progress // Get slider progress (0-1)
-slider.target // Get target position / Set slider target
-slider.current // Get current position / Set slider current
-slider.deltaTime // Get time elapsed since last update (in seconds)
-slider.viewport // Get viewport dimensions
-slider.viewport.itemWidth // Size of a single slide (horizontal)
-slider.viewport.wrapperWidth // Size of the wrapper (horizontal)
-slider.viewport.totalWidth // Size of the scrollable width
-slider.viewport.itemHeight // Size of a single slide (vertical)
-slider.viewport.wrapperHeight // Size of the wrapper (vertical)
-slider.viewport.totalHeight // Size of the scrollable height
-slider.viewport.vertical // Boolean indicating if slider is vertical
-slider.isVisible // Boolean if the slider is in view or not
-```
+- `name` - Package name
+- `version` - Package version
+- `author` - Author information
+- `description` - Package description
+- `license` - License type
+- `repository` - Git repository URL
+- `bugs` - Bug tracker URL
+- `homepage` - Homepage URL
+- `keywords` - Package keywords
 
-`Target` and `Current` can be used as setters as well. Setting `target` will make the slider lerp to that position, setting current will make it move instantly.
-Setting both is what you should do if you want to move it instantly to a specific position.
+### TypeScript
 
-```javascript
-slider.target = 5 // Lerp to slide 5
-slider.current = slider.target = 5 // Instantly move to slide 5
-```
+- Root `tsconfig.json` - TypeScript configuration for the package
+- `web/tsconfig.json` - TypeScript configuration for the Astro site
 
-The `deltaTime` property is particularly useful when implementing custom animations in the `onUpdate` callback:
+### Package Manager
 
-```javascript
-// Example: Creating a speed-based parallax effect
-class ParallaxSlider extends Core {
-  lerpedSpeed = 0 // Smoothed speed value
+This template uses `pnpm` with workspaces. The `pnpm-workspace.yaml` defines the workspace structure.
 
-  onUpdate({ speed, deltaTime, parallaxValues }) {
-    // Smooth out the speed using deltaTime
-    this.lerpedSpeed = damp(
-      this.lerpedSpeed,
-      speed,
-      5, // Damping factor
-      deltaTime
-    )
+## 📄 License
 
-    // Apply parallax based on smoothed speed
-    myElement.forEach((element, i) => {
-      const offset = parallaxValues[i] * Math.abs(this.lerpedSpeed) * 20
-      element.style.transform = `translateX(${offset}%)`
-    })
-  }
-}
-```
+MIT
 
-## HTML Structure
+## 🤝 Contributing
 
-The slider expects a wrapper element containing slide elements:
-
-```html
-<div class="slider-wrapper">
-  <div class="slide">Slide 1</div>
-  <div class="slide">Slide 2</div>
-  <div class="slide">Slide 3</div>
-</div>
-```
-
-Everything that's inside the container is going to be treated as slide, **so only slides should go in.**
-
-## CSS and Styling
-
-It's made to be styled/configured as much as possible from CSS directly. Position things as you wish to start directly in CSS, then add the slider. Use the `setOffset` callback in params as an aid for when it should end in case it's not infinite.
-
-Assuming the slider is marked with `[data-slider]`, you'll probably want at least the following css to be applied.
-
-**Horizontal (default):**
-```css
-[data-slider] {
-  display: flex;
-  overflow-x: hidden;
-}
-
-[data-slider] > * {
-  flex-shrink: 0;
-  width: <number [unit]>;
-}
-```
-
-**Vertical:**
-```css
-[data-slider] {
-  display: flex;
-  flex-direction: column;
-  overflow-y: hidden;
-  height: <number [unit]>;
-}
-
-[data-slider] > * {
-  flex-shrink: 0;
-  height: <number [unit]>;
-}
-```
-
-> ⚡️ CSS Gotcha —
-> To keep it as lignhtweight as possible it does not support gaps.
-> If you want gaps use full width slides as the first child,
-> apply padding to those (1/2 of the gap), and have the actual slide
-> inside so you'll get the spacing you want. Voilà.
-
-## Effects / Utils
-
-### Parallax
-
-The slider provides `parallaxValues` in the `onUpdate` callback that can be used to create parallax effects:
-
-```javascript
-class ParallaxSlider extends Core {
-  constructor(wrapper, config) {
-    super(wrapper, config)
-    this.parallaxElements = [...wrapper.querySelectorAll(".parallax")]
-  }
-
-  onUpdate({ parallaxValues }) {
-    // parallaxValues provides normalized position values for each slide
-    this.parallaxElements.forEach((element, i) => {
-      const offset = parallaxValues[i] * 20 // Multiply for stronger effect
-      element.style.transform = `translateX(${offset}%)`
-    })
-  }
-}
-```
-
-### Variable Width
-
-The slider supports slides with different widths when `variableWidth: true` is set in the config. Each slide's width is calculated automatically, and slides snap to center based on their individual widths. Perfect for mixed content layouts where some slides need more space than others.
-
-```javascript
-const slider = new Core(wrapper, {
-  variableWidth: true,
-  infinite: true,
-  snap: true,
-})
-```
-
-```html
-<div data-slider class="flex overflow-x-hidden">
-  <div class="w-[80vw] md:w-[30vw] shrink-0">
-    <!-- Normal width slide -->
-  </div>
-  <div class="w-[110vw] md:w-[50vw] shrink-0">
-    <!-- Wide slide -->
-  </div>
-  <div class="w-[80vw] md:w-[30vw] shrink-0">
-    <!-- Normal width slide -->
-  </div>
-</div>
-```
-
-**Key points:**
-- Set `variableWidth: true` in the config
-- Each slide's width is calculated automatically from CSS
-- Slides snap to center based on their individual widths
-- The first slide is automatically centered on initialization
-- Works with both `infinite: true` and `infinite: false`
-
-### Vertical Slider
-
-The slider supports vertical scrolling when `vertical: true` is set in the config. All the same functionality works in both horizontal and vertical orientations.
-
-```javascript
-const slider = new Core(wrapper, {
-  vertical: true,
-  infinite: true,
-  snap: true,
-})
-```
-
-```html
-<div data-slider class="flex flex-col overflow-y-hidden h-[80vh]">
-  <div class="h-[30vh] shrink-0">
-    <!-- Slide 1 -->
-  </div>
-  <div class="h-[30vh] shrink-0">
-    <!-- Slide 2 -->
-  </div>
-  <div class="h-[30vh] shrink-0">
-    <!-- Slide 3 -->
-  </div>
-</div>
-```
-
-**Key points:**
-- Set `vertical: true` in the config
-- Use `flex-col` and `overflow-y-hidden` in CSS for vertical layout
-- Use `height` instead of `width` for slide dimensions
-- Keyboard navigation uses ArrowUp/ArrowDown instead of ArrowLeft/ArrowRight
-- All features (infinite, snap, variable width, etc.) work in vertical mode
-
-## Event Callbacks
-
-```javascript
-const slider = new Core(wrapper, {
-  onSlideChange: (currentSlide, previousSlide) => {
-    console.log(`Moved from slide ${previousSlide} to ${currentSlide}`)
-  },
-  onResize: instance => {
-    console.log("Slider was resized")
-  },
-  onUpdate: instance => {
-    console.log("Slider updated")
-  },
-})
-```
-
-This does the bare minimum, well, and provides ways to extend it and make it into what you need. Callbacks a way to extend the functionality, [here's some useful examples](/docs//callbacks.md).
-
-## Touch and Mouse Interaction
-
-The slider automatically handles:
-
-- Mouse drag interactions (horizontal or vertical based on `vertical` config)
-- Touch swipes with horizontal/vertical detection
-- Momentum-based sliding
-- Bounce effects (when `infinite: false`)
-- Snap behavior (when `snap: true`)
-- Keyboard navigation (ArrowLeft/ArrowRight for horizontal, ArrowUp/ArrowDown for vertical)
-
-## Responsive Behavior
-
-The slider automatically recalculates dimensions on window resize. You can customize the offset behavior using the `setOffset` config option:
-
-```javascript
-const slider = new Core(wrapper, {
-  setOffset: ({ itemWidth, wrapperWidth }) => {
-    return wrapperWidth / 2 // Center the active slide
-  },
-})
-```
-
-## Cleanup
-
-Always call `destroy()` when removing the slider to clean up event listeners:
-
-```javascript
-slider.destroy()
-```
-
-## Premade Options
-
-```js
-import Core, { LinkSlider, ... } from "smooothy"
-```
-
-| Name             | Description                                       |
-| ---------------- | ------------------------------------------------- |
-| `Core`           | Base slider with core functionality               |
-| `KeyboardSlider` | Adds keyboard controls (arrows, spacebar, numpad) |
-| `LinkSlider`     | Handles link clicks within slides                 |
-| `ControlSlider`  | Full UI controls interface <sup>1</sup>           |
-
-_(1) Needs matching HTML setup_
+This is a starter template. Fork it, customize it, and make it your own!
 
 ---
 
-# WebGl
-
-Made this because all other slider were mostly syncing bad with WebGl.
-
-[_In depth webgl related docs._](/docs/webgl.md)
-
----
-
-## Smooothy in use.
-
-[**Siena Film Foundation**](https://www.siena.film/) by _[Niccolò Miranda](https://www.niccolomiranda.com/) [Federico Valla](https://federic.ooo/) [Carolina Hernando](https://www.behance.net/carohernando)_
-
----
-
-[Changelog](/docs/changelog.md)
+**Happy coding!** 🎉

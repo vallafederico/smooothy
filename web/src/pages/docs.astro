@@ -1,0 +1,29 @@
+---
+import Layout from "~/layouts/Layout.astro"
+---
+
+<Layout>
+  <div class="min-h-screen pt-16 bg-white">
+    <div class="container mx-auto px-4 py-20">
+      <h1 class="text-5xl font-bold mb-8">Documentation</h1>
+      
+      <div class="prose max-w-none">
+        <h2>Getting Started</h2>
+        <p>Add your documentation content here. You can write in Markdown or use Astro components.</p>
+        
+        <h2>Installation</h2>
+        <pre><code>npm install your-package-name</code></pre>
+        
+        <h2>Usage</h2>
+        <pre><code>import Core from 'your-package-name'
+
+const instance = new Core()
+instance.init()</code></pre>
+        
+        <h2>API Reference</h2>
+        <p>Document your API here.</p>
+      </div>
+    </div>
+  </div>
+</Layout>
+

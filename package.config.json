@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json.schemastore.org/package.json",
+  "name": "your-package-name",
+  "version": "0.0.1",
+  "description": "A starter template for creating npm packages with Astro documentation",
+  "author": "your-name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/package-starter.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/package-starter/issues"
+  },
+  "homepage": "https://github.com/yourusername/package-starter#readme",
+  "keywords": [
+    "starter",
+    "template",
+    "package"
+  ]
+}
+

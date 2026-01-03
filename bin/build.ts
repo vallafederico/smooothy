@@ -18,6 +18,10 @@ const option: BuildConfig = {
 
 async function run() {
   try {
+    // Update these to match your package
+    const globalName = "PackageName" // Change this to your package's global name
+    const bundleName = "package.min.js" // Change this to match your package name
+    
     await Promise.all([
       build({
         ...option,
@@ -34,15 +38,16 @@ async function run() {
         ...option,
         format: "iife",
         outdir: "./dist",
-        naming: "smooothy.min.js",
-        globalName: "Smooothy", // (*) DOESNT WORK
+        naming: bundleName,
+        globalName: globalName,
         target: "browser",
         minify: true,
         sourcemap: "none",
       }),
     ])
 
-    addGlobalName("./dist/smooothy.min.js", "Smooothy")
+    // Add global assignment for browser bundle
+    addGlobalName(`./dist/${bundleName}`, globalName)
   } catch (error) {
     console.error(error)
     process.exit(1)

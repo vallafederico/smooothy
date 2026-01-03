@@ -1,72 +1,31 @@
 ---
-import { LINKS } from "~/content"
-import Svgg from "@c/svg/Svgg.astro"
-import HoverUl from "@c/HoverUl.astro"
-const CREDITS = [
-  {
-    name: "3d Models",
-    href: "https://github.com/vallafederico/smooothy/blob/master/docs/credits.md#3d-models",
-  },
-  {
-    name: "Fonts",
-    href: "https://github.com/vallafederico/smooothy/blob/master/docs/credits.md#fonts",
-  },
-]
+// Simple footer template
 ---
 
-<footer data-module="footer" class="pb-sm pt-xl md:pb-0">
-  <figure class="pb-xl md:h-[30vw] md:pb-0">
-    <Svgg name="logo" class="h-auto w-full" />
-    <figcaption class="sr-only">Smooothy logo</figcaption>
-  </figure>
-
-  <!-- links -->
-  <ul
-    class="px-gx gap-gutter pb-xl flex flex-wrap text-[12px] md:flex-row md:items-end"
-  >
-    <li class="md:w-grids-2 md:ml-grid-3 md:-translate-x-[20%]">
-      <p class="tracking-tight">Look mom I made this</p>
-      <a
-        href={LINKS.website}
-        class="font-semibold tracking-tight uppercase underline"
-        target="_blank">HTTPS://FEDERIC.OOO</a
-      >
-      <ul class="pt-md font-semibold">
-        <li>
-          <a href={LINKS.instagram} target="_blank">
-            <div class="py-[2px]">
-              <HoverUl text="Instagram" />
-            </div>
-          </a>
-        </li>
-        <li>
-          <a href={LINKS.twitter} target="_blank">
-            <div class="py-[2px]">
-              <HoverUl text="Twitter" />
-            </div>
-          </a>
-        </li>
-        <li class="py-lg block md:hidden">
-          <p class="md:w-grids-1 md:ml-grid-1 font-normal">© 2025</p>
-        </li>
-      </ul>
-      <li class="md:w-grids-1 md:ml-grid-1 hidden md:block">© 2025</li>
-      <li class="md:w-grids-1 md:ml-grid-3 ml-grid-1">
-        <h3 class="pb-3">Credits</h3>
-        <ul class="flex flex-col items-start justify-start">
-          {
-            CREDITS.map(credit => (
-              <li class="font-semibold -tracking-wide">
-                <a href={credit.href} target="_blank">
-                  <div class="py-[2px]">
-                    <HoverUl text={credit.name} />
-                  </div>
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </li>
-    </li>
-  </ul>
+<footer class="bg-slate-900 text-slate-400 py-12">
+  <div class="container mx-auto px-4">
+    <div class="flex flex-col md:flex-row justify-between items-center">
+      <p class="mb-4 md:mb-0">
+        © {new Date().getFullYear()} Your Name. All rights reserved.
+      </p>
+      <div class="flex gap-6">
+        <a
+          href="https://github.com/yourusername"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="hover:text-white transition"
+        >
+          GitHub
+        </a>
+        <a
+          href="https://twitter.com/yourusername"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="hover:text-white transition"
+        >
+          Twitter
+        </a>
+      </div>
+    </div>
+  </div>
 </footer>

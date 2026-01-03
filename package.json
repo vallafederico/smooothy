@@ -1,36 +1,30 @@
 {
-  "name": "smooothy",
-  "author": "vallafederico",
-  "version": "0.0.29",
-  "description": "",
+  "name": "your-package-name",
+  "author": "your-name",
+  "version": "0.0.1",
+  "description": "A starter template for creating npm packages with Astro documentation",
   "type": "module",
   "main": "index.js",
   "types": "./dist/index.d.ts",
-  "unpkg": "./dist/smooothy.min.js",
+  "unpkg": "./dist/package.min.js",
   "exports": {
     "types": "./dist/index.d.ts",
     "import": "./dist/esm.js",
     "require": "./dist/cjs.js",
-    "unpkg": "./dist/smooothy.min.js"
+    "unpkg": "./dist/package.min.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vallafederico/smooothy.git"
+    "url": "git+https://github.com/yourusername/package-starter.git"
   },
   "bugs": {
-    "url": "https://github.com/vallafederico/smooothy/issues"
+    "url": "https://github.com/yourusername/package-starter/issues"
   },
-  "homepage": "https://github.com/vallafederico/smooothy#readme",
+  "homepage": "https://github.com/yourusername/package-starter#readme",
   "keywords": [
-    "slider",
-    "smooth",
-    "carousel",
-    "infinite",
-    "infinite scroll",
-    "parallax",
-    "parallax scroll",
-    "parallax slider",
-    "parallax carousel"
+    "starter",
+    "template",
+    "package"
   ],
   "scripts": {
     "build": "pnpm run -w --parallel /^build:.*/",
@@ -39,6 +33,7 @@
     "dev": "pnpm run -w --parallel /^dev:.*/",
     "dev:web": "cd web && pnpm dev",
     "dev:package": "bun run bin/dev.js",
+    "sync": "bun run bin/sync-package-json.ts",
     "pub": "npm version patch && pnpm run build:package && npm publish",
     "release:patch": "npm version patch && pnpm run build:package && npm publish",
     "release:minor": "npm version minor && pnpm run build:package && npm publish",
@@ -51,12 +46,9 @@
   ],
   "license": "MIT",
   "devDependencies": {
-    "@types/virtual-scroll": "^2.0.3",
     "bun": "^1.2.4",
     "bun-plugin-dts": "^0.3.0",
     "esbuild": "^0.25.0"
   },
-  "dependencies": {
-    "virtual-scroll": "^2.2.1"
-  }
+  "dependencies": {}
 }

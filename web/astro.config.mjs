@@ -36,6 +36,6 @@ export default defineConfig({
   devToolbar: {
     enabled: false,
   },
-  site: "https://smooothy.federic.ooo",
+  site: "https://your-package-name.vercel.app", // Update with your deployment URL
   integrations: [react(), vue(), sitemap({})],
 })
