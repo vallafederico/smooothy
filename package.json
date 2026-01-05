@@ -1,7 +1,7 @@
 {
   "name": "smooothy",
   "author": "vallafederico",
-  "version": "0.0.31",
+  "version": "0.0.32",
   "description": "",
   "type": "module",
   "main": "index.js",
