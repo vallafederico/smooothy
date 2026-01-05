@@ -1,0 +1,241 @@
+---
+// Standalone test page for unpkg script import
+// No Layout, no custom imports - just testing the CDN script
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smooothy Unpkg Test</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          system-ui,
+          -apple-system,
+          sans-serif;
+        background: #1a1a1a;
+        color: #fff;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+      }
+
+      h1 {
+        margin-bottom: 2rem;
+        text-align: center;
+      }
+
+      .test-container {
+        width: 100%;
+        max-width: 1200px;
+      }
+
+      .slider-wrapper {
+        position: relative;
+        width: 100%;
+        margin-bottom: 4rem;
+      }
+
+      [data-smooothy] {
+        display: flex;
+        width: 100vw;
+        overflow-x: hidden;
+        padding: 2rem calc(50% - 40vw);
+        gap: 1rem;
+      }
+
+      .slide {
+        flex-shrink: 0;
+        width: 80vw;
+        height: 400px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 12px;
+        font-size: 3rem;
+        font-weight: bold;
+        color: white;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .controls {
+        position: absolute;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 1rem;
+        z-index: 10;
+      }
+
+      button {
+        padding: 0.75rem 1.5rem;
+        background: rgba(255, 255, 255, 0.2);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 8px;
+        color: white;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      button:hover {
+        background: rgba(255, 255, 255, 0.3);
+        border-color: rgba(255, 255, 255, 0.5);
+      }
+
+      .info {
+        margin-top: 2rem;
+        text-align: center;
+        color: #888;
+        font-size: 0.9rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="test-container">
+      <h1>Smooothy Unpkg Test</h1>
+
+      <div class="slider-wrapper">
+        <h2 style="margin-bottom: 1rem; font-size: 1.2rem; color: #888;">
+          Slider 1 (Default config)
+        </h2>
+        <div data-smooothy="1">
+          <div class="slide">Slide 1</div>
+          <div class="slide">Slide 2</div>
+          <div class="slide">Slide 3</div>
+          <div class="slide">Slide 4</div>
+          <div class="slide">Slide 5</div>
+        </div>
+      </div>
+
+      <div class="slider-wrapper">
+        <h2 style="margin-bottom: 1rem; font-size: 1.2rem; color: #888;">
+          Slider 2 (Custom config)
+        </h2>
+        <div data-smooothy="2">
+          <div class="slide">Slide A</div>
+          <div class="slide">Slide B</div>
+          <div class="slide">Slide C</div>
+          <div class="slide">Slide D</div>
+        </div>
+      </div>
+
+      <div class="info">Testing smooothy from https://unpkg.com/smooothy</div>
+    </div>
+
+    <script>
+      // Load the script from unpkg
+      const script = document.createElement("script")
+      script.src = "https://unpkg.com/smooothy"
+      script.onload = () => {
+        console.log("Script loaded from unpkg")
+
+        // Wait a tick for the global to be set (script execution might be async)
+        // Also check if the script needs to be rebuilt - the global might not be set
+        setTimeout(() => {
+          // Check for Smooothy global - try multiple possible names
+          const SmooothyClass =
+            (window as any).Smooothy ||
+            (window as any).smooothy ||
+            (window as any).default ||
+            (typeof Smooothy !== "undefined" ? Smooothy : null)
+
+          if (!SmooothyClass) {
+            console.error("Smooothy not found")
+            console.log("Checking window object...")
+            console.log("window.Smooothy:", (window as any).Smooothy)
+            console.log("window.smooothy:", (window as any).smooothy)
+            console.log(
+              "Available globals with 'smooth':",
+              Object.keys(window).filter(
+                k =>
+                  k.toLowerCase().includes("smooth") ||
+                  k.toLowerCase().includes("smoo")
+              )
+            )
+            console.log(
+              "Note: The build script should add window.Smooothy. You may need to rebuild."
+            )
+
+            const container = document.querySelector(".test-container")
+            if (container) {
+              container.innerHTML +=
+                '<div style="color: red; text-align: center; margin-top: 2rem; padding: 1rem;">Error: Smooothy not found. The build may need to be run to add the global. Check console for details.</div>'
+            }
+            return
+          }
+
+          console.log("Smooothy found:", SmooothyClass)
+
+          let rafs = []
+
+          {
+            const sliderWrapper = document.querySelector('[data-smooothy="1"]')
+
+            if (sliderWrapper) {
+              const slider = new SmooothyClass(sliderWrapper, {
+                // infinite: true,
+                // snap: false,
+                // dragSensitivity: 0.005,
+                // lerpFactor: 0.3,
+                // scrollSensitivity: 1,
+                // snapStrength: 0.5,
+              })
+
+              rafs.push(() => slider.update())
+            }
+          }
+
+          {
+            const sliderWrapper = document.querySelector('[data-smooothy="2"]')
+            console.log(sliderWrapper)
+
+            if (sliderWrapper) {
+              const slider = new SmooothyClass(sliderWrapper, {
+                infinite: false,
+                snap: false,
+                dragSensitivity: 0.005,
+                lerpFactor: 0.3,
+                scrollSensitivity: 1,
+                snapStrength: 0.5,
+              })
+
+              rafs.push(() => slider.update())
+            }
+          }
+
+          console.log(rafs)
+
+          function animate() {
+            rafs.forEach(raf => raf())
+            requestAnimationFrame(animate)
+          }
+
+          animate()
+        }, 0)
+      }
+      script.onerror = () => {
+        console.error("Failed to load script from unpkg")
+        const container = document.querySelector(".test-container")
+        if (container) {
+          container.innerHTML +=
+            '<div style="color: red; text-align: center; margin-top: 2rem; padding: 1rem;">Error: Failed to load script from unpkg</div>'
+        }
+      }
+      document.head.appendChild(script)
+    </script>
+  </body>
+</html>
