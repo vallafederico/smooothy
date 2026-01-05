@@ -6,6 +6,7 @@
 import type { BuildConfig } from "bun"
 import { build } from "bun"
 import dts from "bun-plugin-dts"
+import { spawn } from "bun"
 import { addGlobalName } from "./utils/addGlobalName"
 
 const option: BuildConfig = {
@@ -43,6 +44,20 @@ async function run() {
     ])
 
     addGlobalName("./dist/smooothy.min.js", "Smooothy")
+
+    // Run build verification tests
+    console.log("\n")
+    const testProcess = spawn({
+      cmd: ["bun", "run", "bin/test-build.ts"],
+      stdout: "inherit",
+      stderr: "inherit",
+    })
+
+    const exitCode = await testProcess.exited
+    if (exitCode !== 0) {
+      console.error("\n❌ Build verification tests failed!")
+      process.exit(1)
+    }
   } catch (error) {
     console.error(error)
     process.exit(1)
