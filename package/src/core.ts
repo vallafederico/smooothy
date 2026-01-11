@@ -30,6 +30,7 @@ interface CoreConfig {
   snapStrength: number
   speedDecay: number
   bounceLimit: number
+  domUpdateThreshold: number
   virtualScroll: VirtualScrollConfig
   setOffset: (viewport: Viewport) => number
   scrollInput: boolean
@@ -51,6 +52,7 @@ const DEFAULT_CONFIG: CoreConfig = {
   snapStrength: 0.1,
   speedDecay: 0.85,
   bounceLimit: 1,
+  domUpdateThreshold: 0.1,
   virtualScroll: {
     mouseMultiplier: 0.5,
     touchMultiplier: 2,
@@ -58,8 +60,13 @@ const DEFAULT_CONFIG: CoreConfig = {
     useKeyboard: false,
     passive: true,
   },
-  setOffset: ({ itemWidth, wrapperWidth, itemHeight, wrapperHeight, vertical }) =>
-    vertical ? itemHeight : itemWidth,
+  setOffset: ({
+    itemWidth,
+    wrapperWidth,
+    itemHeight,
+    wrapperHeight,
+    vertical,
+  }) => (vertical ? itemHeight : itemWidth),
 
   /** Functionality */
   scrollInput: false,
@@ -105,6 +112,14 @@ export class Core {
   scrollDirection?: "horizontal" | "vertical"
   parallaxValues?: number[]
   webglValue: number = 0 // (*) ADD WEBGL VALUE TO SLIDER (better name)
+  #lastAppliedTranslates: number[] = []
+  #mouseDownHandler?: (e: MouseEvent) => void
+  #mouseMoveHandler?: (e: MouseEvent) => void
+  #mouseUpHandler?: () => void
+  #touchStartHandler?: (e: TouchEvent) => void
+  #touchMoveHandler?: (e: TouchEvent) => void
+  #touchEndHandler?: () => void
+  #resizeObserver?: ResizeObserver
 
   onSlideChange?: (current: number, previous: number) => void
   onResize?: (core: Core) => void
@@ -143,7 +158,6 @@ export class Core {
     this.#addEventListeners()
     this.wrapper.style.cursor = "grab"
 
-    this.#setupViewport()
     this.#setupVirtualScroll()
 
     // Center first slide for variable width non-infinite sliders
@@ -177,31 +191,38 @@ export class Core {
   }
 
   #setupViewport(): void {
-    const itemWidths = this.items.map(
-      item => item.getBoundingClientRect().width
-    )
-    const itemHeights = this.items.map(
-      item => item.getBoundingClientRect().height
-    )
+    const itemCount = this.items.length
+    const itemWidths = new Array(itemCount)
+    const itemHeights = new Array(itemCount)
+    let totalWidth = 0
+    let totalHeight = 0
+
+    for (let i = 0; i < itemCount; i++) {
+      const rect = this.items[i].getBoundingClientRect()
+      const width = rect.width
+      const height = rect.height
+      itemWidths[i] = width
+      itemHeights[i] = height
+      totalWidth += width
+      totalHeight += height
+    }
     const wrapperWidth = this.wrapper.clientWidth
     const wrapperHeight = this.wrapper.clientHeight
-    const totalWidth = itemWidths.reduce((sum, width) => sum + width, 0)
-    const totalHeight = itemHeights.reduce((sum, height) => sum + height, 0)
 
     let runningOffset = 0
-    this.itemOffsets = itemWidths.map(width => {
-      const start = runningOffset
-      runningOffset += width
-      return start
-    })
+    this.itemOffsets = new Array(itemCount)
+    for (let i = 0; i < itemCount; i++) {
+      this.itemOffsets[i] = runningOffset
+      runningOffset += itemWidths[i]
+    }
     this.itemWidths = itemWidths
 
     let runningHeightOffset = 0
-    this.itemHeightOffsets = itemHeights.map(height => {
-      const start = runningHeightOffset
-      runningHeightOffset += height
-      return start
-    })
+    this.itemHeightOffsets = new Array(itemCount)
+    for (let i = 0; i < itemCount; i++) {
+      this.itemHeightOffsets[i] = runningHeightOffset
+      runningHeightOffset += itemHeights[i]
+    }
     this.itemHeights = itemHeights
 
     this.viewport = {
@@ -216,6 +237,10 @@ export class Core {
 
     this.#offset = this.config.setOffset(this.viewport)
 
+    if (this.#lastAppliedTranslates.length !== itemCount) {
+      this.#lastAppliedTranslates = new Array(itemCount).fill(0)
+    }
+
     if (this.config.variableWidth) {
       if (this.config.vertical) {
         this.maxScroll = -(this.viewport.totalHeight - this.#offset)
@@ -224,8 +249,8 @@ export class Core {
       }
     } else {
       const denominator = this.config.vertical
-        ? (this.viewport.itemHeight || 1)
-        : (this.viewport.itemWidth || 1)
+        ? this.viewport.itemHeight || 1
+        : this.viewport.itemWidth || 1
       const total = this.config.vertical
         ? this.viewport.totalHeight
         : this.viewport.totalWidth
@@ -238,17 +263,17 @@ export class Core {
   }
 
   #addEventListeners(): void {
-    const handleMouseDown = (e: MouseEvent) => this.#handleDragStart(e)
-    const handleMouseMove = (e: MouseEvent) => this.#handleDragMove(e)
-    const handleMouseUp = () => this.#handleDragEnd()
+    this.#mouseDownHandler = (e: MouseEvent) => this.#handleDragStart(e)
+    this.#mouseMoveHandler = (e: MouseEvent) => this.#handleDragMove(e)
+    this.#mouseUpHandler = () => this.#handleDragEnd()
 
-    this.wrapper.addEventListener("mousedown", handleMouseDown)
-    window.addEventListener("mousemove", handleMouseMove)
-    window.addEventListener("mouseup", handleMouseUp)
+    this.wrapper.addEventListener("mousedown", this.#mouseDownHandler)
+    window.addEventListener("mousemove", this.#mouseMoveHandler)
+    window.addEventListener("mouseup", this.#mouseUpHandler)
 
     const SCROLL_THRESHOLD = 5
 
-    const handleTouchStart = (e: TouchEvent) => {
+    this.#touchStartHandler = (e: TouchEvent) => {
       const touch = e.touches[0]
       this.touchStartY = touch.clientY
       this.touchStartX = touch.clientX
@@ -258,7 +283,7 @@ export class Core {
       this.#handleDragStart(touch)
     }
 
-    const handleTouchMove = (e: TouchEvent) => {
+    this.#touchMoveHandler = (e: TouchEvent) => {
       const touch = e.touches[0]
       const deltaY = Math.abs(touch.clientY - this.touchStartY!)
       const deltaX = Math.abs(touch.clientX - this.touchStartX!)
@@ -287,22 +312,24 @@ export class Core {
       }
     }
 
-    const handleTouchEnd = () => {
+    this.#touchEndHandler = () => {
       this.scrollDirection = undefined
       this.touchPreviousX = undefined
       this.touchPreviousY = undefined
       this.#handleDragEnd()
     }
 
-    this.wrapper.addEventListener("touchstart", handleTouchStart)
-    window.addEventListener("touchmove", handleTouchMove, { passive: false })
-    window.addEventListener("touchend", handleTouchEnd)
+    this.wrapper.addEventListener("touchstart", this.#touchStartHandler)
+    window.addEventListener("touchmove", this.#touchMoveHandler, {
+      passive: false,
+    })
+    window.addEventListener("touchend", this.#touchEndHandler)
 
-    const resizeObserver = new ResizeObserver(() => {
+    this.#resizeObserver = new ResizeObserver(() => {
       if (this.resizeTimeout) clearTimeout(this.resizeTimeout)
       this.resizeTimeout = setTimeout(() => this.resize(), 10)
     })
-    resizeObserver.observe(this.wrapper)
+    this.#resizeObserver.observe(this.wrapper)
   }
 
   /** Events */
@@ -350,16 +377,16 @@ export class Core {
         }
 
         const delta = this.config.vertical
-          ? (!this.config.scrollInput
+          ? !this.config.scrollInput
+            ? event.deltaY
+            : Math.abs(event.deltaY) > Math.abs(event.deltaX)
               ? event.deltaY
-              : Math.abs(event.deltaY) > Math.abs(event.deltaX)
-                ? event.deltaY
-                : event.deltaX)
-          : (!this.config.scrollInput
+              : event.deltaX
+          : !this.config.scrollInput
+            ? event.deltaX
+            : Math.abs(event.deltaX) > Math.abs(event.deltaY)
               ? event.deltaX
-              : Math.abs(event.deltaX) > Math.abs(event.deltaY)
-                ? event.deltaX
-                : event.deltaY)
+              : event.deltaY
 
         const deltaFactor = this.config.variableWidth
           ? this.config.scrollSensitivity
@@ -413,8 +440,8 @@ export class Core {
       // Touch event - calculate movement using tracked previous position
       const current = this.config.vertical ? event.clientY : event.clientX
       const previous = this.config.vertical
-        ? (this.touchPreviousY || current)
-        : (this.touchPreviousX || current)
+        ? this.touchPreviousY || current
+        : this.touchPreviousX || current
       const movement = current - previous
       this.speed += movement * 0.01
     }
@@ -484,9 +511,7 @@ export class Core {
         const wrapperCenter = this.config.vertical
           ? this.viewport.wrapperHeight / 2
           : this.viewport.wrapperWidth / 2
-        const centerPos = this.#normalizePosition(
-          -this.current + wrapperCenter
-        )
+        const centerPos = this.#normalizePosition(-this.current + wrapperCenter)
         const nearestIndex = this.#findNearestSlide(centerPos)
         this.#updateCurrentSlide(nearestIndex)
         this.#updateInfiniteVariableWidth()
@@ -507,10 +532,7 @@ export class Core {
           : this.viewport.totalWidth
         const normalized = Math.max(
           0,
-          Math.min(
-            -this.current + wrapperCenter,
-            total
-          )
+          Math.min(-this.current + wrapperCenter, total)
         )
         this.#updateCurrentSlide(this.#findNearestSlide(normalized))
         this.#updateFiniteVariableWidth()
@@ -525,35 +547,62 @@ export class Core {
   }
 
   #updateFinite(): void {
-    this.parallaxValues = this.items.map((item, i) => {
-      const translate = this.config.vertical
-        ? this.current * this.viewport.itemHeight
-        : this.current * this.viewport.itemWidth
-      const transform = this.config.vertical
-        ? `translateY(${translate}px)`
-        : `translateX(${translate}px)`
-      item.style.transform = transform
+    const values = this.#ensureParallaxValues()
+    const vertical = this.config.vertical
+    const itemSize = vertical
+      ? this.viewport.itemHeight
+      : this.viewport.itemWidth
+    const translate = this.current * itemSize
+    const threshold = this.config.domUpdateThreshold
+    const dragging = this.isDragging
+    const transform = vertical
+      ? `translateY(${translate}px)`
+      : `translateX(${translate}px)`
 
-      return translate
-    })
+    for (let i = 0; i < this.items.length; i++) {
+      const lastTranslate = this.#lastAppliedTranslates[i] ?? 0
+      const diff = Math.abs(translate - lastTranslate)
+
+      // Only update DOM if change exceeds threshold or we're dragging
+      if (diff > threshold || dragging) {
+        this.items[i].style.transform = transform
+        this.#lastAppliedTranslates[i] = translate
+      }
+
+      values[i] = i + this.current
+    }
   }
 
   #updateInfinite(): void {
-    this.parallaxValues = this.items.map((item, i) => {
+    const values = this.#ensureParallaxValues()
+    const vertical = this.config.vertical
+    const length = this.items.length
+    const itemSize = vertical
+      ? this.viewport.itemHeight
+      : this.viewport.itemWidth
+    const threshold = this.config.domUpdateThreshold
+    const dragging = this.isDragging
+
+    for (let i = 0; i < length; i++) {
       const unitPos = this.current + i
-      const x = symmetricMod(unitPos, this.items.length) - i
-
-      const itemSize = this.config.vertical
-        ? this.viewport.itemHeight
-        : this.viewport.itemWidth
+      const wrapped = symmetricMod(unitPos, length)
+      const x = wrapped - i
       const translate = x * itemSize
-      const transform = this.config.vertical
-        ? `translateY(${translate}px)`
-        : `translateX(${translate}px)`
-      item.style.transform = transform
 
-      return symmetricMod(unitPos, this.items.length)
-    })
+      const lastTranslate = this.#lastAppliedTranslates[i] ?? 0
+      const diff = Math.abs(translate - lastTranslate)
+
+      // Only update DOM if change exceeds threshold or we're dragging
+      if (diff > threshold || dragging) {
+        const transform = vertical
+          ? `translateY(${translate}px)`
+          : `translateX(${translate}px)`
+        this.items[i].style.transform = transform
+        this.#lastAppliedTranslates[i] = translate
+      }
+
+      values[i] = wrapped
+    }
   }
 
   #getSlideCenter(index: number): number {
@@ -570,8 +619,8 @@ export class Core {
 
   #getSnapTargetForIndex(index: number): number {
     const total = this.config.vertical
-      ? (this.viewport.totalHeight || 1)
-      : (this.viewport.totalWidth || 1)
+      ? this.viewport.totalHeight || 1
+      : this.viewport.totalWidth || 1
     const wrapperCenter = this.config.vertical
       ? this.viewport.wrapperHeight / 2
       : this.viewport.wrapperWidth / 2
@@ -590,18 +639,20 @@ export class Core {
 
   #normalizePosition(value: number): number {
     const total = this.config.vertical
-      ? (this.viewport.totalHeight || 1)
-      : (this.viewport.totalWidth || 1)
+      ? this.viewport.totalHeight || 1
+      : this.viewport.totalWidth || 1
     return ((value % total) + total) % total
   }
 
   #findNearestSlide(position: number): number {
-    const offsets = this.config.vertical ? this.itemHeightOffsets : this.itemOffsets
+    const offsets = this.config.vertical
+      ? this.itemHeightOffsets
+      : this.itemOffsets
     if (!offsets.length) return 0
 
     const total = this.config.vertical
-      ? (this.viewport.totalHeight || 1)
-      : (this.viewport.totalWidth || 1)
+      ? this.viewport.totalHeight || 1
+      : this.viewport.totalWidth || 1
     const normalized = this.config.infinite
       ? this.#normalizePosition(position)
       : Math.max(0, Math.min(position, total))
@@ -609,25 +660,27 @@ export class Core {
     let nearestIndex = 0
     let minDistance = Number.POSITIVE_INFINITY
 
-    offsets.forEach((offset, index) => {
-      const center = this.#getSlideCenter(index)
+    for (let i = 0; i < offsets.length; i++) {
+      const center = this.#getSlideCenter(i)
       const distance = Math.abs(normalized - center)
       if (distance < minDistance) {
         minDistance = distance
-        nearestIndex = index
+        nearestIndex = i
       }
-    })
+    }
 
     return nearestIndex
   }
 
   #snapToNearest(target: number): number {
-    const offsets = this.config.vertical ? this.itemHeightOffsets : this.itemOffsets
+    const offsets = this.config.vertical
+      ? this.itemHeightOffsets
+      : this.itemOffsets
     if (!offsets.length) return target
 
     const total = this.config.vertical
-      ? (this.viewport.totalHeight || 1)
-      : (this.viewport.totalWidth || 1)
+      ? this.viewport.totalHeight || 1
+      : this.viewport.totalWidth || 1
     const wrapperCenter = this.config.vertical
       ? this.viewport.wrapperHeight / 2
       : this.viewport.wrapperWidth / 2
@@ -640,31 +693,59 @@ export class Core {
   }
 
   #updateFiniteVariableWidth(): void {
-    this.parallaxValues = this.items.map((item, i) => {
-      const translate = this.current
-      const offsets = this.config.vertical ? this.itemHeightOffsets : this.itemOffsets
-      const transform = this.config.vertical
-        ? `translateY(${translate}px)`
-        : `translateX(${translate}px)`
-      item.style.transform = transform
-      return translate + offsets[i]
-    })
+    const values = this.#ensureParallaxValues()
+    const vertical = this.config.vertical
+    const offsets = vertical ? this.itemHeightOffsets : this.itemOffsets
+    const translate = this.current
+    const threshold = this.config.domUpdateThreshold
+    const dragging = this.isDragging
+    const transform = vertical
+      ? `translateY(${translate}px)`
+      : `translateX(${translate}px)`
+
+    for (let i = 0; i < this.items.length; i++) {
+      const lastTranslate = this.#lastAppliedTranslates[i] ?? 0
+      const diff = Math.abs(translate - lastTranslate)
+
+      // Only update DOM if change exceeds threshold or we're dragging
+      if (diff > threshold || dragging) {
+        this.items[i].style.transform = transform
+        this.#lastAppliedTranslates[i] = translate
+      }
+
+      values[i] = translate + (offsets[i] ?? 0)
+    }
   }
 
   #updateInfiniteVariableWidth(): void {
     const total = this.config.vertical
-      ? (this.viewport.totalHeight || 1)
-      : (this.viewport.totalWidth || 1)
-    this.parallaxValues = this.items.map((item, i) => {
-      const offsets = this.config.vertical ? this.itemHeightOffsets : this.itemOffsets
+      ? this.viewport.totalHeight || 1
+      : this.viewport.totalWidth || 1
+    const values = this.#ensureParallaxValues()
+    const vertical = this.config.vertical
+    const offsets = vertical ? this.itemHeightOffsets : this.itemOffsets
+    const threshold = this.config.domUpdateThreshold
+    const dragging = this.isDragging
+
+    for (let i = 0; i < this.items.length; i++) {
       const offset = offsets[i] ?? 0
-      const x = symmetricMod(this.current + offset, total) - offset
-      const transform = this.config.vertical
-        ? `translateY(${x}px)`
-        : `translateX(${x}px)`
-      item.style.transform = transform
-      return symmetricMod(this.current + offset, total)
-    })
+      const wrapped = symmetricMod(this.current + offset, total)
+      const translate = wrapped - offset
+
+      const lastTranslate = this.#lastAppliedTranslates[i] ?? 0
+      const diff = Math.abs(translate - lastTranslate)
+
+      // Only update DOM if change exceeds threshold or we're dragging
+      if (diff > threshold || dragging) {
+        const transform = vertical
+          ? `translateY(${translate}px)`
+          : `translateX(${translate}px)`
+        this.items[i].style.transform = transform
+        this.#lastAppliedTranslates[i] = translate
+      }
+
+      values[i] = wrapped
+    }
   }
 
   #renderSpeed(): void {
@@ -725,8 +806,8 @@ export class Core {
   getProgress(): number {
     if (this.config.variableWidth) {
       const total = this.config.vertical
-        ? (this.viewport.totalHeight || 1)
-        : (this.viewport.totalWidth || 1)
+        ? this.viewport.totalHeight || 1
+        : this.viewport.totalWidth || 1
       const position = ((-this.current % total) + total) % total
       return position / total
     }
@@ -738,24 +819,29 @@ export class Core {
 
   destroy(): void {
     this.kill()
-    window.removeEventListener("mousemove", (e: MouseEvent) =>
-      this.#handleDragMove(e)
-    )
-    window.removeEventListener("mouseup", () => this.#handleDragEnd())
-    window.removeEventListener("touchmove", (e: TouchEvent) => {
-      const touch = e.touches[0]
-      this.#handleDragMove(touch)
-    })
-    window.removeEventListener("touchend", () => this.#handleDragEnd())
-    this.wrapper.removeEventListener("mousedown", (e: MouseEvent) =>
-      this.#handleDragStart(e)
-    )
-    this.wrapper.removeEventListener("touchstart", (e: TouchEvent) => {
-      const touch = e.touches[0]
-      this.#handleDragStart(touch)
-    })
+    if (this.#mouseDownHandler) {
+      this.wrapper.removeEventListener("mousedown", this.#mouseDownHandler)
+    }
+    if (this.#mouseMoveHandler) {
+      window.removeEventListener("mousemove", this.#mouseMoveHandler)
+    }
+    if (this.#mouseUpHandler) {
+      window.removeEventListener("mouseup", this.#mouseUpHandler)
+    }
+    if (this.#touchStartHandler) {
+      this.wrapper.removeEventListener("touchstart", this.#touchStartHandler)
+    }
+    if (this.#touchMoveHandler) {
+      window.removeEventListener("touchmove", this.#touchMoveHandler)
+    }
+    if (this.#touchEndHandler) {
+      window.removeEventListener("touchend", this.#touchEndHandler)
+    }
     if (this.resizeTimeout) clearTimeout(this.resizeTimeout)
-    if (this.virtualScroll && this.config.scrollInput) {
+    if (this.#resizeObserver) {
+      this.#resizeObserver.disconnect()
+    }
+    if (this.virtualScroll) {
       this.virtualScroll.destroy()
     }
     if (this.observer) {
@@ -808,8 +894,8 @@ export class Core {
   get progress(): number {
     if (this.config.variableWidth) {
       const total = this.config.vertical
-        ? (this.viewport.totalHeight || 1)
-        : (this.viewport.totalWidth || 1)
+        ? this.viewport.totalHeight || 1
+        : this.viewport.totalWidth || 1
       const position = -this.target
 
       if (this.config.infinite) {
@@ -832,6 +918,16 @@ export class Core {
         return Math.max(0, Math.min(1, current / total))
       }
     }
+  }
+
+  #ensureParallaxValues(): number[] {
+    if (
+      !this.parallaxValues ||
+      this.parallaxValues.length !== this.items.length
+    ) {
+      this.parallaxValues = new Array(this.items.length).fill(0)
+    }
+    return this.parallaxValues
   }
 
   resize(): void {
