@@ -19,7 +19,9 @@ const slides = Array.from({ length: 10 }, (_, i) => i)
       <div class="flex aspect-[3/4] w-[80vw] shrink-0 items-center justify-center p-1 md:w-[30vw]">
         <div class="relative h-full w-full p-8 outline outline-gray-700">
           <p class="absolute top-2 left-2 z-10">{i}</p>
-          <div data-parallax class="h-full w-full outline outline-gray-800" />
+          <div data-parallax class="h-full w-full outline outline-gray-800">
+            <p>0</p>
+          </div>
         </div>
       </div>
     ))
@@ -31,14 +33,26 @@ const slides = Array.from({ length: 10 }, (_, i) => i)
 
   const s1 = document.querySelector("[data-slider='vanilla-finite']")
   if (s1) {
+    const parallaxes = [...s1.querySelectorAll("[data-parallax]")]
+    const pValues = parallaxes.map(p => p.querySelector("p"))
+
     const onSlideChange = (slide, previous) => {
       slider.items[previous].children[0].classList.remove("active")
       slider.items[slide].children[0].classList.add("active")
     }
 
     const onUpdate = slider => {
-      // console.log(slider.progress)
-      // console.log(Math.abs(slider.current / (slider.items.length - 1)))
+      const { parallaxValues } = slider
+
+      parallaxes.forEach((parallax, i) => {
+        console.log(`Parallax ${i}:`, parallaxValues[i])
+        if (parallax instanceof HTMLElement) {
+          parallax.style.transform = `translateX(${parallaxValues[i] * 10}%)`
+        }
+        if (pValues[i]) {
+          pValues[i].textContent = parallaxValues[i].toFixed(2)
+        }
+      })
     }
 
     const slider = new Slider(s1, { infinite: false, onSlideChange, onUpdate })
