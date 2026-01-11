@@ -28,7 +28,7 @@ Different sizes
 
 ## 0.0.29
 
-_Current_
+_02/01/2026_
 
 Added vertical slider support
 
@@ -37,3 +37,27 @@ Added vertical slider support
 - Updated keyboard navigation to use ArrowUp/ArrowDown for vertical mode
 - All features (infinite, snap, variable width, etc.) now work in both orientations
 - Added vertical slider example component and documentation
+
+## 0.0.30
+
+_05/01/2026_
+
+Added tests and fixed globalName issue
+
+- Fixed globalName utility
+- Added test infrastructure
+
+## 0.0.31
+
+_05/01/2026_
+
+Version bump
+
+## 0.0.32
+
+_Current_
+
+Added tests and build improvements
+
+- Added build test infrastructure
+- Build improvements and fixes
