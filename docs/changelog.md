@@ -26,9 +26,15 @@ _04/03/2025_
 Added variable width support
 Different sizes
 
+## 0.0.30
+
+_04/02/2025_ · _Current_
+
+- Fixed mobile not scrolling
+
 ## 0.0.29
 
-_Current_
+_04/03/2025_
 
 Added vertical slider support
 

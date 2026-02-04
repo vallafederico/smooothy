@@ -267,6 +267,7 @@ export class Core {
     }
 
     const handleTouchMove = (e: TouchEvent) => {
+      if (!this.isTouching || this.#isPaused) return
       const touch = e.touches[0]
       const deltaY = Math.abs(touch.clientY - this.touchStartY!)
       const deltaX = Math.abs(touch.clientX - this.touchStartX!)
