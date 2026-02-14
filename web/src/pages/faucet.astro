@@ -1,0 +1,109 @@
+---
+export const prerender = false
+
+import Layout from "~/layouts/Layout.astro"
+import ZkPassportVerify from "@c/ZkPassportVerify"
+---
+
+<Layout>
+  <div class="min-h-screen px-4 py-24 md:px-8">
+    <div class="mx-auto max-w-4xl">
+      <!-- Header -->
+      <header class="mb-12 text-center">
+        <h1 class="mb-4 font-mono text-4xl font-bold tracking-tight md:text-5xl">
+          MATE Faucet
+        </h1>
+        <p class="mx-auto max-w-xl text-white/60">
+          Verify your identity with zkPassport to claim 100 MATE tokens once per
+          week. Use them to participate in prediction markets.
+        </p>
+      </header>
+
+      <!-- Main Content -->
+      <div class="mx-auto max-w-2xl space-y-6">
+        <!-- Verification Section -->
+        <section class="rounded-xl border border-white/10 bg-white/5 p-6 md:p-8">
+          <h2 class="mb-4 font-mono text-xl font-semibold text-center">
+            Identity Verification
+          </h2>
+          <p class="mb-6 text-sm text-white/60 text-center">
+            Scan the QR code with your mobile device to verify your identity
+            using zkPassport. This ensures one claim per person.
+          </p>
+
+          <ZkPassportVerify client:load />
+        </section>
+
+        <!-- Claim Details -->
+        <section class="rounded-xl border border-white/10 bg-white/5 p-6">
+          <h2 class="mb-4 font-mono text-xl font-semibold">Claim Details</h2>
+          <ul class="space-y-3 text-sm text-white/60">
+            <li class="flex items-start gap-3">
+              <span class="mt-0.5 text-green-400">&#10003;</span>
+              <div>
+                <span class="text-white/80">100 MATE tokens per claim</span>
+                <p class="mt-0.5 text-xs text-white/40">Sent directly to your wallet</p>
+              </div>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="mt-0.5 text-green-400">&#10003;</span>
+              <div>
+                <span class="text-white/80">One claim per week</span>
+                <p class="mt-0.5 text-xs text-white/40">Rate limited by passport verification</p>
+              </div>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="mt-0.5 text-green-400">&#10003;</span>
+              <div>
+                <span class="text-white/80">Zero-knowledge identity verification</span>
+                <p class="mt-0.5 text-xs text-white/40">Prove you're unique without revealing identity</p>
+              </div>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="mt-0.5 text-green-400">&#10003;</span>
+              <div>
+                <span class="text-white/80">No personal data stored</span>
+                <p class="mt-0.5 text-xs text-white/40">Only a privacy-preserving hash is recorded</p>
+              </div>
+            </li>
+          </ul>
+        </section>
+
+        <!-- How It Works -->
+        <section class="rounded-xl border border-white/10 bg-white/5 p-6">
+          <h2 class="mb-4 font-mono text-xl font-semibold">How It Works</h2>
+          <ol class="space-y-4 text-sm">
+            <li class="flex gap-3">
+              <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/10 text-xs font-semibold">1</span>
+              <div>
+                <span class="text-white/80">Install zkPassport app</span>
+                <p class="mt-0.5 text-xs text-white/40">Available on iOS and Android</p>
+              </div>
+            </li>
+            <li class="flex gap-3">
+              <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/10 text-xs font-semibold">2</span>
+              <div>
+                <span class="text-white/80">Scan your passport with NFC</span>
+                <p class="mt-0.5 text-xs text-white/40">One-time setup in the mobile app</p>
+              </div>
+            </li>
+            <li class="flex gap-3">
+              <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/10 text-xs font-semibold">3</span>
+              <div>
+                <span class="text-white/80">Scan the QR code above</span>
+                <p class="mt-0.5 text-xs text-white/40">Generates a zero-knowledge proof</p>
+              </div>
+            </li>
+            <li class="flex gap-3">
+              <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/10 text-xs font-semibold">4</span>
+              <div>
+                <span class="text-white/80">Claim your tokens</span>
+                <p class="mt-0.5 text-xs text-white/40">100 MATE sent to your connected wallet</p>
+              </div>
+            </li>
+          </ol>
+        </section>
+      </div>
+    </div>
+  </div>
+</Layout>

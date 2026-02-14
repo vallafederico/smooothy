@@ -1,0 +1,58 @@
+---
+import HoverUl from "@c/HoverUl.astro"
+
+const links = [
+  {
+    label: "CLAIM MATE",
+    href: "https://core.precog.market/claim/8453/mate?ref=devconnect",
+    target: "_blank",
+  },
+  {
+    label: "CONTRACT",
+    href: "https://basescan.org/token/0xc139c86de76df41c041a30853c3958427fa7cebd",
+    target: "_blank",
+  },
+  {
+    label: "DISCORD",
+    href: "https://discord.gg/frgXQfM3KZ",
+    target: "_blank",
+  },
+  {
+    label: "BY PRECOG",
+    href: "https://core.precog.market/",
+    target: "_blank",
+  },
+]
+---
+
+<div class="flex h-full flex-col justify-center px-8 md:px-12 lg:px-16">
+  <div class="max-w-md">
+    <h1
+      class="mb-4 font-mono text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl"
+    >
+      MATE
+    </h1>
+    <p class="mb-2 font-mono text-lg tracking-wide text-white/80 md:text-xl">
+      A play token
+    </p>
+    <p class="mb-8 text-sm leading-relaxed text-white/60 md:text-base">
+      A token that holds no economic value. Use it to experience prediction
+      markets on Ethereum without risking real money.
+    </p>
+
+    <nav class="flex flex-col gap-3">
+      {
+        links.map(link => (
+          <a
+            href={link.href}
+            target={link.target}
+            class="pointer-events-auto w-fit text-sm tracking-wide transition-opacity hover:opacity-70"
+            data-module="alpha"
+          >
+            <HoverUl text={link.label} />
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+</div>

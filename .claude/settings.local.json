@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:zkpassport.id)",
+      "WebFetch(domain:embed.precog.market)",
+      "WebFetch(domain:docs.zkpassport.id)",
+      "Bash(pnpm run build:*)",
+      "Bash(curl:*)",
+      "Bash(git checkout:*)"
+    ]
+  }
+}

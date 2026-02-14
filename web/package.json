@@ -9,7 +9,10 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/node": "^9.0.0",
     "@activetheory/split-text": "^1.1.2",
+    "@react-three/drei": "^9.92.0",
+    "@react-three/fiber": "^8.15.0",
     "@astrojs/prism": "^3.2.0",
     "@astrojs/react": "^4.2.7",
     "@astrojs/sitemap": "^3.4.1",
@@ -21,6 +24,7 @@
     "gsap": "^3.13.0",
     "lenis": "^1.2.0",
     "prettier-plugin-glsl": "^0.2.1",
+    "qrcode.react": "^4.0.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "smooothy": "0.0.18",

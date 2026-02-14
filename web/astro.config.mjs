@@ -6,10 +6,15 @@ import glsl from "vite-plugin-glsl"
 import tailwindcss from "@tailwindcss/vite"
 import react from "@astrojs/react"
 import vue from "@astrojs/vue"
+import node from "@astrojs/node"
 
 import sitemap from "@astrojs/sitemap"
 
 export default defineConfig({
+  output: "server",
+  adapter: node({
+    mode: "standalone",
+  }),
   vite: {
     plugins: [
       tailwindcss(),
