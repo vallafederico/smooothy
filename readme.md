@@ -447,15 +447,15 @@ If you need to force a recalculation without DOM changes (e.g. you mutated CSS t
 
 ### Managing items yourself
 
-If you need to control the `items` array externally — for example, when composing multiple Cores on the same wrapper (each targeting a different subset of children), or when your slides aren't the immediate children of the wrapper — pass `controlledItems: true`:
+If you need to control the `items` array externally — for example, when composing multiple Cores on the same wrapper (each targeting a different subset of children), or when your slides aren't the immediate children of the wrapper — pass `watchItems: false`:
 
 ```javascript
-const slider = new Core(wrapper, { controlledItems: true })
+const slider = new Core(wrapper, { watchItems: false })
 slider.items = [...someCustomNodeList]
 slider.resize() // recalculates the viewport without clobbering items
 ```
 
-With this flag on:
+With it off:
 - `resize()` will **not** re-collect items from `wrapper.children`.
 - Core will **not** install a `MutationObserver` on the wrapper.
 

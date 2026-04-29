@@ -19,7 +19,7 @@ import gsap from "../../js/gsap.ts"
  */
 export class Slider extends Core {
   constructor(wrapper, config = {}) {
-    // controlledItems: true on both cores because we manage items
+    // watchItems: false on both cores because we manage items
     // externally — vCore.items = rows, hCore.items = columns of row 0.
     // Without this, Core would re-collect wrapper.children on every
     // resize() and clobber hCore's column array, and the wrapper-level
@@ -29,7 +29,7 @@ export class Slider extends Core {
       ...config,
       vertical: true,
       disableInput: true,
-      controlledItems: true,
+      watchItems: false,
     })
 
     this.rows = this.items
@@ -43,7 +43,7 @@ export class Slider extends Core {
       ...config,
       vertical: false,
       disableInput: true,
-      controlledItems: true,
+      watchItems: false,
     }
     delete hConfig.onSlideChange
     delete hConfig.onUpdate

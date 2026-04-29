@@ -671,7 +671,7 @@ import gsap from "gsap"
 
 class OmniSlider extends Core {
   constructor(wrapper, config = {}) {
-    // controlledItems: true on both cores because we manage `items`
+    // watchItems: false on both cores because we manage `items`
     // externally (vCore.items = rows, hCore.items = columns of row 0).
     // Without this, Core would re-collect wrapper.children on every
     // resize() and clobber hCore's column array, and the wrapper-level
@@ -680,7 +680,7 @@ class OmniSlider extends Core {
       ...config,
       vertical: true,
       disableInput: true,
-      controlledItems: true,
+      watchItems: false,
     })
 
     this.rows = this.items
@@ -691,7 +691,7 @@ class OmniSlider extends Core {
       ...config,
       vertical: false,
       disableInput: true,
-      controlledItems: true,
+      watchItems: false,
     }
     delete hConfig.onSlideChange
     delete hConfig.onUpdate
@@ -809,8 +809,8 @@ class OmniSlider extends Core {
 
 - Both cores use `disableInput: true`; the parent class owns the single
   set of pointer/wheel listeners and dispatches to both.
-- Both cores also use `controlledItems: true` because the parent
-  manages `items` externally — this prevents Core's `resize()` from
+- Both cores also use `watchItems: false` because the parent manages
+  `items` externally — this prevents Core's `resize()` from
   re-collecting `wrapper.children` (which would clobber `hCore.items`)
   and skips the `MutationObserver` that would otherwise fire twice.
 - `slider.currentSlide` returns the row (back-compat with single-axis

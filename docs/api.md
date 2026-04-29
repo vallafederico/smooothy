@@ -53,12 +53,14 @@ interface CoreConfig {
                              // Drive the instance via pointerDown/pointerMove/pointerUp/scroll.
 
   // Items management
-  controlledItems: boolean   // When true, resize() will NOT re-collect items from
-                             // wrapper.children, and Core will NOT install a
-                             // MutationObserver. Use when you're managing the
-                             // `items` array externally (e.g. composing multiple
-                             // cores on the same wrapper, or when slides aren't
-                             // direct children). Default: false.
+  watchItems: boolean        // When true (default), resize() re-collects items
+                             // from wrapper.children and Core installs a
+                             // MutationObserver so dynamically added/removed
+                             // slides are picked up automatically. Set to
+                             // `false` when you manage the `items` array
+                             // externally (e.g. composing multiple cores on
+                             // the same wrapper, or when slides aren't direct
+                             // children).
 
   // Callbacks
   onSlideChange?: (current: number, previous: number) => void

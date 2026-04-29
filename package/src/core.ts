@@ -46,18 +46,18 @@ interface CoreConfig {
    */
   disableInput: boolean
   /**
-   * When true, Core will NOT re-collect `items` from `wrapper.children`
-   * inside `resize()`, and will NOT install a `MutationObserver` on the
-   * wrapper. Use this when you're managing the `items` array externally
-   * — for example, when composing multiple Cores on the same wrapper
+   * When true (default), Core re-collects `items` from `wrapper.children`
+   * inside `resize()` and installs a `MutationObserver` on the wrapper
+   * so dynamically added/removed slides are picked up automatically.
+   *
+   * Set to `false` when you're managing the `items` array externally —
+   * for example, when composing multiple Cores on the same wrapper
    * where each one targets a different subset of the children (see the
    * omnidirectional example), or when the slides live somewhere other
-   * than the immediate children of the wrapper.
-   *
-   * With this flag on, you're responsible for keeping `items` in sync
-   * with the DOM yourself. Default: false.
+   * than the immediate children of the wrapper. With it off, you're
+   * responsible for keeping `items` in sync with the DOM yourself.
    */
-  controlledItems: boolean
+  watchItems: boolean
   onSlideChange?: (current: number, previous: number) => void
   onResize?: (core: Core) => void
   onUpdate?: (core: Core) => void
@@ -94,7 +94,7 @@ const DEFAULT_CONFIG: CoreConfig = {
   /** Functionality */
   scrollInput: false,
   disableInput: false,
-  controlledItems: false,
+  watchItems: true,
 }
 
 export class Core {
@@ -200,7 +200,7 @@ export class Core {
     this.#setupViewport()
     this.#setupIntersectionObserver()
     this.#setupResizeObserver()
-    if (!this.config.controlledItems) this.#setupMutationObserver()
+    if (this.config.watchItems) this.#setupMutationObserver()
 
     if (!this.config.disableInput) {
       this.#setupInputListeners()
@@ -1019,9 +1019,9 @@ export class Core {
   resize(): void {
     // Re-collect items so consumers can add/remove slides at runtime and
     // call resize() (or rely on the MutationObserver) without re-init.
-    // Skipped when `controlledItems` is on so consumers managing items
+    // Skipped when `watchItems` is off so consumers managing items
     // externally (e.g. omnidirectional grids) aren't clobbered.
-    if (!this.config.controlledItems) {
+    if (this.config.watchItems) {
       this.items = [...this.wrapper.children] as HTMLElement[]
     }
 
