@@ -38,16 +38,10 @@ const rowSize = size * (5/3)
           >
             <div
               class:list={[
-                "relative flex h-full w-full items-center justify-center p-8 outline outline-gray-600/40 transition-transform",
+                "relative flex h-full w-full items-center justify-center p-8 outline outline-gray-600 transition-transform",
               ]}
             >
               <p class="mono text-lg text-gray-200">Slide {r + 1}.{c + 1}</p>
-              <div
-                data-parallax
-                class="pointer-events-none absolute inset-1 flex items-center justify-center outline outline-dashed outline-gray-400/60"
-              >
-                <p class="mono text-[10px] text-gray-400/70">parallax</p>
-              </div>
             </div>
           </div>
         )
@@ -65,7 +59,6 @@ const rowSize = size * (5/3)
   if (s1) new Slider(s1, {
     infinite: true,
     snap: true,
-    parallax: 20,
   })
 
 

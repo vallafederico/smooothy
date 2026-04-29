@@ -24,11 +24,15 @@ export class Slider extends Core {
     this.rows = this.items
     this.grid = this.rows.map(row => [...row.children])
 
-    this.hCore = new Core(wrapper, {
-      ...config,
-      vertical: false,
-      disableInput: true,
-    })
+    // Strip callbacks from the hCore config so onSlideChange/onUpdate/
+    // onResize don't fire twice per frame (once per core). The vertical
+    // core (this) keeps them; per-column events are still reachable via
+    // `slider.hCore.onSlideChange = ...` if a consumer wants them.
+    const hConfig = { ...config, vertical: false, disableInput: true }
+    delete hConfig.onSlideChange
+    delete hConfig.onUpdate
+    delete hConfig.onResize
+    this.hCore = new Core(wrapper, hConfig)
 
     if (this.grid[0]) {
       this.hCore.items = this.grid[0]
@@ -39,6 +43,17 @@ export class Slider extends Core {
     // duplicate observer on hCore and forward visibility manually.
     this.hCore.observer?.disconnect()
     this.hCore.observer = undefined
+
+    // Per-axis parallax. Looks up `[data-parallax]` inside every cell once
+    // and translates them by (hCore.parallaxValues[c], vCore.parallaxValues[r])
+    // each frame, scaled by `parallax` (in % units). 0 = off (default).
+    this.parallaxStrength = config.parallax ?? 0
+    this.parallaxEls = this.grid.map(row =>
+      row.map(cell => cell.querySelector("[data-parallax]"))
+    )
+    this.hasParallax =
+      this.parallaxStrength !== 0 &&
+      this.parallaxEls.some(row => row.some(el => el !== null))
 
     this._cores = [this, this.hCore]
     this._setupSharedInput(config)
@@ -151,6 +166,46 @@ export class Slider extends Core {
         if (slide) slide.style.transform = t
       }
     }
+
+    if (this.hasParallax) {
+      const px = hCore.parallaxValues
+      const py = this.parallaxValues
+      if (px && py) {
+        const s = this.parallaxStrength
+        const els = this.parallaxEls
+        for (let r = 0, rows = els.length; r < rows; r++) {
+          const rowEls = els[r]
+          const yVal = (py[r] ?? 0) * s
+          for (let c = 0, len = rowEls.length; c < len; c++) {
+            const el = rowEls[c]
+            if (el) {
+              el.style.transform = `translate(${(px[c] ?? 0) * s}%, ${yVal}%)`
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /** Index of the centered row (alias for `currentSlide`). */
+  get currentRow() {
+    return this.currentSlide
+  }
+
+  /** Index of the centered column. */
+  get currentCol() {
+    return this.hCore?.currentSlide ?? 0
+  }
+
+  /** [row, col] of the centered cell. */
+  get currentCell() {
+    return [this.currentRow, this.currentCol]
+  }
+
+  /** Drive both axes at once. Either argument may be omitted. */
+  goToCell(row, col) {
+    if (row != null) this.goToIndex(row)
+    if (col != null) this.hCore?.goToIndex(col)
   }
 
   destroy() {
