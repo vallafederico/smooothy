@@ -117,6 +117,8 @@ export class Core {
   resizeTimeout?: ReturnType<typeof setTimeout>
   virtualScroll?: any
   observer?: IntersectionObserver
+  resizeObserver?: ResizeObserver
+  mutationObserver?: MutationObserver
   touchStartY?: number
   touchStartX?: number
   touchPreviousX?: number
@@ -124,6 +126,25 @@ export class Core {
   scrollDirection?: "horizontal" | "vertical"
   parallaxValues?: number[]
   webglValue: number = 0 // (*) ADD WEBGL VALUE TO SLIDER (better name)
+
+  /** Bound input handlers — kept as fields so destroy() can remove them. */
+  #onMouseDown?: (e: MouseEvent) => void
+  #onMouseMove?: (e: MouseEvent) => void
+  #onMouseUp?: () => void
+  #onTouchStart?: (e: TouchEvent) => void
+  #onTouchMove?: (e: TouchEvent) => void
+  #onTouchEnd?: () => void
+  #onVirtualScroll?: (event: any) => void
+
+  /** Smoothed per-pointerMove target delta, used to project an inertial
+   * resting position at pointerUp so flicks travel proportional to throw
+   * speed instead of always advancing one slide. */
+  #dragDelta: number = 0
+
+  /** True once update() has run a full transform pass at least once.
+   * Gates the idle fast-path so `parallaxValues` is guaranteed to exist
+   * the first time consumers read it inside `onUpdate`. */
+  #hasRendered: boolean = false
 
   onSlideChange?: (current: number, previous: number) => void
   onResize?: (core: Core) => void
@@ -161,6 +182,7 @@ export class Core {
     this.#setupViewport()
     this.#setupIntersectionObserver()
     this.#setupResizeObserver()
+    this.#setupMutationObserver()
 
     if (!this.config.disableInput) {
       this.#setupInputListeners()
@@ -262,17 +284,13 @@ export class Core {
   }
 
   #setupInputListeners(): void {
-    const handleMouseDown = (e: MouseEvent) => this.pointerDown(e)
-    const handleMouseMove = (e: MouseEvent) => this.pointerMove(e)
-    const handleMouseUp = () => this.pointerUp()
-
-    this.wrapper.addEventListener("mousedown", handleMouseDown)
-    window.addEventListener("mousemove", handleMouseMove)
-    window.addEventListener("mouseup", handleMouseUp)
-
     const SCROLL_THRESHOLD = 5
 
-    const handleTouchStart = (e: TouchEvent) => {
+    this.#onMouseDown = (e: MouseEvent) => this.pointerDown(e)
+    this.#onMouseMove = (e: MouseEvent) => this.pointerMove(e)
+    this.#onMouseUp = () => this.pointerUp()
+
+    this.#onTouchStart = (e: TouchEvent) => {
       const touch = e.touches[0]
       this.touchStartY = touch.clientY
       this.touchStartX = touch.clientX
@@ -283,7 +301,7 @@ export class Core {
       this.pointerDown(touch)
     }
 
-    const handleTouchMove = (e: TouchEvent) => {
+    this.#onTouchMove = (e: TouchEvent) => {
       if (!this.isTouching || this.#isPaused) return
       const touch = e.touches[0]
       const deltaY = Math.abs(touch.clientY - this.touchStartY!)
@@ -313,7 +331,7 @@ export class Core {
       }
     }
 
-    const handleTouchEnd = () => {
+    this.#onTouchEnd = () => {
       this.isTouching = false
       this.scrollDirection = undefined
       this.touchPreviousX = undefined
@@ -321,17 +339,37 @@ export class Core {
       this.pointerUp()
     }
 
-    this.wrapper.addEventListener("touchstart", handleTouchStart)
-    window.addEventListener("touchmove", handleTouchMove, { passive: false })
-    window.addEventListener("touchend", handleTouchEnd)
+    this.wrapper.addEventListener("mousedown", this.#onMouseDown)
+    window.addEventListener("mousemove", this.#onMouseMove)
+    window.addEventListener("mouseup", this.#onMouseUp)
+
+    this.wrapper.addEventListener("touchstart", this.#onTouchStart)
+    window.addEventListener("touchmove", this.#onTouchMove, { passive: false })
+    window.addEventListener("touchend", this.#onTouchEnd)
   }
 
   #setupResizeObserver(): void {
-    const resizeObserver = new ResizeObserver(() => {
+    this.resizeObserver = new ResizeObserver(() => {
       if (this.resizeTimeout) clearTimeout(this.resizeTimeout)
       this.resizeTimeout = setTimeout(() => this.resize(), 10)
     })
-    resizeObserver.observe(this.wrapper)
+    this.resizeObserver.observe(this.wrapper)
+  }
+
+  /** Watches the wrapper for added/removed direct children so consumers
+   * can mutate slides at runtime (e.g. fetched data) without manually
+   * re-initialising. Scoped to `childList` only — not `subtree` — to
+   * avoid firing on every descendant style/text change. */
+  #setupMutationObserver(): void {
+    this.mutationObserver = new MutationObserver(mutations => {
+      const hasChildChanges = mutations.some(
+        m =>
+          m.type === "childList" &&
+          (m.addedNodes.length > 0 || m.removedNodes.length > 0)
+      )
+      if (hasChildChanges) this.resize()
+    })
+    this.mutationObserver.observe(this.wrapper, { childList: true })
   }
 
   /** Events */
@@ -360,7 +398,8 @@ export class Core {
       ...this.config.virtualScroll,
       el: this.wrapper,
     })
-    this.virtualScroll.on((event: any) => this.scroll(event))
+    this.#onVirtualScroll = (event: any) => this.scroll(event)
+    this.virtualScroll.on(this.#onVirtualScroll)
   }
 
   /**
@@ -376,6 +415,7 @@ export class Core {
     this.isDragging = true
     this.dragStart = this.config.vertical ? event.clientY : event.clientX
     this.dragStartTarget = this.target
+    this.#dragDelta = 0
     if (!this.config.disableInput) this.wrapper.style.cursor = "grabbing"
   }
 
@@ -394,6 +434,8 @@ export class Core {
   }): void {
     if (!this.isDragging || this.#isPaused) return
 
+    const prevTarget = this.target
+
     const delta = this.config.vertical
       ? event.clientY - this.dragStart
       : event.clientX - this.dragStart
@@ -403,6 +445,13 @@ export class Core {
     let newTarget = this.dragStartTarget + delta * sensitivity
 
     this.target = this.#calculateBounds(newTarget)
+
+    // EMA-smoothed per-pointerMove target delta. Used by pointerUp to
+    // project where an inertial throw would come to rest, so a hard
+    // flick can carry past one slide. Uses the post-bounds target so
+    // overscroll doesn't inflate the projection.
+    const targetDelta = this.target - prevTarget
+    this.#dragDelta = this.#dragDelta * 0.7 + targetDelta * 0.3
 
     // Calculate movement for both mouse and touch events
     if ("movementX" in event && event.movementX !== undefined) {
@@ -430,30 +479,37 @@ export class Core {
     this.isDragging = false
     if (!this.config.disableInput) this.wrapper.style.cursor = "grab"
 
-    if (this.config.variableWidth) {
-      if (!this.config.infinite) {
-        if (this.target > 0) {
-          this.target = 0
-        } else if (this.target < this.maxScroll) {
-          this.target = this.maxScroll
-        }
-      }
+    // Project the inertial resting position from the smoothed drag
+    // velocity. Closed-form sum of a per-frame velocity that decays by
+    // `speedDecay` each frame: total = v / (1 - decay). Only used when
+    // snapping; free-scroll mode keeps its dead-stop release.
+    const friction = 1 - this.config.speedDecay
+    const projection =
+      this.config.snap && friction > 0 ? this.#dragDelta / friction : 0
+    const projectedTarget = this.target + projection
+    this.#dragDelta = 0
 
-      if (this.config.snap) {
-        this.target = this.#snapToNearest(this.target)
+    if (this.config.variableWidth) {
+      let next = projectedTarget
+      if (!this.config.infinite) {
+        if (next > 0) next = 0
+        else if (next < this.maxScroll) next = this.maxScroll
       }
+      this.target = this.config.snap ? this.#snapToNearest(next) : next
     } else {
       if (!this.config.infinite) {
-        if (this.target > 0) {
-          this.target = 0
-        } else if (this.target < this.maxScroll) {
-          this.target = this.maxScroll
+        let next = projectedTarget
+        if (next > 0) {
+          next = 0
+        } else if (next < this.maxScroll) {
+          next = this.maxScroll
         } else if (this.config.snap) {
-          const snapped = Math.round(this.target)
-          this.target = Math.min(0, Math.max(this.maxScroll, snapped))
+          const snapped = Math.round(next)
+          next = Math.min(0, Math.max(this.maxScroll, snapped))
         }
+        this.target = next
       } else if (this.config.snap) {
-        this.target = Math.round(this.target)
+        this.target = Math.round(projectedTarget)
       }
     }
   }
@@ -520,6 +576,27 @@ export class Core {
     this.speed = -deltaValue * (this.config.variableWidth ? 0.1 : 10)
   }
 
+  /** Returns true when the slider has nothing to render: not being
+   * dragged, no kinetic speed, target and current have converged, and
+   * (when snapping) we're parked at a snap point. Consumers running a
+   * shared RAF loop can use this to skip their own per-frame work for
+   * idle sliders. Internally, `update()` reads the same flag and skips
+   * the transform write pass while the slider is idle. */
+  get isIdle(): boolean {
+    if (this.isDragging) return false
+    if (Math.abs(this.speed) > 0.0001) return false
+    if (Math.abs(this.target - this.current) > 0.0001) return false
+
+    if (this.config.snap) {
+      const snapped = this.config.variableWidth
+        ? this.#snapToNearest(this.target)
+        : Math.round(this.target)
+      if (Math.abs(snapped - this.target) > 0.0001) return false
+    }
+
+    return true
+  }
+
   /** Update */
   update(): void {
     if (!this.isVisible || !this.#isActive) return
@@ -527,6 +604,16 @@ export class Core {
     const currentTime = performance.now()
     this.deltaTime = (currentTime - this.#previousTime) / 1000
     this.#previousTime = currentTime
+
+    // Cheap fast-path: if nothing is changing, skip the per-item
+    // transform writes (the expensive part of update()) but still fire
+    // onUpdate so consumers can hook into the idle frame if they want.
+    // Only short-circuit once we've rendered at least once, otherwise
+    // `parallaxValues` would still be undefined for first-frame readers.
+    if (this.#hasRendered && this.isIdle) {
+      this.onUpdate?.(this)
+      return
+    }
 
     if (this.config.snap && !this.isDragging) {
       if (this.config.variableWidth) {
@@ -584,6 +671,7 @@ export class Core {
     }
 
     this.#renderSpeed()
+    this.#hasRendered = true
     this.onUpdate?.(this)
   }
 
@@ -809,28 +897,39 @@ export class Core {
 
   destroy(): void {
     this.kill()
-    window.removeEventListener("mousemove", (e: MouseEvent) =>
-      this.pointerMove(e)
-    )
-    window.removeEventListener("mouseup", () => this.pointerUp())
-    window.removeEventListener("touchmove", (e: TouchEvent) => {
-      const touch = e.touches[0]
-      this.pointerMove(touch)
-    })
-    window.removeEventListener("touchend", () => this.pointerUp())
-    this.wrapper.removeEventListener("mousedown", (e: MouseEvent) =>
-      this.pointerDown(e)
-    )
-    this.wrapper.removeEventListener("touchstart", (e: TouchEvent) => {
-      const touch = e.touches[0]
-      this.pointerDown(touch)
-    })
-    if (this.resizeTimeout) clearTimeout(this.resizeTimeout)
-    if (this.virtualScroll && this.config.scrollInput) {
-      this.virtualScroll.destroy()
+
+    if (this.#onMouseDown) {
+      this.wrapper.removeEventListener("mousedown", this.#onMouseDown)
     }
-    if (this.observer) {
-      this.observer.disconnect()
+    if (this.#onMouseMove) {
+      window.removeEventListener("mousemove", this.#onMouseMove)
+    }
+    if (this.#onMouseUp) {
+      window.removeEventListener("mouseup", this.#onMouseUp)
+    }
+    if (this.#onTouchStart) {
+      this.wrapper.removeEventListener("touchstart", this.#onTouchStart)
+    }
+    if (this.#onTouchMove) {
+      window.removeEventListener("touchmove", this.#onTouchMove)
+    }
+    if (this.#onTouchEnd) {
+      window.removeEventListener("touchend", this.#onTouchEnd)
+    }
+
+    if (this.resizeTimeout) clearTimeout(this.resizeTimeout)
+
+    if (this.virtualScroll) {
+      if (this.#onVirtualScroll) this.virtualScroll.off?.(this.#onVirtualScroll)
+      this.virtualScroll.destroy?.()
+    }
+
+    this.observer?.disconnect()
+    this.resizeObserver?.disconnect()
+    this.mutationObserver?.disconnect()
+
+    if (!this.config.disableInput) {
+      this.wrapper.style.cursor = ""
     }
   }
 
@@ -859,6 +958,7 @@ export class Core {
     this.target = 0
     this.speed = 0
     this.#lspeed = 0
+    this.#hasRendered = false
     this.touchPreviousX = undefined
     this.touchPreviousY = undefined
     this.isTouching = false
@@ -907,6 +1007,20 @@ export class Core {
   }
 
   resize(): void {
+    // Re-collect items so consumers can add/remove slides at runtime and
+    // call resize() (or rely on the MutationObserver) without re-init.
+    this.items = [...this.wrapper.children] as HTMLElement[]
+
+    // Clamp currentSlide so removing items doesn't leave a stale index.
+    if (this.items.length > 0) {
+      if (this.#currentSlide >= this.items.length) {
+        this.#currentSlide = this.items.length - 1
+      }
+      if (this.#previousSlide >= this.items.length) {
+        this.#previousSlide = this.items.length - 1
+      }
+    }
+
     this.#setupViewport()
 
     // Re-center current slide for variable width non-infinite sliders
@@ -924,12 +1038,17 @@ export class Core {
       }
     }
 
-    // Force a single update, bypassing visibility check
+    // Force a single update, bypassing the visibility check AND the
+    // idle fast-path. After a viewport change the previous transforms
+    // are stale (item widths / wrapper size may have changed), so the
+    // next update() must run the full per-item pass even if speed,
+    // target and current haven't moved.
     const wasActive = this.#isActive
     const wasVisible = this.isVisible
 
     this.#isActive = true
     this.isVisible = true
+    this.#hasRendered = false
     this.update()
 
     this.#isActive = wasActive
