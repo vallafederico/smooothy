@@ -568,10 +568,12 @@ class AutoScrollSlider extends Core {
 
 ### Passive Cores (`disableInput`)
 
-By default, `Core` installs its own pointer/wheel listeners and runs as
-a self-contained slider. With `disableInput: true`, Core skips that
-setup and you drive the instance manually by calling its public input
-methods. Useful for:
+By default, `Core` installs its own Pointer Events listeners (using
+`setPointerCapture`) plus a `virtual-scroll` wheel handler, and sets
+`touch-action`, `user-select`, and `cursor` inline styles on the
+wrapper. With `disableInput: true`, Core skips **all** of that and you
+drive the instance manually by calling its public input methods. Useful
+for:
 
 - Composing multiple Cores on the same wrapper (see
   [Omnidirectional](#omnidirectional) below).
@@ -585,10 +587,15 @@ import gsap from "gsap"
 
 const core = new Core(wrapper, { disableInput: true })
 
-// Pointer
-wrapper.addEventListener("mousedown", e => core.pointerDown(e))
-window.addEventListener("mousemove", e => core.pointerMove(e))
-window.addEventListener("mouseup", () => core.pointerUp())
+// Pointer Events — one handler set for mouse / touch / pen.
+// Use setPointerCapture so drag continues if the cursor leaves the wrapper.
+wrapper.addEventListener("pointerdown", e => {
+  wrapper.setPointerCapture(e.pointerId)
+  core.pointerDown(e)
+})
+wrapper.addEventListener("pointermove", e => core.pointerMove(e))
+wrapper.addEventListener("pointerup",       () => core.pointerUp())
+wrapper.addEventListener("pointercancel",   () => core.pointerUp())
 
 // Wheel / trackpad
 new VirtualScroll({ el: wrapper }).on(e => core.scroll(e))
@@ -598,23 +605,30 @@ gsap.ticker.add(core.update.bind(core))
 
 **Method reference:**
 
-- `pointerDown(event)` — `{ clientX, clientY }`. Begins a drag.
+- `pointerDown(event)` — `{ clientX, clientY }`. Begins a drag, resets
+  the velocity tracker.
 - `pointerMove(event)` — `{ clientX, clientY, movementX?, movementY? }`.
-  Continues the drag. Pass `movementX/Y` for proper velocity (Core falls
-  back to its tracked touch state when its own listeners are in charge,
-  so synthesizing them is recommended in passive mode).
-- `pointerUp()` — Ends the drag, applies snap/bounce.
+  Continues the drag. `PointerEvent` always provides `movementX/Y`. For
+  synthesised input (e.g. from a raw `Touch`), pass `movementX/Y`
+  yourself so the speed accumulator is fed correctly — drag distance is
+  still tracked from `clientX/Y` even without it.
+- `pointerUp()` — Ends the drag. Projects an inertial resting position
+  from the smoothed drag velocity and snaps to the nearest slide (when
+  `snap` is on); free-scroll mode keeps a dead-stop release.
 - `scroll(event)` — `{ deltaX, deltaY, touchDevice? }`. Applies a
   wheel/virtual-scroll delta. Reads `deltaX` or `deltaY` based on
   `config.vertical` and `config.scrollInput`.
 
 **Notes:**
 
-- Resize and intersection observers are *still* installed in passive
-  mode, so `update()`'s visibility gate continues to work and `resize()`
-  is called automatically.
-- The `cursor: grab/grabbing` style is only set when Core handles its
-  own input — manage cursor yourself in passive mode.
+- Intersection, resize, and mutation observers are *still* installed in
+  passive mode, so `update()`'s visibility gate keeps working,
+  `resize()` runs automatically on layout changes, and added/removed
+  slides are picked up automatically.
+- `touch-action`, `user-select`, and `cursor: grab/grabbing` are **not**
+  applied in passive mode — manage them yourself in your own listener
+  setup. (You almost certainly want `touch-action: pan-y` for a
+  horizontal slider.)
 
 ### Omnidirectional
 

@@ -113,9 +113,9 @@ export class Slider extends Core {
       e => {
         const t = e.touches[0]
         e.preventDefault()
-        // Synthesize movementX/Y so pointerMove takes the mouse-style
-        // path and computes per-frame velocity without depending on
-        // Core's touchPrevious* internal state.
+        // Touch events don't carry movementX/Y, so synthesize them per
+        // frame. Core's pointerMove uses these for the speed accumulator
+        // and the velocity-aware snap projection.
         const synth = {
           clientX: t.clientX,
           clientY: t.clientY,

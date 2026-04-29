@@ -204,6 +204,9 @@ slider.viewport.wrapperHeight // Size of the wrapper (vertical)
 slider.viewport.totalHeight // Size of the scrollable height
 slider.viewport.vertical // Boolean indicating if slider is vertical
 slider.isVisible // Boolean if the slider is in view or not
+slider.isDragging // Boolean while a pointer drag is in progress
+slider.isTouching // Boolean while the active drag is a touch (vs mouse / pen)
+slider.isIdle // True when nothing is animating — see "Idle fast-path"
 ```
 
 `Target` and `Current` can be used as setters as well. Setting `target` will make the slider lerp to that position, setting current will make it move instantly.
@@ -402,10 +405,16 @@ This does the bare minimum, well, and provides ways to extend it and make it int
 
 ## Touch and Mouse Interaction
 
-The slider automatically handles:
+The slider uses the **Pointer Events API**, so mouse, touch, and pen all flow through one unified path. A few things you should know:
 
-- Mouse drag interactions (horizontal or vertical based on `vertical` config)
-- Touch swipes with horizontal/vertical detection
+- A single `pointerdown` / `pointermove` / `pointerup` listener pair on the wrapper handles every input type. Pointer capture (`setPointerCapture`) keeps tracking the drag even when the cursor leaves the wrapper, so we don't need any window-level listeners.
+- On mount, Core sets `touch-action: pan-y` on the wrapper for horizontal sliders (or `pan-x` for vertical). This declaratively tells the browser to handle off-axis page scrolling itself, which means **page scroll on mobile works without any axis-lock state machine** and Core never has to call `preventDefault()` inside `pointermove`.
+- Core also sets `user-select: none` and `cursor: grab` / `grabbing` on the wrapper while it's installed. All three inline styles are snapshotted at construction and restored on `destroy()`, so they don't leak into the host page.
+- Only one pointer is tracked at a time. Secondary pointers (a second finger, a second mouse) are ignored until the active drag ends — multi-touch will not interfere with the swipe.
+- A flick is **velocity-aware**: a fast throw can advance multiple slides in one motion (the rest position is projected from the smoothed drag velocity, then snapped). A slow drag still advances one slide. Free-scroll (`snap: false`) keeps its current dead-stop release behavior.
+
+Other handled behaviors:
+
 - Momentum-based sliding
 - Bounce effects (when `infinite: false`)
 - Snap behavior (when `snap: true`)
@@ -423,9 +432,45 @@ const slider = new Core(wrapper, {
 })
 ```
 
+## Dynamic Slides
+
+Core watches the wrapper for added/removed direct children with a `MutationObserver` (scoped to `childList` only — descendant text/style mutations are ignored). When slides are added or removed, Core re-collects `items`, recalculates the viewport, clamps `currentSlide`, and triggers a re-render. You can mutate the DOM directly:
+
+```javascript
+const slide = document.createElement("div")
+slide.className = "slide"
+wrapper.appendChild(slide)
+// Core picks it up automatically — no manual resize() needed.
+```
+
+If you need to force a recalculation without DOM changes (e.g. you mutated CSS that affects layout), `slider.resize()` works too.
+
+## Idle Fast-Path
+
+Core exposes an `isIdle` getter that returns `true` when:
+
+- the slider isn't being dragged,
+- `speed` is ~0,
+- `target` and `current` have converged,
+- and (when `snap: true`) the position is parked at a snap point.
+
+When `isIdle` is true inside `update()`, Core skips the per-item `style.transform` writes (the expensive part) but still fires `onUpdate` so your hooks keep running. This means a page with 10 stationary sliders does ~no per-frame DOM work.
+
+You can also read `isIdle` from a shared RAF loop to skip your own per-frame work for sliders that aren't doing anything:
+
+```javascript
+function tick() {
+  for (const s of mySliders) {
+    s.update()
+    if (!s.isIdle) updateMyParallaxFor(s)
+  }
+  requestAnimationFrame(tick)
+}
+```
+
 ## Cleanup
 
-Always call `destroy()` when removing the slider to clean up event listeners:
+Always call `destroy()` when removing the slider. It removes every listener, disconnects all observers (intersection / resize / mutation), releases any in-flight pointer capture, and restores the inline styles (`touch-action`, `user-select`, `cursor`) that Core had set on the wrapper:
 
 ```javascript
 slider.destroy()

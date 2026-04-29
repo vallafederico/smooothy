@@ -119,22 +119,25 @@ export class Core {
   observer?: IntersectionObserver
   resizeObserver?: ResizeObserver
   mutationObserver?: MutationObserver
-  touchStartY?: number
-  touchStartX?: number
-  touchPreviousX?: number
-  touchPreviousY?: number
-  scrollDirection?: "horizontal" | "vertical"
   parallaxValues?: number[]
   webglValue: number = 0 // (*) ADD WEBGL VALUE TO SLIDER (better name)
 
   /** Bound input handlers — kept as fields so destroy() can remove them. */
-  #onMouseDown?: (e: MouseEvent) => void
-  #onMouseMove?: (e: MouseEvent) => void
-  #onMouseUp?: () => void
-  #onTouchStart?: (e: TouchEvent) => void
-  #onTouchMove?: (e: TouchEvent) => void
-  #onTouchEnd?: () => void
+  #onPointerDown?: (e: PointerEvent) => void
+  #onPointerMove?: (e: PointerEvent) => void
+  #onPointerEnd?: (e: PointerEvent) => void
   #onVirtualScroll?: (event: any) => void
+
+  /** PointerId of the pointer currently driving the drag, or null. We
+   * only track one pointer at a time so multi-touch / second-mouse
+   * input doesn't fight the active drag. */
+  #activePointerId: number | null = null
+
+  /** Previous CSS values restored on destroy(), so we don't leak our
+   * touch-action / cursor / user-select overrides into the host page. */
+  #prevTouchAction: string = ""
+  #prevCursor: string = ""
+  #prevUserSelect: string = ""
 
   /** Smoothed per-pointerMove target delta, used to project an inertial
    * resting position at pointerUp so flicks travel proportional to throw
@@ -174,6 +177,7 @@ export class Core {
     this.dragStart = 0
     this.dragStartTarget = 0
     this.isVisible = false
+    this.#activePointerId = null
 
     this.#currentSlide = 0
     this.#previousSlide = 0
@@ -187,7 +191,6 @@ export class Core {
     if (!this.config.disableInput) {
       this.#setupInputListeners()
       this.#setupVirtualScroll()
-      this.wrapper.style.cursor = "grab"
     }
 
     this.#setupViewport()
@@ -284,68 +287,60 @@ export class Core {
   }
 
   #setupInputListeners(): void {
-    const SCROLL_THRESHOLD = 5
+    // Snapshot inline styles so destroy() can restore them.
+    this.#prevTouchAction = this.wrapper.style.touchAction
+    this.#prevCursor = this.wrapper.style.cursor
+    this.#prevUserSelect = this.wrapper.style.userSelect
 
-    this.#onMouseDown = (e: MouseEvent) => this.pointerDown(e)
-    this.#onMouseMove = (e: MouseEvent) => this.pointerMove(e)
-    this.#onMouseUp = () => this.pointerUp()
+    // touch-action declares to the browser which gestures we want.
+    // Horizontal slider lets the browser handle vertical page scroll
+    // (and vice versa) — this replaces the manual axis-lock dance and
+    // means we never need passive:false / preventDefault inside move.
+    this.wrapper.style.touchAction = this.config.vertical ? "pan-x" : "pan-y"
+    // Stop the host page from selecting text while the user drags.
+    this.wrapper.style.userSelect = "none"
+    this.wrapper.style.cursor = "grab"
 
-    this.#onTouchStart = (e: TouchEvent) => {
-      const touch = e.touches[0]
-      this.touchStartY = touch.clientY
-      this.touchStartX = touch.clientX
-      this.touchPreviousX = touch.clientX
-      this.touchPreviousY = touch.clientY
-      this.scrollDirection = undefined
-      this.isTouching = true
-      this.pointerDown(touch)
+    this.#onPointerDown = (e: PointerEvent) => {
+      if (this.#isPaused) return
+      // Only one pointer at a time. Secondary pointers (multi-touch,
+      // second mouse) are ignored until the active drag finishes.
+      if (this.#activePointerId !== null) return
+      this.#activePointerId = e.pointerId
+      this.isTouching = e.pointerType === "touch"
+      // Pointer capture redirects subsequent moves/ups to the wrapper
+      // even if the cursor leaves it, so we don't need window-level
+      // listeners. Wrapped in try because some browsers throw if the
+      // pointer can't be captured (e.g. already released).
+      try {
+        this.wrapper.setPointerCapture(e.pointerId)
+      } catch {
+        /* noop */
+      }
+      this.pointerDown(e)
     }
 
-    this.#onTouchMove = (e: TouchEvent) => {
-      if (!this.isTouching || this.#isPaused) return
-      const touch = e.touches[0]
-      const deltaY = Math.abs(touch.clientY - this.touchStartY!)
-      const deltaX = Math.abs(touch.clientX - this.touchStartX!)
-
-      if (
-        !this.scrollDirection &&
-        (deltaX > SCROLL_THRESHOLD || deltaY > SCROLL_THRESHOLD)
-      ) {
-        this.scrollDirection = deltaX > deltaY ? "horizontal" : "vertical"
-      }
-
-      // For vertical slider, always allow vertical scrolling
-      // For horizontal slider, only allow horizontal scrolling
-      const shouldHandle = this.config.vertical
-        ? this.scrollDirection === "vertical"
-        : this.scrollDirection === "horizontal"
-
-      if (shouldHandle) {
-        e.preventDefault()
-        this.pointerMove(touch)
-        if (this.config.vertical) {
-          this.touchPreviousY = touch.clientY
-        } else {
-          this.touchPreviousX = touch.clientX
-        }
-      }
+    this.#onPointerMove = (e: PointerEvent) => {
+      if (this.#activePointerId !== e.pointerId) return
+      this.pointerMove(e)
     }
 
-    this.#onTouchEnd = () => {
+    // pointerup, pointercancel, and lostpointercapture all share end
+    // semantics. Capture is auto-released on up/cancel, which then
+    // fires lostpointercapture too — the activePointerId guard makes
+    // the second invocation a no-op.
+    this.#onPointerEnd = (e: PointerEvent) => {
+      if (this.#activePointerId !== e.pointerId) return
+      this.#activePointerId = null
       this.isTouching = false
-      this.scrollDirection = undefined
-      this.touchPreviousX = undefined
-      this.touchPreviousY = undefined
       this.pointerUp()
     }
 
-    this.wrapper.addEventListener("mousedown", this.#onMouseDown)
-    window.addEventListener("mousemove", this.#onMouseMove)
-    window.addEventListener("mouseup", this.#onMouseUp)
-
-    this.wrapper.addEventListener("touchstart", this.#onTouchStart)
-    window.addEventListener("touchmove", this.#onTouchMove, { passive: false })
-    window.addEventListener("touchend", this.#onTouchEnd)
+    this.wrapper.addEventListener("pointerdown", this.#onPointerDown)
+    this.wrapper.addEventListener("pointermove", this.#onPointerMove)
+    this.wrapper.addEventListener("pointerup", this.#onPointerEnd)
+    this.wrapper.addEventListener("pointercancel", this.#onPointerEnd)
+    this.wrapper.addEventListener("lostpointercapture", this.#onPointerEnd)
   }
 
   #setupResizeObserver(): void {
@@ -453,22 +448,13 @@ export class Core {
     const targetDelta = this.target - prevTarget
     this.#dragDelta = this.#dragDelta * 0.7 + targetDelta * 0.3
 
-    // Calculate movement for both mouse and touch events
-    if ("movementX" in event && event.movementX !== undefined) {
-      // Mouse-style event with movementX/movementY (or synthesized)
-      const movement = this.config.vertical
-        ? (event.movementY ?? 0)
-        : (event.movementX ?? 0)
-      this.speed += movement * 0.01
-    } else {
-      // Touch event - fall back to tracked previous position
-      const current = this.config.vertical ? event.clientY : event.clientX
-      const previous = this.config.vertical
-        ? this.touchPreviousY || current
-        : this.touchPreviousX || current
-      const movement = current - previous
-      this.speed += movement * 0.01
-    }
+    // PointerEvents always provide movement{X,Y}; the optional chain
+    // keeps the public method tolerant to externally synthesised input
+    // (disableInput: true) that may pass plain {clientX, clientY}.
+    const movement = this.config.vertical
+      ? (event.movementY ?? 0)
+      : (event.movementX ?? 0)
+    this.speed += movement * 0.01
   }
 
   /**
@@ -898,23 +884,30 @@ export class Core {
   destroy(): void {
     this.kill()
 
-    if (this.#onMouseDown) {
-      this.wrapper.removeEventListener("mousedown", this.#onMouseDown)
+    if (this.#onPointerDown) {
+      this.wrapper.removeEventListener("pointerdown", this.#onPointerDown)
     }
-    if (this.#onMouseMove) {
-      window.removeEventListener("mousemove", this.#onMouseMove)
+    if (this.#onPointerMove) {
+      this.wrapper.removeEventListener("pointermove", this.#onPointerMove)
     }
-    if (this.#onMouseUp) {
-      window.removeEventListener("mouseup", this.#onMouseUp)
+    if (this.#onPointerEnd) {
+      this.wrapper.removeEventListener("pointerup", this.#onPointerEnd)
+      this.wrapper.removeEventListener("pointercancel", this.#onPointerEnd)
+      this.wrapper.removeEventListener(
+        "lostpointercapture",
+        this.#onPointerEnd
+      )
     }
-    if (this.#onTouchStart) {
-      this.wrapper.removeEventListener("touchstart", this.#onTouchStart)
-    }
-    if (this.#onTouchMove) {
-      window.removeEventListener("touchmove", this.#onTouchMove)
-    }
-    if (this.#onTouchEnd) {
-      window.removeEventListener("touchend", this.#onTouchEnd)
+
+    // Release any in-flight pointer capture so the host page recovers
+    // input cleanly even if destroy() runs mid-drag.
+    if (this.#activePointerId !== null) {
+      try {
+        this.wrapper.releasePointerCapture(this.#activePointerId)
+      } catch {
+        /* noop */
+      }
+      this.#activePointerId = null
     }
 
     if (this.resizeTimeout) clearTimeout(this.resizeTimeout)
@@ -929,7 +922,11 @@ export class Core {
     this.mutationObserver?.disconnect()
 
     if (!this.config.disableInput) {
-      this.wrapper.style.cursor = ""
+      // Restore inline styles to their pre-init values so the host
+      // page doesn't inherit our touch-action / cursor / user-select.
+      this.wrapper.style.touchAction = this.#prevTouchAction
+      this.wrapper.style.cursor = this.#prevCursor
+      this.wrapper.style.userSelect = this.#prevUserSelect
     }
   }
 
@@ -959,9 +956,8 @@ export class Core {
     this.speed = 0
     this.#lspeed = 0
     this.#hasRendered = false
-    this.touchPreviousX = undefined
-    this.touchPreviousY = undefined
     this.isTouching = false
+    this.#activePointerId = null
   }
 
   init(): void {

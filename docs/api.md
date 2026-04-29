@@ -64,13 +64,15 @@ interface CoreConfig {
 #### Read-only Properties
 
 - `wrapper` (HTMLElement) - The slider container element
-- `items` (HTMLElement[]) - Array of slide elements
+- `items` (HTMLElement[]) - Array of slide elements (re-collected on `resize()` and on `MutationObserver`-driven slide changes)
 - `viewport` (Viewport) - Current viewport information
 - `config` (CoreConfig) - Current configuration
 - `currentSlide` (number) - Current slide index
 - `progress` (number) - Progress through slider (0-1)
 - `isVisible` (boolean) - Whether slider is visible in viewport
 - `isDragging` (boolean) - Whether user is currently dragging
+- `isTouching` (boolean) - Whether the active drag is a touch input (vs mouse / pen). Set from `PointerEvent.pointerType === 'touch'`.
+- `isIdle` (boolean) - True when not dragging, `speed ~ 0`, `target ~ current`, and (when snapping) parked at a snap point. `update()` reads this internally to skip per-item transform writes; consumers can read it to skip their own per-frame work.
 - `maxScroll` (number) - Maximum scroll position
 
 #### Mutable Properties
@@ -109,18 +111,32 @@ interface CoreConfig {
 
 #### Input (manual / passive mode)
 
-These methods are called by Core's own pointer/wheel listeners. With
-`disableInput: true` Core does not install any listeners itself, and you
-drive the instance by calling these directly — useful for composing
-multiple Cores on one wrapper, or for sourcing input from a non-DOM
-origin (timeline, scroll-link, gamepad, etc.).
+When `disableInput` is `false` (the default), Core installs its own
+`pointerdown` / `pointermove` / `pointerup` / `pointercancel` /
+`lostpointercapture` listeners on the wrapper, uses
+`setPointerCapture` to keep tracking when the cursor leaves, and sets
+`touch-action`, `user-select`, and `cursor` inline styles on the
+wrapper (all restored on `destroy()`).
+
+With `disableInput: true` Core skips all of that, and you drive the
+instance by calling these public methods directly — useful for
+composing multiple Cores on one wrapper, or for sourcing input from a
+non-DOM origin (timeline, scroll-link, gamepad, etc.). In passive mode
+**Core does not set `touch-action` or `user-select`** — manage those
+yourself if needed.
 
 - `pointerDown(event: { clientX, clientY })` - Begin a drag (sets
-  `isDragging`, snapshots start position).
+  `isDragging`, snapshots start position, resets the velocity tracker).
 - `pointerMove(event: { clientX, clientY, movementX?, movementY? })` -
-  Continue the drag. Pass `movementX/Y` for proper velocity (Core will
-  fall back to its tracked touch state otherwise).
-- `pointerUp()` - Finish the drag, apply snap/bounce.
+  Continue the drag. `PointerEvent` always provides `movementX/Y`. For
+  externally-synthesized input (e.g. from a `Touch` object) pass
+  `movementX/Y` yourself for proper velocity; if omitted, Core treats
+  movement as `0` for the speed accumulator only — drag distance is
+  still tracked from `clientX/Y`.
+- `pointerUp()` - Finish the drag. Projects the inertial resting
+  position from the smoothed drag velocity (`projection = dragDelta /
+  (1 - speedDecay)`) and snaps to the nearest slide. Projection is
+  only applied when `snap` is enabled.
 - `scroll(event: { deltaX, deltaY, touchDevice? })` - Apply a wheel /
   virtual-scroll delta. Uses `deltaX` or `deltaY` based on
   `config.vertical` / `config.scrollInput`.
@@ -128,9 +144,13 @@ origin (timeline, scroll-link, gamepad, etc.).
 ```js
 const core = new Core(wrapper, { disableInput: true })
 
-wrapper.addEventListener("mousedown", e => core.pointerDown(e))
-window.addEventListener("mousemove", e => core.pointerMove(e))
-window.addEventListener("mouseup",   () => core.pointerUp())
+// Pointer Events: one path for mouse/touch/pen
+wrapper.addEventListener("pointerdown", e => {
+  wrapper.setPointerCapture(e.pointerId)
+  core.pointerDown(e)
+})
+wrapper.addEventListener("pointermove", e => core.pointerMove(e))
+wrapper.addEventListener("pointerup",   () => core.pointerUp())
 
 import VirtualScroll from "virtual-scroll"
 new VirtualScroll({ el: wrapper }).on(e => core.scroll(e))
