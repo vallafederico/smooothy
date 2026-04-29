@@ -20,19 +20,18 @@ const rowSize = size * (5/3)
   tabindex="0"
   data-slider="vanilla-omnidirectional"
   class:list={[
-    "flex w-[80svw] shrink-0  h-[80svh] outline outline-gray-700/80",
+    "flex flex-col w-[80svw] shrink-0 h-[80svh] outline outline-gray-700/80",
   ]}
 >
 
-{Array.from({ length: ROWS }, (_, i) => {
+{Array.from({ length: ROWS }, (_, r) => {
 
   return (
-    <div class="outline aspect-[5/3] h-[var(--slide-size)] ">
+    <div class="flex h-[var(--slide-size)] shrink-0 outline outline-gray-700/40">
     {
-      slides.map((slide, i) => {
+      slides.map((slide, c) => {
         return (
           <div
-          
             class:list={[
               "flex aspect-[5/3] h-[var(--slide-size)] shrink-0 items-center justify-center ",
             ]}
@@ -42,7 +41,7 @@ const rowSize = size * (5/3)
                 "relative flex h-full w-full items-center justify-center p-8 outline outline-gray-600 transition-transform",
               ]}
             >
-              <p class="mono text-lg text-gray-200">Slide {i + 1}</p>
+              <p class="mono text-lg text-gray-200">Slide {r + 1}.{c + 1}</p>
             </div>
           </div>
         )
@@ -60,8 +59,9 @@ const rowSize = size * (5/3)
 
   const s1 = document.querySelector("[data-slider='vanilla-omnidirectional']")
   if (s1) new Slider(s1, {
-    infinite: true,
-    // vertical: true,
+    infinite: false,
+    snap: true,
+
   })
 
 
