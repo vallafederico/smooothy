@@ -19,7 +19,18 @@ import gsap from "../../js/gsap.ts"
  */
 export class Slider extends Core {
   constructor(wrapper, config = {}) {
-    super(wrapper, { ...config, vertical: true, disableInput: true })
+    // controlledItems: true on both cores because we manage items
+    // externally — vCore.items = rows, hCore.items = columns of row 0.
+    // Without this, Core would re-collect wrapper.children on every
+    // resize() and clobber hCore's column array, and the wrapper-level
+    // MutationObserver would fire twice (once per core) on every DOM
+    // mutation.
+    super(wrapper, {
+      ...config,
+      vertical: true,
+      disableInput: true,
+      controlledItems: true,
+    })
 
     this.rows = this.items
     this.grid = this.rows.map(row => [...row.children])
@@ -28,7 +39,12 @@ export class Slider extends Core {
     // onResize don't fire twice per frame (once per core). The vertical
     // core (this) keeps them; per-column events are still reachable via
     // `slider.hCore.onSlideChange = ...` if a consumer wants them.
-    const hConfig = { ...config, vertical: false, disableInput: true }
+    const hConfig = {
+      ...config,
+      vertical: false,
+      disableInput: true,
+      controlledItems: true,
+    }
     delete hConfig.onSlideChange
     delete hConfig.onUpdate
     delete hConfig.onResize

@@ -445,6 +445,22 @@ wrapper.appendChild(slide)
 
 If you need to force a recalculation without DOM changes (e.g. you mutated CSS that affects layout), `slider.resize()` works too.
 
+### Managing items yourself
+
+If you need to control the `items` array externally — for example, when composing multiple Cores on the same wrapper (each targeting a different subset of children), or when your slides aren't the immediate children of the wrapper — pass `controlledItems: true`:
+
+```javascript
+const slider = new Core(wrapper, { controlledItems: true })
+slider.items = [...someCustomNodeList]
+slider.resize() // recalculates the viewport without clobbering items
+```
+
+With this flag on:
+- `resize()` will **not** re-collect items from `wrapper.children`.
+- Core will **not** install a `MutationObserver` on the wrapper.
+
+You're responsible for keeping `items` in sync with the DOM yourself.
+
 ## Idle Fast-Path
 
 Core exposes an `isIdle` getter that returns `true` when:

@@ -671,13 +671,28 @@ import gsap from "gsap"
 
 class OmniSlider extends Core {
   constructor(wrapper, config = {}) {
-    super(wrapper, { ...config, vertical: true, disableInput: true })
+    // controlledItems: true on both cores because we manage `items`
+    // externally (vCore.items = rows, hCore.items = columns of row 0).
+    // Without this, Core would re-collect wrapper.children on every
+    // resize() and clobber hCore's column array, and the wrapper-level
+    // MutationObserver would fire twice on every DOM mutation.
+    super(wrapper, {
+      ...config,
+      vertical: true,
+      disableInput: true,
+      controlledItems: true,
+    })
 
     this.rows = this.items
     this.grid = this.rows.map(row => [...row.children])
 
     // Strip callbacks from hCore so they don't fire twice per frame.
-    const hConfig = { ...config, vertical: false, disableInput: true }
+    const hConfig = {
+      ...config,
+      vertical: false,
+      disableInput: true,
+      controlledItems: true,
+    }
     delete hConfig.onSlideChange
     delete hConfig.onUpdate
     delete hConfig.onResize
@@ -794,6 +809,10 @@ class OmniSlider extends Core {
 
 - Both cores use `disableInput: true`; the parent class owns the single
   set of pointer/wheel listeners and dispatches to both.
+- Both cores also use `controlledItems: true` because the parent
+  manages `items` externally — this prevents Core's `resize()` from
+  re-collecting `wrapper.children` (which would clobber `hCore.items`)
+  and skips the `MutationObserver` that would otherwise fire twice.
 - `slider.currentSlide` returns the row (back-compat with single-axis
   `Core`); use `slider.currentCol` / `slider.currentCell` for the column
   / pair, and `slider.goToCell(r, c)` to drive both at once.

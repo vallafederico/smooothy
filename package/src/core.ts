@@ -45,6 +45,19 @@ interface CoreConfig {
    * source (timeline, scroll-link, gamepad, etc.). Default: false.
    */
   disableInput: boolean
+  /**
+   * When true, Core will NOT re-collect `items` from `wrapper.children`
+   * inside `resize()`, and will NOT install a `MutationObserver` on the
+   * wrapper. Use this when you're managing the `items` array externally
+   * — for example, when composing multiple Cores on the same wrapper
+   * where each one targets a different subset of the children (see the
+   * omnidirectional example), or when the slides live somewhere other
+   * than the immediate children of the wrapper.
+   *
+   * With this flag on, you're responsible for keeping `items` in sync
+   * with the DOM yourself. Default: false.
+   */
+  controlledItems: boolean
   onSlideChange?: (current: number, previous: number) => void
   onResize?: (core: Core) => void
   onUpdate?: (core: Core) => void
@@ -81,6 +94,7 @@ const DEFAULT_CONFIG: CoreConfig = {
   /** Functionality */
   scrollInput: false,
   disableInput: false,
+  controlledItems: false,
 }
 
 export class Core {
@@ -186,7 +200,7 @@ export class Core {
     this.#setupViewport()
     this.#setupIntersectionObserver()
     this.#setupResizeObserver()
-    this.#setupMutationObserver()
+    if (!this.config.controlledItems) this.#setupMutationObserver()
 
     if (!this.config.disableInput) {
       this.#setupInputListeners()
@@ -1005,7 +1019,11 @@ export class Core {
   resize(): void {
     // Re-collect items so consumers can add/remove slides at runtime and
     // call resize() (or rely on the MutationObserver) without re-init.
-    this.items = [...this.wrapper.children] as HTMLElement[]
+    // Skipped when `controlledItems` is on so consumers managing items
+    // externally (e.g. omnidirectional grids) aren't clobbered.
+    if (!this.config.controlledItems) {
+      this.items = [...this.wrapper.children] as HTMLElement[]
+    }
 
     // Clamp currentSlide so removing items doesn't leave a stale index.
     if (this.items.length > 0) {

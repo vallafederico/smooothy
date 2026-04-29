@@ -22,6 +22,14 @@ that a minor bump is warranted.
   direct children (`childList: true`, **not** `subtree`) and
   re-initialises items + viewport automatically. Useful for sliders
   fed by fetched data — no more manual `resize()` on DOM mutation.
+  Can be opted out via the new `controlledItems` config (see below).
+- **`controlledItems` config flag** (default `false`). When true, Core
+  skips both the items re-collection inside `resize()` and the
+  `MutationObserver` setup. Use when you're managing the `items` array
+  externally — composing multiple Cores on the same wrapper (each
+  targeting a different subset of children), or when slides aren't the
+  immediate children of the wrapper. The omnidirectional example
+  uses this on its horizontal core.
 - **Velocity-aware snap.** `pointerUp` projects an inertial resting
   position from a smoothed per-pointerMove target delta
   (`projection = dragDelta / (1 - speedDecay)`) and snaps to the

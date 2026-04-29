@@ -52,6 +52,14 @@ interface CoreConfig {
   disableInput: boolean      // Skip Core's own pointer/wheel listeners (default: false).
                              // Drive the instance via pointerDown/pointerMove/pointerUp/scroll.
 
+  // Items management
+  controlledItems: boolean   // When true, resize() will NOT re-collect items from
+                             // wrapper.children, and Core will NOT install a
+                             // MutationObserver. Use when you're managing the
+                             // `items` array externally (e.g. composing multiple
+                             // cores on the same wrapper, or when slides aren't
+                             // direct children). Default: false.
+
   // Callbacks
   onSlideChange?: (current: number, previous: number) => void
   onResize?: (core: Core) => void
