@@ -33,6 +33,14 @@ interface CoreConfig {
   virtualScroll: VirtualScrollConfig
   setOffset: (viewport: Viewport) => number
   scrollInput: boolean
+  /**
+   * When true, Core skips installing its own pointer/wheel/cursor handlers.
+   * The instance becomes "passive": its state is only driven by external
+   * code calling `dragStart`, `dragMove`, `dragEnd` and `scroll`. The
+   * intersection and resize observers are still installed so `update()`
+   * keeps working when the wrapper is visible/resized.
+   */
+  disableInput: boolean
   onSlideChange?: (current: number, previous: number) => void
   onResize?: (core: Core) => void
   onUpdate?: (core: Core) => void
@@ -68,6 +76,7 @@ const DEFAULT_CONFIG: CoreConfig = {
 
   /** Functionality */
   scrollInput: false,
+  disableInput: false,
 }
 
 export class Core {
@@ -147,11 +156,15 @@ export class Core {
     // Initialize
     this.#setupViewport()
     this.#setupIntersectionObserver()
-    this.#addEventListeners()
-    this.wrapper.style.cursor = "grab"
+    this.#setupResizeObserver()
+
+    if (!this.config.disableInput) {
+      this.#setupInputListeners()
+      this.#setupVirtualScroll()
+      this.wrapper.style.cursor = "grab"
+    }
 
     this.#setupViewport()
-    this.#setupVirtualScroll()
 
     // Center first slide for variable width non-infinite sliders
     if (
@@ -244,10 +257,10 @@ export class Core {
     })
   }
 
-  #addEventListeners(): void {
-    const handleMouseDown = (e: MouseEvent) => this.#handleDragStart(e)
-    const handleMouseMove = (e: MouseEvent) => this.#handleDragMove(e)
-    const handleMouseUp = () => this.#handleDragEnd()
+  #setupInputListeners(): void {
+    const handleMouseDown = (e: MouseEvent) => this.pointerDown(e)
+    const handleMouseMove = (e: MouseEvent) => this.pointerMove(e)
+    const handleMouseUp = () => this.pointerUp()
 
     this.wrapper.addEventListener("mousedown", handleMouseDown)
     window.addEventListener("mousemove", handleMouseMove)
@@ -263,7 +276,7 @@ export class Core {
       this.touchPreviousY = touch.clientY
       this.scrollDirection = undefined
       this.isTouching = true
-      this.#handleDragStart(touch)
+      this.pointerDown(touch)
     }
 
     const handleTouchMove = (e: TouchEvent) => {
@@ -287,7 +300,7 @@ export class Core {
 
       if (shouldHandle) {
         e.preventDefault()
-        this.#handleDragMove(touch)
+        this.pointerMove(touch)
         if (this.config.vertical) {
           this.touchPreviousY = touch.clientY
         } else {
@@ -301,13 +314,15 @@ export class Core {
       this.scrollDirection = undefined
       this.touchPreviousX = undefined
       this.touchPreviousY = undefined
-      this.#handleDragEnd()
+      this.pointerUp()
     }
 
     this.wrapper.addEventListener("touchstart", handleTouchStart)
     window.addEventListener("touchmove", handleTouchMove, { passive: false })
     window.addEventListener("touchend", handleTouchEnd)
+  }
 
+  #setupResizeObserver(): void {
     const resizeObserver = new ResizeObserver(() => {
       if (this.resizeTimeout) clearTimeout(this.resizeTimeout)
       this.resizeTimeout = setTimeout(() => this.resize(), 10)
@@ -341,65 +356,31 @@ export class Core {
       ...this.config.virtualScroll,
       el: this.wrapper,
     })
-
-    const SCROLL_THRESHOLD = 5
-
-    this.virtualScroll.on((event: any) => {
-      if (!this.isDragging && !this.#isPaused) {
-        if (event.touchDevice) {
-          const deltaY = Math.abs(event.deltaY)
-          const deltaX = Math.abs(event.deltaX)
-
-          if (deltaY < SCROLL_THRESHOLD && deltaX < SCROLL_THRESHOLD) return
-          // For vertical slider, allow vertical scrolling; for horizontal, only horizontal
-          if (this.config.vertical) {
-            if (deltaX > deltaY) return
-          } else {
-            if (deltaY > deltaX) return
-          }
-        }
-
-        const delta = this.config.vertical
-          ? !this.config.scrollInput
-            ? event.deltaY
-            : Math.abs(event.deltaY) > Math.abs(event.deltaX)
-              ? event.deltaY
-              : event.deltaX
-          : !this.config.scrollInput
-            ? event.deltaX
-            : Math.abs(event.deltaX) > Math.abs(event.deltaY)
-              ? event.deltaX
-              : event.deltaY
-
-        const deltaFactor = this.config.variableWidth
-          ? this.config.scrollSensitivity
-          : this.config.scrollSensitivity * 0.001
-        const deltaValue = delta * deltaFactor
-        let newTarget = this.target + deltaValue
-
-        if (!this.config.infinite) {
-          if (newTarget > 0) {
-            newTarget = 0
-          } else if (newTarget < this.maxScroll) {
-            newTarget = this.maxScroll
-          }
-        }
-
-        this.target = this.#calculateBounds(newTarget)
-        this.speed = -deltaValue * (this.config.variableWidth ? 0.1 : 10)
-      }
-    })
+    this.virtualScroll.on((event: any) => this.scroll(event))
   }
 
-  #handleDragStart(event: MouseEvent | Touch): void {
+  /**
+   * External input entry points. Internal pointer/touch listeners call
+   * these too, so behavior is identical whether input is driven by Core
+   * or by a parent that uses `disableInput: true`.
+   *
+   * Method names use the pointer/scroll vocabulary (rather than `dragStart`)
+   * to avoid colliding with the existing `dragStart: number` field.
+   */
+  pointerDown(event: { clientX: number; clientY: number }): void {
     if (this.#isPaused) return
     this.isDragging = true
     this.dragStart = this.config.vertical ? event.clientY : event.clientX
     this.dragStartTarget = this.target
-    this.wrapper.style.cursor = "grabbing"
+    if (!this.config.disableInput) this.wrapper.style.cursor = "grabbing"
   }
 
-  #handleDragMove(event: MouseEvent | Touch): void {
+  pointerMove(event: {
+    clientX: number
+    clientY: number
+    movementX?: number
+    movementY?: number
+  }): void {
     if (!this.isDragging || this.#isPaused) return
 
     const delta = this.config.vertical
@@ -413,14 +394,14 @@ export class Core {
     this.target = this.#calculateBounds(newTarget)
 
     // Calculate movement for both mouse and touch events
-    if ("movementX" in event) {
-      // Mouse event - use movementX/movementY property
+    if ("movementX" in event && event.movementX !== undefined) {
+      // Mouse-style event with movementX/movementY (or synthesized)
       const movement = this.config.vertical
-        ? (event as MouseEvent).movementY
-        : (event as MouseEvent).movementX
+        ? (event.movementY ?? 0)
+        : (event.movementX ?? 0)
       this.speed += movement * 0.01
     } else {
-      // Touch event - calculate movement using tracked previous position
+      // Touch event - fall back to tracked previous position
       const current = this.config.vertical ? event.clientY : event.clientX
       const previous = this.config.vertical
         ? this.touchPreviousY || current
@@ -430,9 +411,9 @@ export class Core {
     }
   }
 
-  #handleDragEnd(): void {
+  pointerUp(): void {
     this.isDragging = false
-    this.wrapper.style.cursor = "grab"
+    if (!this.config.disableInput) this.wrapper.style.cursor = "grab"
 
     if (this.config.variableWidth) {
       if (!this.config.infinite) {
@@ -460,6 +441,58 @@ export class Core {
         this.target = Math.round(this.target)
       }
     }
+  }
+
+  scroll(event: {
+    deltaX: number
+    deltaY: number
+    touchDevice?: boolean
+  }): void {
+    if (this.isDragging || this.#isPaused) return
+
+    const SCROLL_THRESHOLD = 5
+
+    if (event.touchDevice) {
+      const deltaY = Math.abs(event.deltaY)
+      const deltaX = Math.abs(event.deltaX)
+
+      if (deltaY < SCROLL_THRESHOLD && deltaX < SCROLL_THRESHOLD) return
+      // For vertical slider, allow vertical scrolling; for horizontal, only horizontal
+      if (this.config.vertical) {
+        if (deltaX > deltaY) return
+      } else {
+        if (deltaY > deltaX) return
+      }
+    }
+
+    const delta = this.config.vertical
+      ? !this.config.scrollInput
+        ? event.deltaY
+        : Math.abs(event.deltaY) > Math.abs(event.deltaX)
+          ? event.deltaY
+          : event.deltaX
+      : !this.config.scrollInput
+        ? event.deltaX
+        : Math.abs(event.deltaX) > Math.abs(event.deltaY)
+          ? event.deltaX
+          : event.deltaY
+
+    const deltaFactor = this.config.variableWidth
+      ? this.config.scrollSensitivity
+      : this.config.scrollSensitivity * 0.001
+    const deltaValue = delta * deltaFactor
+    let newTarget = this.target + deltaValue
+
+    if (!this.config.infinite) {
+      if (newTarget > 0) {
+        newTarget = 0
+      } else if (newTarget < this.maxScroll) {
+        newTarget = this.maxScroll
+      }
+    }
+
+    this.target = this.#calculateBounds(newTarget)
+    this.speed = -deltaValue * (this.config.variableWidth ? 0.1 : 10)
   }
 
   /** Update */
@@ -752,20 +785,20 @@ export class Core {
   destroy(): void {
     this.kill()
     window.removeEventListener("mousemove", (e: MouseEvent) =>
-      this.#handleDragMove(e)
+      this.pointerMove(e)
     )
-    window.removeEventListener("mouseup", () => this.#handleDragEnd())
+    window.removeEventListener("mouseup", () => this.pointerUp())
     window.removeEventListener("touchmove", (e: TouchEvent) => {
       const touch = e.touches[0]
-      this.#handleDragMove(touch)
+      this.pointerMove(touch)
     })
-    window.removeEventListener("touchend", () => this.#handleDragEnd())
+    window.removeEventListener("touchend", () => this.pointerUp())
     this.wrapper.removeEventListener("mousedown", (e: MouseEvent) =>
-      this.#handleDragStart(e)
+      this.pointerDown(e)
     )
     this.wrapper.removeEventListener("touchstart", (e: TouchEvent) => {
       const touch = e.touches[0]
-      this.#handleDragStart(touch)
+      this.pointerDown(touch)
     })
     if (this.resizeTimeout) clearTimeout(this.resizeTimeout)
     if (this.virtualScroll && this.config.scrollInput) {

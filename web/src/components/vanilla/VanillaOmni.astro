@@ -20,7 +20,7 @@ const rowSize = size * (5/3)
   tabindex="0"
   data-slider="vanilla-omnidirectional"
   class:list={[
-    "flex flex-col w-[80svw] shrink-0 h-[80svh] outline outline-gray-700/80",
+    "flex flex-col w-[80svw] shrink-0 overflow-hidden h-[80svh] outline outline-gray-700/80",
   ]}
 >
 
@@ -49,8 +49,6 @@ const rowSize = size * (5/3)
     }
     </div>
   )
-  
-
 })}
 </div>
 
@@ -59,9 +57,8 @@ const rowSize = size * (5/3)
 
   const s1 = document.querySelector("[data-slider='vanilla-omnidirectional']")
   if (s1) new Slider(s1, {
-    infinite: false,
+    infinite: true,
     snap: true,
-
   })
 
 
