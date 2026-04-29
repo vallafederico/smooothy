@@ -1,0 +1,68 @@
+---
+const ROWS = 4
+const COLS = ROWS;
+const { index = 1, class: className, ...rest } = Astro.props
+const slides = Array.from({ length: COLS }, (_, i) => i)
+
+const size = 20
+const rowSize = size * (5/3)
+
+---
+
+<div
+  {...rest}
+  style={`
+    --slide-size:${size}rem; 
+    --row-size:${rowSize}rem; 
+    padding-left: calc(40svw - var(--row-size)/2);
+    padding-top: calc(40svh - var(--slide-size)/2);
+  `}
+  tabindex="0"
+  data-slider="vanilla-omnidirectional"
+  class:list={[
+    "flex w-[80svw] shrink-0  h-[80svh] outline outline-gray-700/80",
+  ]}
+>
+
+{Array.from({ length: ROWS }, (_, i) => {
+
+  return (
+    <div class="outline aspect-[5/3] h-[var(--slide-size)] ">
+    {
+      slides.map((slide, i) => {
+        return (
+          <div
+          
+            class:list={[
+              "flex aspect-[5/3] h-[var(--slide-size)] shrink-0 items-center justify-center ",
+            ]}
+          >
+            <div
+              class:list={[
+                "relative flex h-full w-full items-center justify-center p-8 outline outline-gray-600 transition-transform",
+              ]}
+            >
+              <p class="mono text-lg text-gray-200">Slide {i + 1}</p>
+            </div>
+          </div>
+        )
+      })
+    }
+    </div>
+  )
+  
+
+})}
+</div>
+
+<script>
+  import { Slider } from "~/wip/slider/omnidirectional"
+
+  const s1 = document.querySelector("[data-slider='vanilla-omnidirectional']")
+  if (s1) new Slider(s1, {
+    infinite: true,
+    // vertical: true,
+  })
+
+
+</script>
