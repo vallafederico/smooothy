@@ -38,6 +38,14 @@ that a minor bump is warranted.
   release behavior is unchanged.
 - **`isTouching` field** is now public on the Core type and reflects
   `pointerType === 'touch'` for the active drag.
+- **Snap-to-center bounds for variable-width finite sliders.** When
+  `variableWidth + snap + !infinite`, the target range is now
+  `[wrapperCenter - lastSlideCenter, wrapperCenter - firstSlideCenter]`
+  instead of `[maxScroll, 0]`, so the first and last slides can actually
+  land centered. Previously the target was clamped to `0` at the start,
+  which left edge slides flush with the wrapper edge. Other modes
+  (infinite, fixed-width, free-scroll) keep the old `[maxScroll, 0]`
+  bounds.
 
 ### Changed
 

@@ -350,7 +350,12 @@ const slider = new Core(wrapper, {
 - Each slide's width is calculated automatically from CSS
 - Slides snap to center based on their individual widths
 - The first slide is automatically centered on initialization
-- Works with both `infinite: true` and `infinite: false`
+- Works with both `infinite: true` and `infinite: false`. In finite +
+  snap mode, the target range is the natural "every-slide-can-center"
+  span (`[wrapperCenter - lastSlideCenter, wrapperCenter - firstSlideCenter]`)
+  rather than `[maxScroll, 0]`, so the first/last slides land cleanly
+  centered too. Expect empty space on the inactive edge when an edge
+  slide is centered — fill it in CSS if you don't want it visible.
 
 ### Vertical Slider
 

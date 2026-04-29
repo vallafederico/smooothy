@@ -163,6 +163,13 @@ export class Core {
    * the first time consumers read it inside `onUpdate`. */
   #hasRendered: boolean = false
 
+  /** Target bounds for variableWidth + snap + non-infinite mode.
+   * Lets every slide land centered (including the edges) instead of being
+   * clamped to [maxScroll, 0] which would leave the first/last slide flush
+   * with the wrapper edge. Recomputed in #setupViewport. */
+  #snapBoundsMin: number = 0
+  #snapBoundsMax: number = 0
+
   onSlideChange?: (current: number, previous: number) => void
   onResize?: (core: Core) => void
   onUpdate?: (core: Core) => void
@@ -295,9 +302,38 @@ export class Core {
       this.maxScroll = -(total - this.#offset) / denominator
     }
 
+    // Center bounds for variableWidth + snap + non-infinite. The natural
+    // "every slide can center" range is [center-of-last, center-of-first]
+    // (in target space). Stored separately so other modes keep their old
+    // [maxScroll, 0] bounds untouched.
+    if (this.#useSnapBounds()) {
+      const wrapperCenter = this.config.vertical
+        ? this.viewport.wrapperHeight / 2
+        : this.viewport.wrapperWidth / 2
+      const firstCenter = this.#getSlideCenter(0)
+      const lastCenter = this.#getSlideCenter(this.items.length - 1)
+      this.#snapBoundsMax = wrapperCenter - firstCenter
+      this.#snapBoundsMin = wrapperCenter - lastCenter
+    } else {
+      this.#snapBoundsMax = 0
+      this.#snapBoundsMin = 0
+    }
+
     queueMicrotask(() => {
       this.onResize?.(this)
     })
+  }
+
+  /** True when snap-to-center bounds should replace [maxScroll, 0]. Only
+   * variableWidth + snap + non-infinite benefits; other modes either wrap
+   * around or use unit-sized targets where 0 already means "first slide". */
+  #useSnapBounds(): boolean {
+    return (
+      this.config.variableWidth &&
+      this.config.snap &&
+      !this.config.infinite &&
+      this.items.length > 0
+    )
   }
 
   #setupInputListeners(): void {
@@ -393,10 +429,14 @@ export class Core {
           ? this.config.bounceLimit * itemSize
           : this.config.bounceLimit
 
-      if (newTarget > bounce) {
-        return bounce
-      } else if (newTarget < this.maxScroll - bounce) {
-        return this.maxScroll - bounce
+      const useSnap = this.#useSnapBounds()
+      const min = useSnap ? this.#snapBoundsMin : this.maxScroll
+      const max = useSnap ? this.#snapBoundsMax : 0
+
+      if (newTarget > max + bounce) {
+        return max + bounce
+      } else if (newTarget < min - bounce) {
+        return min - bounce
       }
     }
     return newTarget
@@ -492,8 +532,11 @@ export class Core {
     if (this.config.variableWidth) {
       let next = projectedTarget
       if (!this.config.infinite) {
-        if (next > 0) next = 0
-        else if (next < this.maxScroll) next = this.maxScroll
+        const useSnap = this.#useSnapBounds()
+        const min = useSnap ? this.#snapBoundsMin : this.maxScroll
+        const max = useSnap ? this.#snapBoundsMax : 0
+        if (next > max) next = max
+        else if (next < min) next = min
       }
       this.target = this.config.snap ? this.#snapToNearest(next) : next
     } else {
@@ -732,6 +775,14 @@ export class Core {
     if (this.config.infinite) {
       const k = Math.round((this.target - rawTarget) / total)
       rawTarget += k * total
+    } else if (this.#useSnapBounds()) {
+      // No-op for any valid index (rawTarget is always within these
+      // bounds by construction), but keeps clamps consistent if an
+      // out-of-range index ever sneaks in.
+      rawTarget = Math.max(
+        this.#snapBoundsMin,
+        Math.min(this.#snapBoundsMax, rawTarget)
+      )
     } else {
       rawTarget = Math.min(0, Math.max(this.maxScroll, rawTarget))
     }
