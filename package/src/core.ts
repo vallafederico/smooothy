@@ -36,9 +36,13 @@ interface CoreConfig {
   /**
    * When true, Core skips installing its own pointer/wheel/cursor handlers.
    * The instance becomes "passive": its state is only driven by external
-   * code calling `dragStart`, `dragMove`, `dragEnd` and `scroll`. The
-   * intersection and resize observers are still installed so `update()`
-   * keeps working when the wrapper is visible/resized.
+   * code calling `pointerDown`, `pointerMove`, `pointerUp` and `scroll`.
+   * The intersection and resize observers are still installed so
+   * `update()` keeps working when the wrapper is visible/resized.
+   *
+   * Useful for composing multiple Cores on the same wrapper (e.g. a 2D
+   * omnidirectional grid), or for driving Core from a non-DOM input
+   * source (timeline, scroll-link, gamepad, etc.). Default: false.
    */
   disableInput: boolean
   onSlideChange?: (current: number, previous: number) => void
@@ -360,12 +364,12 @@ export class Core {
   }
 
   /**
-   * External input entry points. Internal pointer/touch listeners call
-   * these too, so behavior is identical whether input is driven by Core
-   * or by a parent that uses `disableInput: true`.
+   * Begin a drag/press. Sets `isDragging` and snapshots the start
+   * position. Called internally by Core's own `mousedown`/`touchstart`
+   * listeners, or externally when `disableInput: true`.
    *
-   * Method names use the pointer/scroll vocabulary (rather than `dragStart`)
-   * to avoid colliding with the existing `dragStart: number` field.
+   * @param event Anything with `{ clientX, clientY }` (MouseEvent, Touch,
+   * or a synthesized object).
    */
   pointerDown(event: { clientX: number; clientY: number }): void {
     if (this.#isPaused) return
@@ -375,6 +379,13 @@ export class Core {
     if (!this.config.disableInput) this.wrapper.style.cursor = "grabbing"
   }
 
+  /**
+   * Continue a drag/press. Reads `clientX/Y` to compute the new target
+   * and `movementX/Y` (when present) to feed `speed`. For pure touch
+   * events without `movementX/Y`, falls back to Core's tracked
+   * `touchPrevious*` state when its own listeners are in charge; when
+   * driven externally, prefer to synthesize `movementX/Y` per frame.
+   */
   pointerMove(event: {
     clientX: number
     clientY: number
@@ -411,6 +422,10 @@ export class Core {
     }
   }
 
+  /**
+   * Finish a drag/press. Clears `isDragging`, applies snap/bounce
+   * resolution. Safe to call even if no `pointerDown` happened.
+   */
   pointerUp(): void {
     this.isDragging = false
     if (!this.config.disableInput) this.wrapper.style.cursor = "grab"
@@ -443,6 +458,16 @@ export class Core {
     }
   }
 
+  /**
+   * Apply a wheel/virtual-scroll event. Uses `deltaX` or `deltaY`
+   * depending on `config.vertical` (and `config.scrollInput`). When
+   * `event.touchDevice` is true, applies the per-axis dominance lock
+   * to suppress noisy off-axis trackpad scrolls.
+   *
+   * Called internally by the `virtual-scroll` listener Core installs by
+   * default; with `disableInput: true`, drive it from your own input
+   * source.
+   */
   scroll(event: {
     deltaX: number
     deltaY: number

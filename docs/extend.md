@@ -14,6 +14,8 @@ While it works as just the Core, the idea is for the library to provide all the 
 - [Parallax and Speed](#parallax-and-speed)
 - [Variable Width](#variable-width)
 - [Auto-scroll](#auto-scroll)
+- [Passive Cores (`disableInput`)](#passive-cores-disableinput)
+- [Omnidirectional](#omnidirectional)
 - [Wip](#wip)
 
 ### Controls
@@ -563,6 +565,230 @@ class AutoScrollSlider extends Core {
 - Set `snap: false` for smooth continuous motion (or keep snap enabled for subtle snapping effect)
 - Adjust `#scrollSpeed` to change the scrolling speed (higher = faster)
 - Works best with `infinite: true` for seamless looping
+
+### Passive Cores (`disableInput`)
+
+By default, `Core` installs its own pointer/wheel listeners and runs as
+a self-contained slider. With `disableInput: true`, Core skips that
+setup and you drive the instance manually by calling its public input
+methods. Useful for:
+
+- Composing multiple Cores on the same wrapper (see
+  [Omnidirectional](#omnidirectional) below).
+- Sourcing input from a non-DOM origin: GSAP timeline, scroll-link,
+  custom gesture, gamepad, etc.
+
+```js
+import Core from "smooothy"
+import VirtualScroll from "virtual-scroll"
+import gsap from "gsap"
+
+const core = new Core(wrapper, { disableInput: true })
+
+// Pointer
+wrapper.addEventListener("mousedown", e => core.pointerDown(e))
+window.addEventListener("mousemove", e => core.pointerMove(e))
+window.addEventListener("mouseup", () => core.pointerUp())
+
+// Wheel / trackpad
+new VirtualScroll({ el: wrapper }).on(e => core.scroll(e))
+
+gsap.ticker.add(core.update.bind(core))
+```
+
+**Method reference:**
+
+- `pointerDown(event)` — `{ clientX, clientY }`. Begins a drag.
+- `pointerMove(event)` — `{ clientX, clientY, movementX?, movementY? }`.
+  Continues the drag. Pass `movementX/Y` for proper velocity (Core falls
+  back to its tracked touch state when its own listeners are in charge,
+  so synthesizing them is recommended in passive mode).
+- `pointerUp()` — Ends the drag, applies snap/bounce.
+- `scroll(event)` — `{ deltaX, deltaY, touchDevice? }`. Applies a
+  wheel/virtual-scroll delta. Reads `deltaX` or `deltaY` based on
+  `config.vertical` and `config.scrollInput`.
+
+**Notes:**
+
+- Resize and intersection observers are *still* installed in passive
+  mode, so `update()`'s visibility gate continues to work and `resize()`
+  is called automatically.
+- The `cursor: grab/grabbing` style is only set when Core handles its
+  own input — manage cursor yourself in passive mode.
+
+### Omnidirectional
+
+A 2D grid that scrolls on **both** axes at once, with snap, infinite
+wrap, and per-axis parallax. Built by composing two passive `Core`
+instances on the same wrapper:
+
+- A vertical core (`super`) whose items are the **rows** — writes
+  `translateY` on each row.
+- A horizontal core (`hCore`) whose items are the slides of the first
+  row (the **columns**) — writes `translateX` on those slides.
+- Each frame, the horizontal transform from row 0 is mirrored onto the
+  same column in every other row so columns stay aligned.
+
+Because both cores live on the same wrapper, the parent attaches input
+listeners **once** and dispatches each event to both cores. A diagonal
+mouse drag/scroll moves both axes simultaneously.
+
+```html
+<div data-slider="omni" class="flex flex-col w-[80svw] h-[80svh] overflow-hidden">
+  {rows.map(r => (
+    <div class="flex h-[20rem] shrink-0">
+      {cols.map(c => (
+        <div class="flex aspect-[5/3] h-[20rem] shrink-0 items-center justify-center">
+          <div class="relative flex h-full w-full items-center justify-center p-8 outline">
+            <p>Slide {r + 1}.{c + 1}</p>
+            <div data-parallax class="pointer-events-none absolute inset-4 outline outline-dashed" />
+          </div>
+        </div>
+      ))}
+    </div>
+  ))}
+</div>
+```
+
+```js
+import VirtualScroll from "virtual-scroll"
+import Core from "smooothy"
+import gsap from "gsap"
+
+class OmniSlider extends Core {
+  constructor(wrapper, config = {}) {
+    super(wrapper, { ...config, vertical: true, disableInput: true })
+
+    this.rows = this.items
+    this.grid = this.rows.map(row => [...row.children])
+
+    // Strip callbacks from hCore so they don't fire twice per frame.
+    const hConfig = { ...config, vertical: false, disableInput: true }
+    delete hConfig.onSlideChange
+    delete hConfig.onUpdate
+    delete hConfig.onResize
+    this.hCore = new Core(wrapper, hConfig)
+
+    if (this.grid[0]) {
+      this.hCore.items = this.grid[0]
+      this.hCore.resize()
+    }
+
+    // Drop the duplicate intersection observer; mirror visibility manually.
+    this.hCore.observer?.disconnect()
+    this.hCore.observer = undefined
+
+    // Per-axis parallax on `[data-parallax]` children.
+    this.parallaxStrength = config.parallax ?? 0
+    this.parallaxEls = this.grid.map(row =>
+      row.map(cell => cell.querySelector("[data-parallax]"))
+    )
+
+    this.#setupSharedInput(config)
+    gsap.ticker.add(this.tick.bind(this))
+  }
+
+  #setupSharedInput(config) {
+    const wrapper = this.wrapper
+    const cores = [this, this.hCore]
+    const abort = new AbortController()
+    const signal = abort.signal
+    this._abort = abort
+
+    wrapper.style.cursor = "grab"
+
+    wrapper.addEventListener("mousedown", e => {
+      for (const c of cores) c.pointerDown(e)
+      wrapper.style.cursor = "grabbing"
+    }, { signal })
+    window.addEventListener("mousemove", e => {
+      for (const c of cores) c.pointerMove(e)
+    }, { signal })
+    window.addEventListener("mouseup", () => {
+      for (const c of cores) c.pointerUp()
+      wrapper.style.cursor = "grab"
+    }, { signal })
+
+    // Touch: no per-axis lock — diagonal swipes drive both axes.
+    let prevX, prevY
+    wrapper.addEventListener("touchstart", e => {
+      const t = e.touches[0]
+      prevX = t.clientX; prevY = t.clientY
+      for (const c of cores) c.pointerDown(t)
+    }, { signal })
+    window.addEventListener("touchmove", e => {
+      const t = e.touches[0]
+      e.preventDefault()
+      const synth = {
+        clientX: t.clientX, clientY: t.clientY,
+        movementX: t.clientX - (prevX ?? t.clientX),
+        movementY: t.clientY - (prevY ?? t.clientY),
+      }
+      prevX = t.clientX; prevY = t.clientY
+      for (const c of cores) c.pointerMove(synth)
+    }, { passive: false, signal })
+    window.addEventListener("touchend", () => {
+      for (const c of cores) c.pointerUp()
+    }, { signal })
+
+    new VirtualScroll({ ...(config.virtualScroll ?? {}), el: wrapper })
+      .on(event => { for (const c of cores) c.scroll(event) })
+  }
+
+  tick() {
+    this.update()
+    this.hCore.isVisible = this.isVisible
+    this.hCore.update()
+
+    // Mirror the horizontal transform onto every row's same-column slide.
+    const master = this.hCore.items
+    for (let c = 0; c < master.length; c++) {
+      const t = master[c].style.transform
+      for (let r = 1; r < this.grid.length; r++) {
+        const slide = this.grid[r][c]
+        if (slide) slide.style.transform = t
+      }
+    }
+
+    // Per-axis parallax: (hCore.parallaxValues[c], this.parallaxValues[r]).
+    const s = this.parallaxStrength
+    if (!s) return
+    const px = this.hCore.parallaxValues
+    const py = this.parallaxValues
+    if (!px || !py) return
+    for (let r = 0; r < this.parallaxEls.length; r++) {
+      const yVal = (py[r] ?? 0) * s
+      for (let c = 0; c < this.parallaxEls[r].length; c++) {
+        const el = this.parallaxEls[r][c]
+        if (el) el.style.transform = `translate(${(px[c] ?? 0) * s}%, ${yVal}%)`
+      }
+    }
+  }
+
+  // Cell-aware accessors — handy on top of the inherited single-axis API.
+  get currentRow() { return this.currentSlide }
+  get currentCol() { return this.hCore?.currentSlide ?? 0 }
+  get currentCell() { return [this.currentRow, this.currentCol] }
+  goToCell(row, col) {
+    if (row != null) this.goToIndex(row)
+    if (col != null) this.hCore?.goToIndex(col)
+  }
+}
+```
+
+**Key points:**
+
+- Both cores use `disableInput: true`; the parent class owns the single
+  set of pointer/wheel listeners and dispatches to both.
+- `slider.currentSlide` returns the row (back-compat with single-axis
+  `Core`); use `slider.currentCol` / `slider.currentCell` for the column
+  / pair, and `slider.goToCell(r, c)` to drive both at once.
+- Callbacks (`onSlideChange`, `onUpdate`, `onResize`) are deleted from
+  the `hCore` config to avoid double-firing per frame.
+- For per-cell parallax, add `[data-parallax]` inside each cell and
+  pass `parallax: 20` (or any % strength). Cell `(r, c)` gets
+  `translate(hCore.parallaxValues[c], this.parallaxValues[r])` scaled
+  by that strength.
 
 ### Wip
 

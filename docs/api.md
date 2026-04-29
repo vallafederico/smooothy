@@ -49,6 +49,8 @@ interface CoreConfig {
 
   // Input handling
   scrollInput: boolean       // Enable scroll input (default: false)
+  disableInput: boolean      // Skip Core's own pointer/wheel listeners (default: false).
+                             // Drive the instance via pointerDown/pointerMove/pointerUp/scroll.
 
   // Callbacks
   onSlideChange?: (current: number, previous: number) => void
@@ -104,6 +106,35 @@ interface CoreConfig {
 
 - `getProgress()` - Get current progress (0-1)
 - `update()` - Update slider state (called in animation loop)
+
+#### Input (manual / passive mode)
+
+These methods are called by Core's own pointer/wheel listeners. With
+`disableInput: true` Core does not install any listeners itself, and you
+drive the instance by calling these directly — useful for composing
+multiple Cores on one wrapper, or for sourcing input from a non-DOM
+origin (timeline, scroll-link, gamepad, etc.).
+
+- `pointerDown(event: { clientX, clientY })` - Begin a drag (sets
+  `isDragging`, snapshots start position).
+- `pointerMove(event: { clientX, clientY, movementX?, movementY? })` -
+  Continue the drag. Pass `movementX/Y` for proper velocity (Core will
+  fall back to its tracked touch state otherwise).
+- `pointerUp()` - Finish the drag, apply snap/bounce.
+- `scroll(event: { deltaX, deltaY, touchDevice? })` - Apply a wheel /
+  virtual-scroll delta. Uses `deltaX` or `deltaY` based on
+  `config.vertical` / `config.scrollInput`.
+
+```js
+const core = new Core(wrapper, { disableInput: true })
+
+wrapper.addEventListener("mousedown", e => core.pointerDown(e))
+window.addEventListener("mousemove", e => core.pointerMove(e))
+window.addEventListener("mouseup",   () => core.pointerUp())
+
+import VirtualScroll from "virtual-scroll"
+new VirtualScroll({ el: wrapper }).on(e => core.scroll(e))
+```
 
 ### Callbacks
 

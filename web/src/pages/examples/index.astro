@@ -12,6 +12,7 @@ import LinkSlider from "~/components/vanilla/LinkSlider.astro"
 import VariableWidthSlider from "~/components/vanilla/VariableWidthSlider.astro"
 import AutoScrollSlider from "~/components/vanilla/AutoScrollSlider.astro"
 import VerticalSlider from "~/components/vanilla/VerticalSlider.astro"
+import Omnidirectional from "~/components/vanilla/Omnidirectional.astro"
 
 import ExamplePageHead from "~/components/ExamplePageHead.astro"
 ---
@@ -100,4 +101,14 @@ import ExamplePageHead from "~/components/ExamplePageHead.astro"
     link={"extend.md#vertical-slider"}
   />
   <VerticalSlider />
+</Section>
+
+<Section id={"omnidirectional"} class="min-h-[80svh] pt-[10svh]">
+  <ExampleHead
+    title={"Omnidirectional."}
+    description={"A 2D grid that scrolls on both axes at once with snap, infinite wrap, and per-axis parallax. Composes two passive Cores on the same wrapper using the disableInput config."}
+    features={["Infinite", "Snap", "2D", "Parallax", "disableInput"]}
+    link={"extend.md#omnidirectional"}
+  />
+  <Omnidirectional />
 </Section>
