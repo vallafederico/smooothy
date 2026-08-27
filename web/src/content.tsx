@@ -15,6 +15,13 @@ export const IN_USE = {
   url: "https://example.com",
   items: [
     {
+      title: "Hishaam 2026",
+      year: "2026",
+      by: "Hishaam",
+      by_url: "https://hishaamfataar.com",
+      url: "https://hishaamfataar.com",
+    },
+    {
       title: "Iyo AI",
       year: "2026",
       by: "Federico",
@@ -32,7 +39,7 @@ export const IN_USE = {
       title: "Rio Property",
       year: "2026",
       by: "Hishaam",
-      by_url: "https://www.hishaam.co.za",
+      by_url: "https://hishaamfataar.com",
       url: "https://www.rioproperty.co.za",
     },
     {
